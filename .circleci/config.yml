@@ -1,0 +1,189 @@
+version: 2.1
+
+config: &config
+  working_directory: ~/workspace
+
+  docker:
+    - image: niqo/android-29-jdk11:0.0.2
+
+  environment:
+    TERM: dumb
+    JAVA_TOOL_OPTIONS: "-Xms256m -Xmx1280m -XX:MaxMetaspaceSize=350m"
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx1536m -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError" -Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=2 -Dkotlin.incremental=false -Dkotlin.compiler.execution.strategy=in-process'
+
+cache_key: &cache_key
+  key: jars-{{ checksum "build.gradle.kts" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+
+orbs:
+  firebase-deploy: cloudliner/firebase-deploy@0.0.2
+
+commands:
+  build-android-command:
+    steps:
+      - run:
+          name: Build Android
+          command: ./gradlew :frontend:android:build :frontend:android:bundle --full-stacktrace -x jsBrowserTest
+  build-web-command:
+    steps:
+      - run:
+          name: Build Web
+          command: ./gradlew :frontend:web:build --full-stacktrace -x jsBrowserTest
+  build-api-command:
+    steps:
+      - run:
+          name: Build Api
+          command: ./gradlew :backend:ktor-api:build --full-stacktrace -x jsBrowserTest
+  distribute-android-command:
+    steps:
+      - run:
+          name: Distribute Android
+          command: ./gradlew appDistributionUploadRelease --full-stacktrace
+  aggregate-junit-command:
+    steps:
+      - run:
+          name: Aggregate Test Results
+          command: |
+            mkdir -p ~/junit/
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp --parents {} ~/junit/ \;
+          when: always
+
+jobs:
+  build_frontend_android:
+    <<: *config
+
+    steps:
+      - checkout
+      - restore_cache:
+          <<: *cache_key
+      - build-android-command
+      - store_artifacts:
+          path: frontend/android/build/outputs/
+      - store_artifacts:
+          path: frontend/android/build/reports/
+      - store_artifacts:
+          path: frontend/web/build/distributions/
+      - store_artifacts:
+          path: build/commit-timestamp.txt
+      - store_artifacts:
+          path: build/reports/
+      - aggregate-junit-command
+      - store_test_results:
+          path: ~/junit
+      - store_artifacts:
+          path: ~/junit
+      - persist_to_workspace:
+          root: ~/workspace
+          paths:
+            - frontend/android/build/outputs/apk
+      - save_cache:
+          <<: *cache_key
+          paths:
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+
+  deploy_frontend_android:
+    <<: *config
+
+    steps:
+      - checkout
+      - attach_workspace:
+          at: workspace
+      - distribute-android-command
+
+  build_frontend_web:
+    <<: *config
+
+    steps:
+      - checkout
+      - restore_cache:
+          <<: *cache_key
+      - build-web-command
+      - store_artifacts:
+          path: frontend/web/build/distributions/
+      - store_artifacts:
+          path: build/commit-timestamp.txt
+      - store_artifacts:
+          path: build/reports/
+      - aggregate-junit-command
+      - store_test_results:
+          path: ~/junit
+      - store_artifacts:
+          path: ~/junit
+      - persist_to_workspace:
+          root: ~/workspace
+          paths:
+            - frontend/web/build/distributions/main-1.0-SNAPSHOT
+      - save_cache:
+          <<: *cache_key
+          paths:
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+  deploy_frontend_web:
+    <<: *config
+
+    steps:
+      - checkout
+      - attach_workspace:
+          at: workspace
+      - firebase-deploy/deploy:
+          token: $FIREBASE_TOKEN
+
+  build_backend_api:
+    <<: *config
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          <<: *cache_key
+
+      - build-api-command
+
+      - aggregate-junit-command
+
+      - store_artifacts:
+          path: backend/ktor-api/build/libs/
+      - store_artifacts:
+          path: backend/ktor-api/build/libs/reports
+      - store_artifacts:
+          path: backend/functions/auth-user-firestore/build/libs/
+      - store_artifacts:
+          path: backend/functions/auth-user-firestore/build/reports/
+      - store_artifacts:
+          path: backend/functions/firestore-user-elasticsearch/build/libs/
+      - store_artifacts:
+          path: backend/functions/firestore-user-elasticsearch/build/reports/
+      - store_artifacts:
+          path: build/commit-timestamp.txt
+      - store_artifacts:
+          path: build/reports/
+
+workflows:
+  version: 2
+  build_test_deploy:
+    jobs:
+      - build_frontend_android
+      - build_frontend_web
+      - build_backend_api
+#      - deploy_frontend_android_approval:
+#          type: approval
+#          requires:
+#            - build_frontend_android
+#      - deploy_frontend_android:
+#          requires:
+#            - deploy_frontend_android_approval
+#          filters:
+#            branches:
+#              only:
+#                - master
+#      - deploy_frontend_web_approval:
+#          type: approval
+#          requires:
+#            - build_frontend_web
+#      - deploy_frontend_web:
+#          requires:
+#            - deploy_frontend_web_approval
+#          filters:
+#            branches:
+#              only:
+#                - master

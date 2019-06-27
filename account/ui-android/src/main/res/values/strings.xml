@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_out">Sign out</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="delete_account_failed">Delete account Failed</string>
+    <string name="sign_out_failed">Signing out Failed</string>
+    <string name="loading_account_failed">Loading Account Failed</string>
+    <string name="action_dismiss">dismiss</string>
+    <string name="share">Share</string>
+    <string name="oss">Oss</string>
+    <string name="link_account">Link</string>
+</resources>

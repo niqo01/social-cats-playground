@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/search_nav_graph"
+    tools:ignore="InvalidNavigation">
+    <fragment
+        android:id="@+id/loadingFragment"
+        android:name="com.nicolasmilliard.socialcats.ui.LoadingFragment"
+        android:label="LoadingFragment">
+        <action
+            android:id="@+id/action_loadingFragment_to_search_nav_graph"
+            app:destination="@id/search_nav_graph"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/loadingFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <include app:graph="@navigation/feature_search_nav_graph" />
+    <include app:graph="@navigation/feature_account_nav_graph" />
+</navigation>

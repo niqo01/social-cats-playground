@@ -1,0 +1,15 @@
+<manifest package="com.nicolasmilliard.socialcats.cloudmessaging.android"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+     notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="general" />
+    </application>
+</manifest>

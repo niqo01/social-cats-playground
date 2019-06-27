@@ -1,0 +1,66 @@
+# Create search users API key
+POST /_security/api_key
+{
+  "name": "search-users-api-key",
+  "role_descriptors": {
+    "role-read-users": {
+      "cluster": ["all"],
+      "index": [
+        {
+          "names": ["users"],
+          "privileges": ["read"]
+        }
+      ]
+    }
+  }
+}
+
+# Create write users API key
+POST /_security/api_key
+{
+  "name": "write-users-api-key",
+  "role_descriptors": {
+    "role-read-users": {
+      "cluster": ["all"],
+      "index": [
+        {
+          "names": ["users"],
+          "privileges": ["write"]
+        }
+      ]
+    }
+  }
+}
+
+# Fake data
+POST _bulk
+{ "index" : { "_index" : "users", "_id" : "1" } }
+{ "name" : "Yegor", "email" : "test@t.com", "emailVerified" : true, "phoneNumber" : null, "status" : "premium", "location" : { "lat": 41.12, "lon": -71.34}, "photoUrl" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROcLp-E5UL5u1bJIKheYdzlABodKzhxa-UF_esCgK3eDqF_m9l&s" }
+{ "index" : { "_index" : "users", "_id" : "2" } }
+{ "name" : "Iryna", "email" : "test2@t.com", "emailVerified" : false, "phoneNumber" : null, "status" : "member", "location" : { "lat": 42.12, "lon": -70.34}, "photoUrl" : null }
+{ "index" : { "_index" : "users", "_id" : "3" } }
+{ "name" : "Igor", "email" : null, "emailVerified" : false, "phoneNumber" : "+1 415 515 5313", "status" : "member", "location" : { "lat": 0.12, "lon": -0.34}, "photoUrl" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqlk_AfJ2LkNC_Q4ZtafL8Sws7ax18SbVNGgCjBEwIYWoNN5xR&s" }
+{ "index" : { "_index" : "users", "_id" : "4" } }
+{ "name" : "Emmanuelle", "email" : null, "emailVerified" : false, "phoneNumber" : "+1 415 515 5314", "status" : "member", "location" : { "lat": 0.121, "lon": -0.345}, "photoUrl" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrGkZ36Mi4PONfODkmqdJNBslU-6MZiKLsNGjInkjobVxaZ48gnA&s" }
+{ "index" : { "_index" : "users", "_id" : "5" } }
+{ "name" : "Nicolas", "email" : null, "emailVerified" : false, "phoneNumber" : "+1 415 515 5315", "status" : "premium", "location" : { "lat": 0.12, "lon": -0.34}, "photoUrl" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmgwgG8fluhv0M0eQGl7jtHtLPwUkSyDVLcBK1BMTXTWG44Gc_&s" }
+
+
+# Delete user index
+DELETE /users
+
+# Create User index
+PUT /users
+{
+    "mappings" : {
+        "properties" : {
+            "name" : { "type" : "text" },
+            "email" : { "type" : "keyword" },
+            "emailVerified" : { "type" : "text" },
+            "phoneNumber" : { "type" : "keyword" },
+            "photoUrl" : { "type" : "text" },
+            "status" : { "type" : "keyword" },
+            "location" : { "type" : "geo_point" }
+        }
+    }
+}

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:paddingStart="@dimen/list_item_margins"
+    android:paddingEnd="@dimen/list_item_margins"
+    android:paddingBottom="@dimen/list_item_margins"
+    tools:ignore="Overdraw">
+
+    <ImageView
+        android:id="@+id/user_photo"
+        android:layout_width="@dimen/list_item_image_size"
+        android:layout_height="@dimen/list_item_image_size"
+        android:layout_marginTop="@dimen/list_item_margins"
+        app:srcCompat="@drawable/ic_baseline_account_circle_40"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_item_margins"
+        android:lines="1"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/user_photo"
+        app:layout_constraintTop_toTopOf="@id/user_photo"
+        tools:text="User name" />
+
+    <TextView
+        android:id="@+id/user_additional"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/list_item_second_line_height"
+        android:lines="1"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/user_name"
+        app:layout_constraintStart_toStartOf="@+id/user_name"
+        app:layout_constraintTop_toBottomOf="@+id/user_name"
+        tools:text="User Additional" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

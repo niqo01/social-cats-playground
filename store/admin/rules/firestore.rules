@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+  
+    // Make sure the uid of the requesting user matches name of the user
+    // document. The wildcard expression {userId} makes the userId variable
+    // available in rules.
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+    }
+
+    function isNewOrUpdatingField(fieldName) {
+      return
+        fieldName in request.resource.data
+        && request.resource.data[fieldName] != resource.data[fieldName];
+    }
+
+    match /users/{userId}/instanceIds/{id} {
+      allow read: if request.auth != null && request.auth.uid == userId
+      allow create, update: if request.auth != null && request.auth.uid == userId
+      		&& request.resource.data.size() == 2
+        	&& request.resource.data.token.size() > 0
+        	&& request.resource.data.languageTag.size() > 0
+    }
+  }
+}

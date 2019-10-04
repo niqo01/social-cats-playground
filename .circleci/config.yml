@@ -4,7 +4,7 @@ config: &config
   working_directory: ~/social-cats-playground
 
   docker:
-    - image: circleci/android:api-29
+    - image: niqo/android-29-jdk11:0.0.2
 
   environment:
     TERM: dumb
@@ -15,7 +15,7 @@ cache_key: &cache_key
   key: jars-{{ checksum "build.gradle.kts" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
 
 jobs:
-  build:
+  build_android:
     <<: *config
 
     steps:
@@ -26,7 +26,7 @@ jobs:
 
       - run:
           name: Assemble
-          command: ./gradlew build :frontend:android:bundle --full-stacktrace -x lint
+          command: ./gradlew :frontend:android:bundle --full-stacktrace -x lint
 
       - store_artifacts:
           path: frontend/android/build/outputs/
@@ -55,11 +55,40 @@ jobs:
           paths:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
+  build_backend:
+    <<: *config
 
+    steps:
+      - checkout
+
+      - restore_cache:
+          <<: *cache_key
+
+      - run:
+          name: Assemble
+          command: ./gradlew :backend:ktor-api:build --full-stacktrace
+
+      - store_artifacts:
+          path: backend/ktor-api/build/libs/
+      - store_artifacts:
+          path: backend/ktor-api/build/libs/reports
+      - store_artifacts:
+          path: backend/functions/auth-user-firestore/build/libs/
+      - store_artifacts:
+          path: backend/functions/auth-user-firestore/build/reports/
+      - store_artifacts:
+          path: backend/functions/firestore-user-elasticsearch/build/libs/
+      - store_artifacts:
+          path: backend/functions/firestore-user-elasticsearch/build/reports/
+      - store_artifacts:
+          path: build/commit-timestamp.txt
+      - store_artifacts:
+          path: build/reports/
 
 workflows:
   version: 2
 
   commit:
     jobs:
-      - build
+      - build_android
+      - build_backend

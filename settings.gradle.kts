@@ -49,6 +49,7 @@ pluginManagement {
                 "com.google.android.gms.oss-licenses-plugin" -> useModule(Config.Plugins.ossLicenses)
                 "com.google.cloud.tools.appengine" -> useModule(Config.Plugins.appEngineGradlePlugin)
                 "com.android.application" -> useModule(Config.Plugins.android)
+                "com.google.firebase.appdistribution" -> useModule(Config.Plugins.appDistribution)
                 "androidx.navigation.safeargs.kotlin" -> useModule(Config.Plugins.navigation)
                 "kotlinx-serialization" -> useModule(Config.Plugins.kotlinSerialization)
             }

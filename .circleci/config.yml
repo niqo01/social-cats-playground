@@ -55,6 +55,10 @@ jobs:
           paths:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
+      - run:
+          name: Store Google Service Account
+          command: echo $GCLOUD_SERVICE_KEY > gcloud-service-key.json
+
   build_backend:
     <<: *config
 

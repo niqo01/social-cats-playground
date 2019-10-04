@@ -5,6 +5,7 @@ plugins {
     id("kotlin-android")
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.android.gms.oss-licenses-plugin")
+    id("com.google.firebase.appdistribution")
 }
 
 android {

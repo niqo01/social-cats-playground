@@ -36,6 +36,7 @@ object Config {
         const val shadowVersion = "5.1.0"
         const val ktlintPluginVersion = "9.0.0"
         const val ktlintVersion = "0.34.2"
+        const val appDistribution = "com.google.firebase:firebase-appdistribution-gradle:1.0.0"
         const val kotlinGradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         const val kotlinFrontEnd = "org.jetbrains.kotlin:kotlin-frontend-plugin:0.0.45"
         const val kotlinSerialization = "org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion"

@@ -92,6 +92,10 @@ android {
         }
     }
 
+    viewBinding {
+        isEnabled = true
+    }
+
     packagingOptions {
         exclude("META-INF/atomicfu.kotlin_module")
         exclude("META-INF/kotlinx-coroutines-core.kotlin_module")

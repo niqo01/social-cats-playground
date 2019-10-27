@@ -20,6 +20,10 @@ import kotlinx.coroutines.tasks.await
 
 class AuthImpl(private val firebaseAuth: FirebaseAuth) : Auth {
 
+    override suspend fun signInAnonymously() {
+        firebaseAuth.signInAnonymously().await()
+    }
+
     override suspend fun linkWithGoogleCredentials(googleIdToken: String) {
         val currentUser = firebaseAuth.currentUser
         checkNotNull(currentUser)
@@ -60,6 +64,7 @@ class AuthImpl(private val firebaseAuth: FirebaseAuth) : Auth {
                                 AuthToken(token),
                                 AuthUser(
                                     currentUser.uid,
+                                    currentUser.isAnonymous,
                                     currentUser.displayName,
                                     currentUser.photoUrl.toString(),
                                     currentUser.email,

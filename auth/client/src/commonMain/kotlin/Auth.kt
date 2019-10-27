@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 interface Auth {
     fun getAuthState(): Flow<AuthState>
     suspend fun linkWithGoogleCredentials(googleIdToken: String)
+    suspend fun signInAnonymously()
 }
 
 sealed class AuthState {
@@ -19,6 +20,7 @@ sealed class AuthState {
 
 data class AuthUser(
     val uid: String,
+    val isAnonymous: Boolean,
     val displayName: String?,
     val photoUrl: String?,
     val email: String?,

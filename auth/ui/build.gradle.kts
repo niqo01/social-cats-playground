@@ -17,6 +17,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                api(project(":auth:client"))
                 api(Config.Libs.Kotlin.common)
                 api(Config.Libs.Kotlin.Coroutine.common)
                 implementation(Config.Libs.KotlinLogging.common)

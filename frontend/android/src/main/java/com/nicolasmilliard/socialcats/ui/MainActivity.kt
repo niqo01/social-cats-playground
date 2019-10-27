@@ -2,7 +2,6 @@ package com.nicolasmilliard.socialcats.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -21,6 +20,7 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.nicolasmilliard.socialcats.R
 import com.nicolasmilliard.socialcats.auth.ui.AndroidAuthUi
 import com.nicolasmilliard.socialcats.component
+import com.nicolasmilliard.socialcats.databinding.ActivityMainBinding
 import com.nicolasmilliard.socialcats.session.SessionManager
 import com.nicolasmilliard.socialcats.session.SessionState.NoSession
 import kotlinx.coroutines.flow.collect
@@ -33,11 +33,13 @@ private val logger = KotlinLogging.logger {}
 private const val SIGN_IN_REQUEST_CODE = 6666
 private const val IN_APP_UPDATE_REQUEST_CODE = 6667
 
-class MainActivity : AppCompatActivity(R.layout.activity_main) {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var authUi: AndroidAuthUi
     private lateinit var sessionManager: SessionManager
     private lateinit var appUpdateManager: AppUpdateManager
+
+    private lateinit var binding: ActivityMainBinding
 
     init {
         lifecycleScope.launch {
@@ -49,6 +51,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                                 authUi.silentSignIn()
                             } catch (e: Throwable) {
                                 logger.info(e) { "Silently sign in failed" }
+                                Snackbar.make(
+                                    binding.root,
+                                    "Unknown error",
+                                    Snackbar.LENGTH_INDEFINITE
+                                ).setAction(R.string.retry) {
+                                    launch {
+                                        authUi.silentSignIn()
+                                    }
+                                }.show()
                             }
                         }
                     }
@@ -66,12 +77,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             throw RuntimeException("Crash! Bang! Pow! This is only a test...")
         }
 
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         appUpdateManager = AppUpdateManagerFactory.create(this)
         authUi = component.authUi
         sessionManager = component.sessionManager
 
         val navController = findNavController(R.id.navHostFragment)
-        val bottomNav: BottomNavigationView = findViewById(R.id.bottomNav)
+        val bottomNav: BottomNavigationView = binding.bottomNav
         bottomNav.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             bottomNav.isVisible = destination.label != "LoadingFragment"
@@ -96,34 +110,29 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                     // Successfully signed in
                     if (resultCode == AppCompatActivity.RESULT_OK) {
                         logger.info { "Auth UI successfull sign in activity result" }
-                        // TODO handle connectivity error? or other error and delete possibly account
                     } else {
-                        val view: View = findViewById(android.R.id.content)
                         // Sign in failed
                         if (response == null) {
                             // User pressed back button
-                            Snackbar.make(
-                                view,
-                                "Cancelled",
-                                Snackbar.LENGTH_LONG
-                            )
                             return
                         }
 
-                        if (response.error!!.errorCode == ErrorCodes.NO_NETWORK) {
-                            Snackbar.make(
-                                view,
+                        when (response.error!!.errorCode) {
+                            ErrorCodes.NO_NETWORK -> Snackbar.make(
+                                binding.root,
                                 "No internet connection",
                                 Snackbar.LENGTH_LONG
-                            )
-                            return
-                        }
+                            ).show()
+                            ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT -> {
+                                val nonAnonymousCredential = response.credentialForLinking
 
-                        Snackbar.make(
-                            view,
-                            "Unknown error",
-                            Snackbar.LENGTH_LONG
-                        )
+                            }
+                            else -> Snackbar.make(
+                                binding.root,
+                                "Unknown error",
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
                     }
                 }
             }

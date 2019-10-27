@@ -42,6 +42,7 @@ Dummy social network playground use to investigate:
 - Firebase analytics
 - Firebase Inapp message
 - Handle FirebaseAuthRecentLoginRequiredException
+- Google play internal deploy
 
 Testing:
 - End to end test Android, ES

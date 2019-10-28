@@ -1,10 +1,15 @@
 package com.nicolasmilliard.socialcats
 
+import com.crashlytics.android.Crashlytics
 import com.google.android.play.core.splitcompat.SplitCompatApplication
 import com.nicolasmilliard.socialcats.cloudmessaging.NotificationChannelHelper
+import com.nicolasmilliard.socialcats.session.SessionState
 import com.squareup.leakcanary.LeakCanary
 import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import timber.log.Timber
 
@@ -23,13 +28,22 @@ class App : SplitCompatApplication(), AppComponentProvider {
         }
         LeakCanary.install(this)
 
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
+        Timber.plant(CrashlyticsTree(BuildConfig.DEBUG))
+
         Timber.i("App.onCreate()")
+        val sessionManager = appComponent.sessionManager
+        scope.launch(Dispatchers.Default) {
+            sessionManager.sessions.collect {
+                when(it){
+                    is SessionState.NoSession -> Crashlytics.setUserIdentifier(null)
+                    is SessionState.Session -> Crashlytics.setUserIdentifier(it.user.id)
+                }
+            }
+        }
 
         NotificationChannelHelper(this).initChannels()
         val cloudMessaging = appComponent.cloudMessaging
         Timber.d("Trigger cloudMessaging to start $cloudMessaging")
+
     }
 }

@@ -54,7 +54,7 @@ dependencies {
     api(Config.Libs.OkHttp.logging)
 
     api(Config.Libs.byteUnits)
-    api(Config.Libs.slf4jSimple)
+    api(Config.Libs.slf4jTimber)
 
     api(Config.Libs.material)
 }

@@ -96,7 +96,7 @@ object Config {
             }
 
             object Coroutine {
-                private const val version = "1.3.2"
+                private const val version = "1.3.2-1.3.60-eap-76"
 
                 const val common = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$version"
                 const val jdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$version"
@@ -156,8 +156,8 @@ object Config {
 
             const val common = "com.google.firebase:firebase-common-ktx:19.2.0"
             const val auth = "com.google.firebase:firebase-auth:19.1.0"
-            const val firestore = "com.google.firebase:firebase-firestore-ktx:21.2.0"
-            const val analytics = "com.google.firebase:firebase-analytics:17.2.0"
+            const val firestore = "com.google.firebase:firebase-firestore-ktx:21.2.1"
+            const val analytics = "com.google.firebase:firebase-analytics:17.2.1"
             const val crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"
             const val performance = "com.google.firebase:firebase-perf:19.0.1"
             const val remoteConfig = "com.google.firebase:firebase-config-ktx:19.0.3"
@@ -204,7 +204,7 @@ object Config {
         }
 
         object Aws {
-            const val sdkBom = "software.amazon.awssdk:bom:2.9.24"
+            const val sdkBom = "software.amazon.awssdk:bom:2.10.1"
             const val apacheClient = "software.amazon.awssdk:apache-client"
             const val sdkAuth = "software.amazon.awssdk:auth"
         }
@@ -242,7 +242,7 @@ object Config {
 
         const val logBackClassic = "ch.qos.logback:logback-classic:1.2.3"
         const val log4jToSlf4j = "org.apache.logging.log4j:log4j-to-slf4j:2.12.1"
-        const val slf4jSimple = "org.slf4j:slf4j-simple:1.7.28"
+        const val slf4jTimber = "com.arcao:slf4j-timber:3.1@aar"
         const val elasticSearchHighLevelClient =
             "org.elasticsearch.client:elasticsearch-rest-high-level-client:7.1.1"
 

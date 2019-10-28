@@ -19,6 +19,7 @@ import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.nicolasmilliard.socialcats.R
 import com.nicolasmilliard.socialcats.auth.ui.AndroidAuthUi
+import com.nicolasmilliard.socialcats.auth.Auth
 import com.nicolasmilliard.socialcats.component
 import com.nicolasmilliard.socialcats.databinding.ActivityMainBinding
 import com.nicolasmilliard.socialcats.session.SessionManager
@@ -36,6 +37,7 @@ private const val IN_APP_UPDATE_REQUEST_CODE = 6667
 class MainActivity : AppCompatActivity() {
 
     private lateinit var authUi: AndroidAuthUi
+    private lateinit var auth: Auth
     private lateinit var sessionManager: SessionManager
     private lateinit var appUpdateManager: AppUpdateManager
 
@@ -81,6 +83,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         appUpdateManager = AppUpdateManagerFactory.create(this)
+        auth = component.auth
         authUi = component.authUi
         sessionManager = component.sessionManager
 
@@ -125,7 +128,9 @@ class MainActivity : AppCompatActivity() {
                             ).show()
                             ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT -> {
                                 val nonAnonymousCredential = response.credentialForLinking
-
+                                lifecycleScope.launch {
+                                    auth.signInWithCredential(nonAnonymousCredential!!)
+                                }
                             }
                             else -> Snackbar.make(
                                 binding.root,

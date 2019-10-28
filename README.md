@@ -43,6 +43,7 @@ Dummy social network playground use to investigate:
 - Firebase Inapp message
 - Handle FirebaseAuthRecentLoginRequiredException
 - Google play internal deploy
+- Make view dumber and model reflect view better (Possibly using several model, one for presenter, one for view)
 
 Testing:
 - End to end test Android, ES

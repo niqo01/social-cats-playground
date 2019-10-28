@@ -41,8 +41,8 @@ interface AppComponentProvider {
 
 class AppComponent(val app: Application, scope: CoroutineScope) {
     val httpClient by lazy { AppModule.provideOkHttp(app) }
-    val authUi by lazy { AppModule.provideAuthUi(app) }
     val auth by lazy { AppModule.provideAuth() }
+    val authUi by lazy { AppModule.provideAuthUi(app, auth) }
     val firestore by lazy { AppModule.provideFirestore() }
     val store by lazy { AppModule.provideSocialCatsStore(firestore) }
     val sessionManager by lazy {
@@ -53,7 +53,7 @@ class AppComponent(val app: Application, scope: CoroutineScope) {
         manager
     }
     val connectivityChecker by lazy {
-        val checker = AppModule.provideConnectivityChercker(app)
+        val checker = AppModule.provideConnectivityChecker(app)
         scope.launch {
             checker.start()
         }
@@ -71,14 +71,14 @@ class AppComponent(val app: Application, scope: CoroutineScope) {
 
 object AppModule {
 
-    fun provideConnectivityChercker(context: Context): ConnectivityChecker {
+    fun provideConnectivityChecker(context: Context): ConnectivityChecker {
         val connectivityManager = context.getSystemService<ConnectivityManager>()
         requireNotNull(connectivityManager)
         return ConnectivityChecker(AndroidNetworkManager(connectivityManager))
     }
 
-    fun provideAuthUi(context: Context): AndroidAuthUi {
-        return AndroidAuthUi(context, AuthUI.getInstance())
+    fun provideAuthUi(context: Context, auth: Auth): AndroidAuthUi {
+        return AndroidAuthUi(context, AuthUI.getInstance(), auth)
     }
 
     fun provideAuth(): Auth {

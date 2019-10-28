@@ -6,6 +6,7 @@ interface Auth {
     fun getAuthState(): Flow<AuthState>
     suspend fun linkWithGoogleCredentials(googleIdToken: String)
     suspend fun signInAnonymously()
+    suspend fun signInWithCredential(credential: AuthCredential)
 }
 
 sealed class AuthState {
@@ -30,3 +31,5 @@ data class AuthUser(
 data class AuthToken(
     val token: String
 )
+
+expect abstract class AuthCredential

@@ -20,6 +20,10 @@ import kotlinx.coroutines.tasks.await
 
 class AuthImpl(private val firebaseAuth: FirebaseAuth) : Auth {
 
+    override suspend fun signInWithCredential(credential: AuthCredential) {
+        firebaseAuth.signInWithCredential(credential).await()
+    }
+
     override suspend fun signInAnonymously() {
         firebaseAuth.signInAnonymously().await()
     }
@@ -104,3 +108,5 @@ class AuthImpl(private val firebaseAuth: FirebaseAuth) : Auth {
         }
     }.conflate()
 }
+
+actual typealias AuthCredential = com.google.firebase.auth.AuthCredential

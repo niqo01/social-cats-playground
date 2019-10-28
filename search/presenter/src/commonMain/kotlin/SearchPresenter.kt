@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -109,10 +110,9 @@ class SearchPresenter(
     }
 
     suspend fun onQueryChanged(query: String, sendModel: (Model) -> Unit, model: Model) {
-        val sessionState = sessionManager.sessions.first()
-        val session = if (sessionState is Session) sessionState else null
+        val session = sessionManager.sessions.filter { it is Session }.first() as Session
         searchLoader.searchUsers(
-            session?.authToken,
+            session.authToken,
             query
         ).collect { result ->
             val hasData = model.loadingState is Success

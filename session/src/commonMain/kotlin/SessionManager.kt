@@ -24,7 +24,10 @@ class SessionManager(private val auth: Auth, private val store: SocialCatsStore)
 
     private val _sessions = ConflatedBroadcastChannel<SessionState>()
     val sessions: Flow<SessionState> get() = _sessions.asFlow()
-
+    /**
+     * Get auth and current user info if any
+     * Get device information
+     */
     suspend fun start() = withContext(Dispatchers.IO()) {
         launch {
             auth.getAuthState()
@@ -33,7 +36,7 @@ class SessionManager(private val auth: Auth, private val store: SocialCatsStore)
                         is UnAuthenticated -> flowOf(NoSession)
                         is Authenticated -> {
                             store.getCurrentUser(authState.authUser.uid)
-                                .map { Session(authState.authToken.token, it) }
+                                .map { Session(authState.authToken.token, authState.authUser.isAnonymous, it) }
                         }
                     }
                 }
@@ -48,6 +51,7 @@ sealed class SessionState {
 
     data class Session(
         val authToken: String,
+        val isAnonymous: Boolean,
         val user: User
     ) : SessionState()
 }

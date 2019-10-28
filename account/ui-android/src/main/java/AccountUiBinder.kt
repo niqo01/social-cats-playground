@@ -50,26 +50,30 @@ class AccountUiBinder(
 
         binding.linkAccount.isVisible = model.showLinkAccount
 
-        when (model.sessionState) {
+        when (val session = model.sessionState) {
             is NoSession -> {
-                binding.deleteAccount.isVisible = false
-                binding.auth.apply {
-                    text = resources.getString(R.string.sign_in)
-                    setOnClickListener {
-                        events(ClearErrorStatus)
-                        onSignInClick()
-                    }
-                }
+                // TODO Loading screen
             }
             is Session -> {
-                binding.deleteAccount.isVisible = true
-                binding.auth.apply {
-                    text = resources.getString(R.string.sign_out)
-                    setOnClickListener {
-                        events(Event.SignOut)
+                if (session.isAnonymous){
+                    binding.deleteAccount.isVisible = false
+                    binding.auth.apply {
+                        text = resources.getString(R.string.sign_in)
+                        setOnClickListener {
+                            events(ClearErrorStatus)
+                            onSignInClick()
+                        }
                     }
-                    (model.sessionState as Session).user.apply {
-                        binding.name.text = name
+                } else {
+                    binding.deleteAccount.isVisible = true
+                    binding.auth.apply {
+                        text = resources.getString(R.string.sign_out)
+                        setOnClickListener {
+                            events(Event.SignOut)
+                        }
+                        (model.sessionState as Session).user.apply {
+                            binding.name.text = name
+                        }
                     }
                 }
             }

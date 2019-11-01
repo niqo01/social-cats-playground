@@ -88,6 +88,7 @@ class SessionManager(
             launch {
                 var storeTokenJob: Job? = null
                 _events.consumeEach {
+                    logger.info { "Trace 1" }
                     when (it) {
                         is Event.DeviceTokenChanged -> {
                             if (session.device?.token != it.newToken) {

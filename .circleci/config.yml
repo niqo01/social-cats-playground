@@ -26,11 +26,11 @@ jobs:
 
       - run:
           name: Assemble
-          command: ./gradlew :frontend:android:bundle --full-stacktrace 
+          command: ./gradlew :frontend:android:buildNeeded :frontend:android:bundle --full-stacktrace
 
       - store_artifacts:
           path: frontend/android/build/outputs/
-      - store_artifacts:
+      - store_test_results:
           path: frontend/android/build/reports/lint-results.html
       - store_artifacts:
           path: frontend/web/build/distributions/
@@ -45,16 +45,36 @@ jobs:
             mkdir -p ~/junit/
             find . -type f -regex ".*/build/test-results/.*xml" -exec cp --parents {} ~/junit/ \;
           when: always
+
       - store_test_results:
           path: ~/junit
       - store_artifacts:
           path: ~/junit
+
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+          # taken to be the root directory of the workspace.
+          root: workspace
+          paths:
+            - frontend/android/build/outputs/apk
 
       - save_cache:
           <<: *cache_key
           paths:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
+
+  deploy_app_distribution:
+    <<: *config
+
+    steps:
+      - checkout
+      - attach_workspace:
+          at: workspace
+      - run:
+          name: Assemble
+          command: ./gradlew appDistributionUploadRelease --full-stacktrace
+
   build_backend:
     <<: *config
 
@@ -66,7 +86,7 @@ jobs:
 
       - run:
           name: Assemble
-          command: ./gradlew :backend:ktor-api:build --full-stacktrace
+          command: ./gradlew :backend:ktor-api:buildNeeded --full-stacktrace
 
       - store_artifacts:
           path: backend/ktor-api/build/libs/
@@ -92,3 +112,10 @@ workflows:
     jobs:
       - build_android
       - build_backend
+      - deploy_app_distribution
+        type: approval
+        requires:
+          - build_android
+        branches:
+          only:
+            - master

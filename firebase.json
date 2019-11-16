@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "build/distributions/main-1.0-SNAPSHOT",
+    "public": "frontend/web/build/distributions/main-1.0-SNAPSHOT",
     "ignore": [
       "firebase.json",
       "**/.*",

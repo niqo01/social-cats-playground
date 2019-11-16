@@ -67,7 +67,7 @@ android {
             proguardFiles("src/main/shrinker-rules.pro")
             firebaseAppDistribution {
                 groups = "internal"
-                if (!gCloudServiceKey.isNullOrBlank()){
+                if (!gCloudServiceKey.isNullOrBlank()) {
                     serviceCredentialsFile = getGCloudKeyFilePath(gCloudServiceKey)
                 }
             }

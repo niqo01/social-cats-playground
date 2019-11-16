@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 config: &config
   working_directory: ~/social-cats-playground
@@ -14,20 +14,48 @@ config: &config
 cache_key: &cache_key
   key: jars-{{ checksum "build.gradle.kts" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
 
+orbs:
+  firebase-deploy: cloudliner/firebase-deploy@0.0.2
+
+commands:
+  build-android-command:
+    steps:
+      - run:
+          name: Build Android
+          command: ./gradlew :frontend:android:buildNeeded :frontend:android:bundle --full-stacktrace
+  build-web-command:
+    steps:
+      - run:
+          name: Build Web
+          command: ./gradlew :frontend:web:buildNeeded --full-stacktrace
+  build-api-command:
+    steps:
+      - run:
+          name: Build Api
+          command: ./gradlew :backend:ktor-api:buildNeeded --full-stacktrace
+  distribute-android-command:
+    steps:
+      - run:
+          name: Distribute Android
+          command: ./gradlew appDistributionUploadRelease --full-stacktrace
+  aggregate-junit-command:
+    steps:
+      - run:
+          name: Aggregate Test Results
+          command: |
+            mkdir -p ~/junit/
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp --parents {} ~/junit/ \;
+          when: always
+
 jobs:
-  build_android:
+  build_frontend_android:
     <<: *config
 
     steps:
       - checkout
-
       - restore_cache:
           <<: *cache_key
-
-      - run:
-          name: Assemble
-          command: ./gradlew :frontend:android:buildNeeded :frontend:android:bundle --full-stacktrace
-
+      - build-android-command
       - store_artifacts:
           path: frontend/android/build/outputs/
       - store_test_results:
@@ -38,44 +66,69 @@ jobs:
           path: build/commit-timestamp.txt
       - store_artifacts:
           path: build/reports/
-
-      - run:
-          name: Aggregate Test Results
-          command: |
-            mkdir -p ~/junit/
-            find . -type f -regex ".*/build/test-results/.*xml" -exec cp --parents {} ~/junit/ \;
-          when: always
-
+      - aggregate-junit-command
       - store_test_results:
           path: ~/junit
       - store_artifacts:
           path: ~/junit
-
       - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
-          # taken to be the root directory of the workspace.
           root: workspace
           paths:
             - frontend/android/build/outputs/apk
-
       - save_cache:
           <<: *cache_key
           paths:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
 
-  deploy_app_distribution:
+  deploy_frontend_android:
     <<: *config
 
     steps:
       - checkout
       - attach_workspace:
           at: workspace
-      - run:
-          name: Assemble
-          command: ./gradlew appDistributionUploadRelease --full-stacktrace
+      - distribute-android-command
 
-  build_backend:
+  build_frontend_web:
+    <<: *config
+
+    steps:
+      - checkout
+      - restore_cache:
+          <<: *cache_key
+      - build-web-command
+      - store_artifacts:
+          path: frontend/web/build/distributions/
+      - store_artifacts:
+          path: build/commit-timestamp.txt
+      - store_artifacts:
+          path: build/reports/
+      - aggregate-junit-command
+      - store_test_results:
+          path: ~/junit
+      - store_artifacts:
+          path: ~/junit
+      - persist_to_workspace:
+          root: workspace
+          paths:
+            - frontend/web/build/distributions/main-1.0-SNAPSHOT
+      - save_cache:
+          <<: *cache_key
+          paths:
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+  deploy_frontend_web:
+    <<: *config
+
+    steps:
+      - checkout
+      - attach_workspace:
+          at: workspace
+      - firebase-deploy/deploy:
+          token: $FIREBASE_TOKEN
+
+  build_backend_api:
     <<: *config
 
     steps:
@@ -84,9 +137,9 @@ jobs:
       - restore_cache:
           <<: *cache_key
 
-      - run:
-          name: Assemble
-          command: ./gradlew :backend:ktor-api:buildNeeded --full-stacktrace
+      - build-api-command
+
+      - aggregate-junit-command
 
       - store_artifacts:
           path: backend/ktor-api/build/libs/
@@ -107,14 +160,22 @@ jobs:
 
 workflows:
   version: 2
-
-  commit:
+  build_test_deploy:
     jobs:
-      - build_android
-      - build_backend
-      - deploy_app_distribution:
+      - build_frontend_android
+      - build_frontend_web
+      - build_backend_api
+      - deploy_frontend_android:
           requires:
-            - build_android
+            - build_frontend_android
+          filters:
+            branches:
+              only:
+                - master
+          type: approval
+      - deploy_frontend_web:
+          requires:
+            - build_frontend_web
           filters:
             branches:
               only:

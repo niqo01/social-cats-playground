@@ -1,7 +1,7 @@
 version: 2.1
 
 config: &config
-  working_directory: ~/social-cats-playground
+  working_directory: ~/workspace
 
   docker:
     - image: niqo/android-29-jdk11:0.0.2
@@ -22,17 +22,17 @@ commands:
     steps:
       - run:
           name: Build Android
-          command: ./gradlew :frontend:android:buildNeeded :frontend:android:bundle --full-stacktrace
+          command: ./gradlew :frontend:android:build :frontend:android:bundle --full-stacktrace -x jsBrowserTest
   build-web-command:
     steps:
       - run:
           name: Build Web
-          command: ./gradlew :frontend:web:buildNeeded --full-stacktrace
+          command: ./gradlew :frontend:web:build --full-stacktrace -x jsBrowserTest
   build-api-command:
     steps:
       - run:
           name: Build Api
-          command: ./gradlew :backend:ktor-api:buildNeeded --full-stacktrace
+          command: ./gradlew :backend:ktor-api:build --full-stacktrace -x jsBrowserTest
   distribute-android-command:
     steps:
       - run:
@@ -72,7 +72,7 @@ jobs:
       - store_artifacts:
           path: ~/junit
       - persist_to_workspace:
-          root: workspace
+          root: ~/workspace
           paths:
             - frontend/android/build/outputs/apk
       - save_cache:
@@ -110,7 +110,7 @@ jobs:
       - store_artifacts:
           path: ~/junit
       - persist_to_workspace:
-          root: workspace
+          root: ~/workspace
           paths:
             - frontend/web/build/distributions/main-1.0-SNAPSHOT
       - save_cache:
@@ -165,19 +165,25 @@ workflows:
       - build_frontend_android
       - build_frontend_web
       - build_backend_api
-      - deploy_frontend_android:
+      - deploy_frontend_android_approval:
+          type: approval
           requires:
             - build_frontend_android
+      - deploy_frontend_android:
+          requires:
+            - deploy_frontend_android_approval
           filters:
             branches:
               only:
                 - master
+      - deploy_frontend_web_approval:
           type: approval
-      - deploy_frontend_web:
           requires:
             - build_frontend_web
+      - deploy_frontend_web:
+          requires:
+            - deploy_frontend_web_approval
           filters:
             branches:
               only:
                 - master
-          type: approval

@@ -15,7 +15,7 @@ jobs:
       with:
         java-version: 11.0.5
     - name: Build with Gradle
-      run: ./gradlew build :frontend:android:bundle --full-stacktrace
+      run: ./gradlew build :frontend:android:bundle --full-stacktrace -x jsBrowserTest
       env:
         CI: true
         JAVA_TOOL_OPTIONS: "-Xms256m -Xmx1280m -XX:MaxMetaspaceSize=350m -XX:+HeapDumpOnOutOfMemoryError"

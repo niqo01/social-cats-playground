@@ -112,10 +112,11 @@ workflows:
     jobs:
       - build_android
       - build_backend
-      - deploy_app_distribution
-        type: approval
-        requires:
-          - build_android
-        branches:
-          only:
-            - master
+      - deploy_app_distribution:
+          requires:
+            - build_android
+          filters:
+            branches:
+              only:
+                - master
+          type: approval

@@ -73,7 +73,7 @@ class SearchPresenterTest {
     }
 
     @Test
-    fun `Test default state and not authenticated`() = runTest {
+    fun testDefaultStateAndNotAuthenticated() = runTest {
         withTimeout(500) {
 
             fakeStore.offer(aStoreUser)
@@ -92,7 +92,7 @@ class SearchPresenterTest {
     }
 
     @Test
-    fun `Test default state and authenticated`() = runTest {
+    fun testDefaultStateAndAuthenticated() = runTest {
         withTimeout(500) {
 
             fakeStore.offer(aStoreUser)

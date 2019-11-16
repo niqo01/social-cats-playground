@@ -14,6 +14,7 @@ plugins {
 android {
 
     val isCiBuild = rootProject.extra["isCiBuild"] as Boolean
+    val gCloudServiceKey = rootProject.extra["gCloudServiceKey"] as String?
 
     defaultConfig {
         applicationId = "com.nicolasmilliard.socialcats"
@@ -66,6 +67,9 @@ android {
             proguardFiles("src/main/shrinker-rules.pro")
             firebaseAppDistribution {
                 groups = "internal"
+                if (!gCloudServiceKey.isNullOrBlank()){
+                    serviceCredentialsFile = getGCloudKeyFilePath(gCloudServiceKey)
+                }
             }
         }
     }

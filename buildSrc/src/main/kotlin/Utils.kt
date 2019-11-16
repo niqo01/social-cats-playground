@@ -28,3 +28,13 @@ fun Project.gitTimestamp(): String {
     }
     return f.readText()
 }
+
+
+fun Project.getGCloudKeyFilePath(key: String): String {
+    val f = File(project.rootProject.buildDir, "gcloud.json")
+    if (!f.exists()) {
+        f.parentFile.mkdirs()
+        f.writeText(key)
+    }
+    return f.name
+}

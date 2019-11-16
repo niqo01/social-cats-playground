@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 buildscript {
     extra.apply {
         set("isCiBuild", System.getenv("CI") == "true")
+        set("gCloudServiceKey", System.getenv("GCLOUD_SERVICE_KEY"))
     }
 
     dependencies {

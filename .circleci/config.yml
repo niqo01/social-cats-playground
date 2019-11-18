@@ -165,25 +165,25 @@ workflows:
       - build_frontend_android
       - build_frontend_web
       - build_backend_api
-      - deploy_frontend_android_approval:
-          type: approval
-          requires:
-            - build_frontend_android
-      - deploy_frontend_android:
-          requires:
-            - deploy_frontend_android_approval
-          filters:
-            branches:
-              only:
-                - master
-      - deploy_frontend_web_approval:
-          type: approval
-          requires:
-            - build_frontend_web
-      - deploy_frontend_web:
-          requires:
-            - deploy_frontend_web_approval
-          filters:
-            branches:
-              only:
-                - master
+#      - deploy_frontend_android_approval:
+#          type: approval
+#          requires:
+#            - build_frontend_android
+#      - deploy_frontend_android:
+#          requires:
+#            - deploy_frontend_android_approval
+#          filters:
+#            branches:
+#              only:
+#                - master
+#      - deploy_frontend_web_approval:
+#          type: approval
+#          requires:
+#            - build_frontend_web
+#      - deploy_frontend_web:
+#          requires:
+#            - deploy_frontend_web_approval
+#          filters:
+#            branches:
+#              only:
+#                - master

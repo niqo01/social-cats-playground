@@ -198,7 +198,7 @@ object Config {
         }
 
         object Aws {
-            const val sdkBom = "software.amazon.awssdk:bom:2.10.17"
+            const val sdkBom = "software.amazon.awssdk:bom:2.10.19"
             const val apacheClient = "software.amazon.awssdk:apache-client"
             const val sdkAuth = "software.amazon.awssdk:auth"
         }
@@ -218,7 +218,7 @@ object Config {
         }
 
         object KotlinLogging {
-            private const val kotlinLoggingVersion = "1.7.6"
+            private const val kotlinLoggingVersion = "1.7.8"
             const val common = "io.github.microutils:kotlin-logging-common:$kotlinLoggingVersion"
             const val jdk = "io.github.microutils:kotlin-logging:$kotlinLoggingVersion"
             const val js = "io.github.microutils:kotlin-logging-js:$kotlinLoggingVersion"
@@ -226,7 +226,7 @@ object Config {
 
 
         // Misc
-        const val material = "com.google.android.material:material:1.1.0-beta01"
+        const val material = "com.google.android.material:material:1.1.0-beta02"
         const val timber = "com.jakewharton.timber:timber:4.7.1"
         const val picasso = "com.squareup.picasso:picasso:2.71828"
 

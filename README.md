@@ -16,6 +16,7 @@ Dummy social network playground use to investigate:
 - Replace Broadcast channels with DataFlow when ready
 - Image management Coil, picasso?
 - install npm and gcloud locally
+- Run dependency graph script in CI
 
 ## JS
 - try deploying new js plugin

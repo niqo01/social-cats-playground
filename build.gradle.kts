@@ -26,6 +26,8 @@ plugins {
 
 allprojects {
 
+    version = Config.Versions.name
+
     repositories {
         maven("https://kotlin.bintray.com/ktor")
         maven("https://kotlin.bintray.com/kotlin-js-wrappers/")
@@ -35,6 +37,7 @@ allprojects {
         jcenter()
     }
 
+    apply(plugin = "org.gradle.maven-publish")
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
     tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile::class).configureEach {
@@ -63,13 +66,81 @@ allprojects {
     }
 }
 
-subprojects {
-    afterEvaluate {
-        if (project.hasProperty("android")) {
 
+
+subprojects {
+    val isReleaseBuild = !(version as String).endsWith("-SNAPSHOT")
+
+    afterEvaluate {
+        if (hasProperty("android")) {
             tasks.withType<KotlinCompile> {
                 kotlinOptions.jvmTarget = "1.8"
             }
+        }
+
+        configure<PublishingExtension> {
+            repositories {
+                //            maven {
+//                name = "GitHubPackages"
+//                url = uri("https://maven.pkg.github.com/niqo01/social-cats-playground")
+//                credentials {
+//                    username = project.findProperty("gpr.user") as String? ?: System.getenv("GPR_USER")
+//                    password = project.findProperty("gpr.key") as String? ?: System.getenv("GPR_API_KEY")
+//                }
+//            }
+                maven {
+                    name = "Google Cloud Storage"
+
+                    url = uri(
+                        if (isReleaseBuild)
+                            "https://storage.googleapis.com/repo-socialcats.milliard.page/snapshots"
+                        else
+                            "https://storage.googleapis.com/repo-socialcats.milliard.page/releases"
+                    )
+
+                    credentials {
+                        username = findProperty("gstorage.key") as String? ?: System.getenv("G_STORAGE_USER")
+                        password = findProperty("gstorage.password") as String? ?: System.getenv("G_STORAGE_PASSWORD")
+                    }
+                }
+            }
+            publications {
+                when {
+                    plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> {
+                        logger.error("NICO android multiplatform plugin $name")
+                        // TODO Implement
+                    }
+                    plugins.hasPlugin("com.android.library") -> {
+                        logger.error("Create MavenPublication for Android library $name : Components size: ${components.size}")
+                        create<MavenPublication>("release") {
+                            groupId = Config.group
+                            artifactId = "$rootProject-$name"
+                            version = project.version.toString()
+
+                            from(components["release"])
+                        }
+
+                        create<MavenPublication>("debug") {
+                            groupId = Config.group
+                            artifactId = "$rootProject-$name-debug"
+                            version = project.version.toString()
+
+                            from(components["debug"])
+                        }
+                    }
+                    plugins.hasPlugin("java") -> {
+                        logger.error("Create Maven Publication Java $name")
+                        create<MavenPublication>("maven") {
+                            groupId = Config.group
+                            artifactId = "$rootProject-$name"
+                            version = project.version.toString()
+
+                            from(components["java"])
+                        }
+                    }
+                }
+            }
+
         }
     }
 }

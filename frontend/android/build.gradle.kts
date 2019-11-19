@@ -8,7 +8,6 @@ plugins {
     id("io.fabric")
     id("com.google.firebase.firebase-perf")
     id("com.google.firebase.appdistribution")
-    `maven-publish`
 }
 
 android {
@@ -115,24 +114,13 @@ dependencies {
 // configure your publications using the afterEvaluate() lifecycle method.
 afterEvaluate {
     publishing {
-        repositories {
-            maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/niqo01/social-cats-playground")
-                credentials {
-                    username = project.findProperty("gpr.user") as String? ?: System.getenv("GPR_USER")
-                    password = project.findProperty("gpr.key") as String? ?: System.getenv("GPR_API_KEY")
-                }
-            }
-        }
         publications {
             // Creates a Maven publication called "release".
             create<MavenPublication>("release") {
                 // Applies the component for the release build variant.
                 from(components.findByName("release_aab"))
 
-                groupId = android.defaultConfig.applicationId
-                artifactId = "android-app"
+                artifactId = "$rootProject.name-$project.name"
                 version = Config.Versions.AndroidApp.name
             }
         }

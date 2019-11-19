@@ -6,8 +6,9 @@ object Config {
         const val projectId = "sweat-monkey"
     }
 
+    const val group = "com.nicolasmilliard.socialcats"
     object Versions {
-        const val name = "0.1.0"
+        const val name = "0.1.0-SNAPSHOT"
 
         object AndroidApp {
             const val major = 0

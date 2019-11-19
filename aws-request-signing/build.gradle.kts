@@ -20,3 +20,4 @@ dependencies {
     api(Config.Libs.Aws.apacheClient)
     api(Config.Libs.Aws.sdkAuth)
 }
+

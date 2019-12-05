@@ -41,6 +41,7 @@ Dummy social network playground use to investigate:
 - Test UiBinding class
 - Firebase analytics & analytics module
 - Feature advance remote config usage
+- Kaespresso https://github.com/KasperskyLab/Kaspresso
 
 Extras:
 - Jetpack compose test?

@@ -4,8 +4,8 @@ import com.nicolasmilliard.socialcats.auth.Auth
 import com.nicolasmilliard.socialcats.auth.AuthState.Authenticated
 import com.nicolasmilliard.socialcats.auth.AuthState.UnAuthenticated
 import com.nicolasmilliard.socialcats.store.DeviceInfo
-import com.nicolasmilliard.socialcats.store.SocialCatsStore
 import com.nicolasmilliard.socialcats.store.User
+import com.nicolasmilliard.socialcats.store.UserStore
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
@@ -22,7 +22,7 @@ private val logger = KotlinLogging.logger {}
 
 class SessionManager(
     private val auth: Auth,
-    private val store: SocialCatsStore,
+    private val store: UserStore,
     private val deviceInfoProvider: DeviceInfoProvider
 ) {
 
@@ -75,15 +75,10 @@ class SessionManager(
 
                                 userJob?.cancel()
                                 userJob = launch {
-                                    var currentUser: User? = null
-                                    try {
-                                        currentUser = store.getCurrentUser(authState.authUser.uid, true)
-                                    } catch (e: Exception) {
-                                        // TODO Catch the proper exception type FirebaseFirestoreException
-                                        logger.info(e) { "No stored user yet" }
-                                    }
+                                    var currentUser = store.user(authState.authUser.uid, true)
+
                                     if (currentUser == null) {
-                                        currentUser = store.getCurrentUser(authState.authUser.uid).first()
+                                        currentUser = store.user(authState.authUser.uid).first()
                                     }
                                     sendSession(session.copy(authData = session.authData!!.copy(user = currentUser)))
                                 }
@@ -91,14 +86,8 @@ class SessionManager(
                                 deviceInfoJob?.cancel()
                                 deviceInfoJob = launch {
                                     val localDeviceInfo = deviceInfoProvider.getDeviceInfo()
-                                    var deviceInfoStored: DeviceInfo? = null
-                                    try {
-                                        deviceInfoStored =
-                                            store.getDeviceInfo(authState.authUser.uid, localDeviceInfo.instanceId, true)
-                                    } catch (e: Exception) {
-                                        // TODO Catch the proper exception type FirebaseFirestoreException
-                                        logger.info(e) { "No stored deviceInfo yet" }
-                                    }
+                                    var deviceInfoStored =
+                                            store.deviceInfo(authState.authUser.uid, localDeviceInfo.instanceId, true)
 
                                     sendSession(session.copy(device = localDeviceInfo))
                                     if (localDeviceInfo != deviceInfoStored) {

@@ -1,7 +1,7 @@
 package com.nicolasmilliard.socialcats
 
 import com.google.cloud.functions.Context
-import com.nicolasmilliard.socialcats.store.StoreUser
+import com.nicolasmilliard.socialcats.store.InsertUser
 import mu.KotlinLogging
 
 private val log = KotlinLogging.logger {}
@@ -27,7 +27,7 @@ class AuthUserCreatedFunction(
         // We don't save anonymous users
         if (isAnonymous) return
 
-        val user = StoreUser(
+        val user = InsertUser(
             rawEvent.uid,
             rawEvent.displayName,
             rawEvent.phoneNumber,

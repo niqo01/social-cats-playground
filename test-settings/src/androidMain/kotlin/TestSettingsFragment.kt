@@ -18,7 +18,7 @@ class TestSettingsFragment : androidx.fragment.app.Fragment() {
         val binding = FragmentTestsettingsBinding.inflate(inflater, container, false)
         binding.textviewTestsettingsFeaturetoggle.setOnClickListener { testSettingListener?.onFeatureToggleClicked() }
         binding.formattextviewTestsettingsTestsetting.setOnClickListener { testSettingListener?.onTestSettingClicked() }
-        return binding!!.root
+        return binding.root
     }
 
     override fun onResume() {

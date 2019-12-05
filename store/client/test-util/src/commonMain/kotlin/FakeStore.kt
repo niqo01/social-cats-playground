@@ -5,7 +5,7 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 
-class FakeStore : SocialCatsStore {
+class FakeStore : UserStore {
 
     private val storeUserChannel: BroadcastChannel<User> = ConflatedBroadcastChannel()
     private val userFlow = storeUserChannel.asFlow()
@@ -15,11 +15,11 @@ class FakeStore : SocialCatsStore {
     var savedUserId: String? = null
     var savedDeviceInfo: DeviceInfo? = null
 
-    override suspend fun getCurrentUser(uid: String, cacheOnly: Boolean): User? {
+    override suspend fun user(uid: String, cacheOnly: Boolean): User? {
         return user
     }
 
-    override suspend fun getCurrentUser(uid: String): Flow<User> {
+    override suspend fun user(uid: String): Flow<User> {
         return userFlow
     }
 
@@ -28,7 +28,7 @@ class FakeStore : SocialCatsStore {
         savedDeviceInfo = deviceInfo
     }
 
-    override suspend fun getDeviceInfo(userId: String, instanceId: String, cacheOnly: Boolean): DeviceInfo? {
+    override suspend fun deviceInfo(userId: String, instanceId: String, cacheOnly: Boolean): DeviceInfo? {
         return savedDeviceInfo
     }
 

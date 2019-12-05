@@ -5,10 +5,11 @@ import com.google.cloud.firestore.Firestore
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.cloud.FirestoreClient
-import com.nicolasmilliard.socialcats.store.SocialCatsFirestoreAdmin
+import com.nicolasmilliard.socialcats.store.RealUserStoreAdmin
+import com.nicolasmilliard.socialcats.store.UserStoreAdmin
 
 data class Graph(
-    val store: SocialCatsFirestoreAdmin
+    val store: UserStoreAdmin
 )
 
 class AppComponent(
@@ -35,5 +36,5 @@ class AppModule {
 
     fun provideFirestore(): Firestore = FirestoreClient.getFirestore()
 
-    fun provideSocialCatsFirestoreAdmin(firestore: Firestore) = SocialCatsFirestoreAdmin(firestore)
+    fun provideSocialCatsFirestoreAdmin(firestore: Firestore): UserStoreAdmin = RealUserStoreAdmin(firestore)
 }

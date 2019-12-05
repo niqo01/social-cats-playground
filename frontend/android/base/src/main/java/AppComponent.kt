@@ -22,8 +22,8 @@ import com.nicolasmilliard.socialcats.http.UserAgentInterceptor
 import com.nicolasmilliard.socialcats.session.AndroidInstanceIdProvider
 import com.nicolasmilliard.socialcats.session.DeviceInfoProvider
 import com.nicolasmilliard.socialcats.session.SessionManager
-import com.nicolasmilliard.socialcats.store.SocialCatsFirestore
-import com.nicolasmilliard.socialcats.store.SocialCatsStore
+import com.nicolasmilliard.socialcats.store.RealUserStore
+import com.nicolasmilliard.socialcats.store.UserStore
 import com.nicolasmilliard.socialcats.ui.AndroidNetworkManager
 import java.io.File
 import kotlinx.coroutines.CoroutineScope
@@ -109,10 +109,10 @@ object AppModule {
         return WorkManager.getInstance(context)
     }
 
-    fun provideSocialCatsStore(firestore: FirebaseFirestore, workManager: WorkManager): SocialCatsStore =
-        SocialCatsFirestore(firestore, workManager)
+    fun provideSocialCatsStore(firestore: FirebaseFirestore, workManager: WorkManager): UserStore =
+        RealUserStore(firestore, workManager)
 
-    fun provideSessionManager(auth: Auth, store: SocialCatsStore, deviceInfoProvider: DeviceInfoProvider) =
+    fun provideSessionManager(auth: Auth, store: UserStore, deviceInfoProvider: DeviceInfoProvider) =
         SessionManager(auth, store, deviceInfoProvider)
 
     fun provideOkHttp(application: Application): OkHttpClient {

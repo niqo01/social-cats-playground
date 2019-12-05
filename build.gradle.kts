@@ -124,8 +124,14 @@ fun BaseExtension.setBaseAndroidConfiguration() {
         targetCompatibility = Config.Android.targetCompatibility
     }
 
-    viewBinding {
-        isEnabled = true
+    buildFeatures {
+        // Determines whether to enable support for Jetpack Compose.
+        compose = false
+        viewBinding = true
+        dataBinding = false
+        renderScript = false
+        aidl = false
+        shaders = false
     }
 
     lintOptions {

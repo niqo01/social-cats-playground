@@ -8,9 +8,9 @@ import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 
-class SocialCatsFirestoreAdmin(private val firestore: Firestore) {
+class RealUserStoreAdmin(private val firestore: Firestore) : UserStoreAdmin {
 
-    fun createUser(user: StoreUser) {
+    override fun createUser(user: InsertUser) {
         logger.debug { "createUser($user)" }
         require(!user.name.isNullOrBlank() || !user.email.isNullOrBlank() || !user.phoneNumber.isNullOrBlank())
         val data = mapOf<String, Any?>(
@@ -29,12 +29,3 @@ class SocialCatsFirestoreAdmin(private val firestore: Firestore) {
         logger.info { "User Created: ${user.uid} at time: ${result.updateTime}" }
     }
 }
-
-data class StoreUser(
-    val uid: String,
-    val name: String? = null,
-    val phoneNumber: String? = null,
-    val email: String? = null,
-    val emailVerified: Boolean? = null,
-    val photoUrl: String? = null
-)

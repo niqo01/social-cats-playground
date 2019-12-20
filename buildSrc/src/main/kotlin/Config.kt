@@ -231,11 +231,11 @@ object Config {
 //        const val statelyCollections = "co.touchlab:stately-collections:0.9.4"
         const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.0"
         const val processPhoenix = "com.jakewharton:process-phoenix:2.0.0"
-        const val material = "com.google.android.material:material:1.1.0-beta02"
+        const val material = "com.google.android.material:material:1.1.0-rc01"
         const val timber = "com.jakewharton.timber:timber:4.7.1"
         const val coil = "io.coil-kt:coil-base:0.8.0"
 
-        const val okIo = "com.squareup.okio:okio:2.4.1"
+        const val okIo = "com.squareup.okio:okio:2.4.3"
         const val shimmer = "com.facebook.shimmer:shimmer:0.5.0"
 
 

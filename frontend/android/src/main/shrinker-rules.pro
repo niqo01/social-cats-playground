@@ -1,12 +1,8 @@
--dontoptimize
 -dontobfuscate
 -verbose
 
 # Keep annotations with RUNTIME retention and their defaults.
 -keepattributes RuntimeVisible*Annotations, AnnotationDefault
-
-# https://stackoverflow.com/questions/52252806/android-build-error-attribute-signature-requires-innerclasses-attribute-check
--keepattributes InnerClasses, EnclosingMethod
 
 # For native methods, see http://proguard.sourceforge.net/manual/examples.html#native
 -keepclasseswithmembernames class * {
@@ -36,21 +32,3 @@
 -keepclassmembers class <1>.<2> {
   <1>.<2>$Companion Companion;
 }
-
-
-# https://github.com/Kotlin/kotlinx.coroutines/issues/1155
--dontwarn kotlinx.atomicfu.AtomicBoolean
-
-
-################## OkHttp
-# JSR 305 annotations are for embedding nullability information.
--dontwarn javax.annotation.**
-
-# A resource is loaded with a relative path so the package of this class must be preserved.
--keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
-
-# Animal Sniffer compileOnly dependency to ensure APIs are compatible with older versions of Java.
--dontwarn org.codehaus.mojo.animal_sniffer.*
-
-# OkHttp platform used only on JVM and when Conscrypt dependency is available.
--dontwarn okhttp3.internal.platform.ConscryptPlatform

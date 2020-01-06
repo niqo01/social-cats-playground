@@ -117,6 +117,7 @@ fun BaseExtension.setBaseAndroidConfiguration() {
     defaultConfig {
         minSdkVersion(Config.Android.SdkVersions.min)
         targetSdkVersion(Config.Android.SdkVersions.target)
+
     }
 
     compileOptions {

@@ -67,7 +67,7 @@ class RealUserStore(private val db: FirebaseFirestore, private val workManager: 
                         close(e)
                     } else {
                         if (snapshot != null && snapshot.exists()) {
-                            offer(snapshot.toUser()!!)
+                            offer(snapshot.toUser())
                         } else {
                             close(IllegalStateException("Snapshot is null or does not exist: $snapshot"))
                         }

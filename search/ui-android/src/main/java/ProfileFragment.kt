@@ -14,6 +14,6 @@ class ProfileFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = ProfileBinding.inflate(inflater, container, false)
-        return binding!!.root
+        return binding.root
     }
 }

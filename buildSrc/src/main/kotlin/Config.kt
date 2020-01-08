@@ -125,7 +125,7 @@ object Config {
 
         object AndroidX {
             private const val pagingVersion = "2.1.1"
-            private const val fragmentVersion = "1.2.0-rc04"
+            private const val fragmentVersion = "1.2.0-rc05"
             private const val workVersion = "2.2.0"
             private const val lifecycle = "2.2.0-rc03"
 

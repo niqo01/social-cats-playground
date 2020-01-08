@@ -6,6 +6,7 @@ import com.nicolasmilliard.socialcats.account.presenter.AccountPresenter.Model
 import com.nicolasmilliard.socialcats.account.presenter.AccountPresenter.Model.LoadingStatus.IDLE
 import com.nicolasmilliard.socialcats.account.presenter.AccountPresenter.Model.LoadingStatus.LOADING
 import com.nicolasmilliard.socialcats.account.presenter.AccountPresenter.Model.ProcessingStatus
+import com.nicolasmilliard.socialcats.auth.AuthRecentLoginRequiredException
 import com.nicolasmilliard.socialcats.auth.ui.AuthUi
 import com.nicolasmilliard.socialcats.session.Session
 import com.nicolasmilliard.socialcats.session.SessionManager
@@ -54,6 +55,9 @@ class AccountPresenter(
                         is Event.ClearErrorStatus -> {
                             sendModel(model.copy(loadingStatus = IDLE, processingStatus = ProcessingStatus.IDLE))
                         }
+                        is Event.ClearNeedRecentLogin -> {
+                            sendModel(model.copy(needRecentLogin = false))
+                        }
                         is Event.SignOut -> {
                             launch {
                                 onSignOut(::sendModel, model)
@@ -86,6 +90,8 @@ class AccountPresenter(
         try {
             authUi.delete()
             sendModel(model.copy(processingStatus = ProcessingStatus.IDLE))
+        } catch (e: AuthRecentLoginRequiredException) {
+            sendModel(model.copy(processingStatus = ProcessingStatus.IDLE, needRecentLogin = true))
         } catch (e: Exception) {
             logger.error(e) { "Error while signing out" }
             sendModel(model.copy(processingStatus = ProcessingStatus.FAILED_DELETE_ACCOUNT))
@@ -94,6 +100,7 @@ class AccountPresenter(
 
     sealed class Event {
         object ClearErrorStatus : Event()
+        object ClearNeedRecentLogin : Event()
         object SignOut : Event()
         object DeleteAccount : Event()
     }
@@ -102,7 +109,8 @@ class AccountPresenter(
         val session: Session? = null,
         val loadingStatus: LoadingStatus = LOADING,
         val processingStatus: ProcessingStatus = ProcessingStatus.IDLE,
-        val showLinkAccount: Boolean = false
+        val showLinkAccount: Boolean = false,
+        val needRecentLogin: Boolean = false
     ) {
         enum class LoadingStatus {
             IDLE, LOADING, FAILED

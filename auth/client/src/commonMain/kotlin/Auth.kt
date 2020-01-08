@@ -16,7 +16,8 @@ import mu.KotlinLogging
 interface AuthProvider {
     fun getAuthUser(): Flow<AuthUser?>
     fun getAuthToken(): Flow<NewToken?>
-    suspend fun linkWithGoogleCredentials(googleIdToken: String)
+    suspend fun linkWithPhoneCredentials(userId: String, verificationId: String, smsCode: String)
+    suspend fun linkWithGoogleCredentials(userId: String, googleIdToken: String)
     suspend fun signInAnonymously()
     suspend fun signInWithCredential(credential: AuthCredential)
 }
@@ -87,6 +88,7 @@ sealed class AuthState {
 data class AuthUser(
     val uid: String,
     val isAnonymous: Boolean,
+    val hasPhoneAuth: Boolean,
     val displayName: String?,
     val photoUrl: String?,
     val email: String?,
@@ -104,3 +106,4 @@ data class NewToken(
 )
 
 expect abstract class AuthCredential
+class AuthRecentLoginRequiredException(cause: Throwable) : Exception(cause)

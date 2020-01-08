@@ -14,4 +14,7 @@
     <string name="dialog_message_delete_account">Deleting your account is permanent.</string>
     <string name="dialog_message_action_delete">Delete</string>
     <string name="dialog_message_action_cancel">Cancel</string>
+
+    <string name="dialog_message_need_recent_authentication">This operation is sensitive and requires recent authentication. Log in again before retrying this request.</string>
+    <string name="dialog_message_action_authenticate">Authenticate</string>
 </resources>

@@ -22,10 +22,11 @@ class FirebaseFeatureFlagProvider(priority: Int, isDevModeEnabled: Boolean) : Fe
         remoteConfig.getBoolean(feature.key)
 
     override fun hasFeature(feature: Feature): Boolean {
-        return when (feature) {
+        return false
+//        return when (feature) {
 //            FeatureFlag.DARK_MODE -> true
-            else -> false
-        }
+//            else -> false
+//        }
     }
 
     override suspend fun fetch(forceRefresh: Boolean) {

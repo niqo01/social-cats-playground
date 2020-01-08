@@ -15,7 +15,8 @@ Dummy social network playground use to investigate:
 - Replace Broadcast channels with DataFlow when ready
 - Run dependency graph script in CI
 - Publish Android library and applications, waiting on bug
-- Figure out multi platform exceptions
+
+# Architecture 
 - Module vs library
 
 ## JS
@@ -42,6 +43,7 @@ Dummy social network playground use to investigate:
 - Firebase analytics & analytics module
 - Feature advance remote config usage
 - Kaespresso https://github.com/KasperskyLab/Kaspresso
+- set lower max disk cache for firestore
 
 Extras:
 - Jetpack compose test?
@@ -60,5 +62,4 @@ Testing:
 - Android gradle publish issue: https://issuetracker.google.com/issues/144790367
 - Cloud App engine debug instance
 - Firebase inappmessage display depends on Picasso https://github.com/firebase/firebase-android-sdk/issues/1025
-- Handle delete account sign in required
 - https://issuetracker.google.com/issues/147207696 Android 4.0.0-alpha07 buildFeatures missing

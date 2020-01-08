@@ -1,5 +1,6 @@
 package com.nicolasmilliard.socialcats.account.ui
 
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.BaseTransientBottomBar.BaseCallback
@@ -18,13 +19,14 @@ import com.nicolasmilliard.socialcats.account.ui.databinding.AccountBinding
 class AccountUiBinder(
     private val binding: AccountBinding,
     private val onSignInClick: SignInHandler,
+    private val onReAuthClick: ReAuthHandler,
     private val onShareClick: ShareHandler,
     private val onOssClick: OssHandler,
     private val events: (Event) -> Unit
 ) : UiBinder<Model> {
 
     private var snackbar: Snackbar? = null
-
+    private var reloginDialog: AlertDialog? = null
     init {
         binding.apply {
             deleteAccount.setOnClickListener {
@@ -117,6 +119,24 @@ class AccountUiBinder(
             }
         } else {
             snackbar?.dismiss()
+        }
+
+        if (model.needRecentLogin) {
+            var dialog = reloginDialog
+            if (dialog == null) {
+                dialog = MaterialAlertDialogBuilder(binding.root.context)
+                    .setMessage(R.string.dialog_message_need_recent_authentication)
+                    .setPositiveButton(
+                        R.string.dialog_message_action_authenticate
+                    ) { _, _ -> onReAuthClick() }
+                    .setNegativeButton(R.string.dialog_message_action_cancel, null)
+                    .create()
+                reloginDialog = dialog
+            }
+            if (!dialog.isShowing) {
+                dialog.show()
+            }
+            events(Event.ClearNeedRecentLogin)
         }
     }
 }

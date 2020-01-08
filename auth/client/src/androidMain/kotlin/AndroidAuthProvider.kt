@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.auth.FirebaseAuth.IdTokenListener
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -27,9 +28,18 @@ class AndroidAuthProvider(private val firebaseAuth: FirebaseAuth) : AuthProvider
         firebaseAuth.signInAnonymously().await()
     }
 
-    override suspend fun linkWithGoogleCredentials(googleIdToken: String) {
+    override suspend fun linkWithPhoneCredentials(userId: String, verificationId: String, smsCode: String) {
         val currentUser = firebaseAuth.currentUser
         checkNotNull(currentUser)
+        check(userId == currentUser.uid)
+        val credential = PhoneAuthProvider.getCredential(verificationId, smsCode)
+        currentUser.linkWithCredential(credential).await()
+    }
+
+    override suspend fun linkWithGoogleCredentials(userId: String, googleIdToken: String) {
+        val currentUser = firebaseAuth.currentUser
+        checkNotNull(currentUser)
+        check(userId == currentUser.uid)
         val credential = GoogleAuthProvider.getCredential(googleIdToken, null)
         currentUser.linkWithCredential(credential).await()
     }

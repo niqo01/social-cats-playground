@@ -105,7 +105,6 @@ fun Project.configureAndroidPlugins() {
     ANDROID_PLUGIN_IDS.forEach {
         plugins.withId(it) {
             extensions.getByType(BaseExtension::class).setBaseAndroidConfiguration()
-
         }
     }
 }
@@ -125,7 +124,8 @@ fun BaseExtension.setBaseAndroidConfiguration() {
         targetCompatibility = Config.Android.targetCompatibility
     }
 
-    if (this is com.android.build.gradle.LibraryExtension){
+    // replace with getBuildFeature() getter on BaseExtension when ready
+    if (this is com.android.build.gradle.LibraryExtension) {
         buildFeatures {
             // Determines whether to enable support for Jetpack Compose.
             compose = false
@@ -136,17 +136,17 @@ fun BaseExtension.setBaseAndroidConfiguration() {
             shaders = false
         }
     }
-//    if (this is com.android.build.gradle.AppExtension){
-//        buildFeatures {
-//            // Determines whether to enable support for Jetpack Compose.
-//            compose = false
-//            viewBinding = true
-//            dataBinding = false
-//            renderScript = false
-//            aidl = false
-//            shaders = false
-//        }
-//    }
+    if (this is com.android.build.gradle.internal.dsl.BaseAppModuleExtension){
+        buildFeatures {
+            // Determines whether to enable support for Jetpack Compose.
+            compose = false
+            viewBinding = true
+            dataBinding = false
+            renderScript = false
+            aidl = false
+            shaders = false
+        }
+    }
 
     lintOptions {
         textReport = true

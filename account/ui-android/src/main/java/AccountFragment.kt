@@ -22,12 +22,13 @@ class AccountFragment : Fragment() {
         val presenter = accountViewModel.accountPresenter
 
         val onSignIn = SignInHandler(activity, authUi)
+        val onReAuth = ReAuthHandler(activity, authUi)
         val onShare = ShareHandler(activity)
         val onOss = OssHandler(activity)
 
         val binding = AccountBinding.inflate(inflater, container, false)
         viewLifecycleOwner.lifecycleScope.launch {
-            val binder = AccountUiBinder(binding, onSignIn, onShare, onOss, presenter.events)
+            val binder = AccountUiBinder(binding, onSignIn, onReAuth, onShare, onOss, presenter.events)
 
             binder.bindTo(presenter)
         }

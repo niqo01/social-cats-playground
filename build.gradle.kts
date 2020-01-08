@@ -105,6 +105,7 @@ fun Project.configureAndroidPlugins() {
     ANDROID_PLUGIN_IDS.forEach {
         plugins.withId(it) {
             extensions.getByType(BaseExtension::class).setBaseAndroidConfiguration()
+
         }
     }
 }
@@ -124,20 +125,33 @@ fun BaseExtension.setBaseAndroidConfiguration() {
         targetCompatibility = Config.Android.targetCompatibility
     }
 
-    buildFeatures {
-        // Determines whether to enable support for Jetpack Compose.
-        compose = false
-        viewBinding = true
-        dataBinding = false
-        renderScript = false
-        aidl = false
-        shaders = false
+    if (this is com.android.build.gradle.LibraryExtension){
+        buildFeatures {
+            // Determines whether to enable support for Jetpack Compose.
+            compose = false
+            viewBinding = true
+            dataBinding = false
+            renderScript = false
+            aidl = false
+            shaders = false
+        }
     }
+//    if (this is com.android.build.gradle.AppExtension){
+//        buildFeatures {
+//            // Determines whether to enable support for Jetpack Compose.
+//            compose = false
+//            viewBinding = true
+//            dataBinding = false
+//            renderScript = false
+//            aidl = false
+//            shaders = false
+//        }
+//    }
 
     lintOptions {
         textReport = true
         textOutput("stdout")
-        setLintConfig(rootProject.file("lint.xml"))
+        lintConfig = rootProject.file("lint.xml")
 
         isCheckDependencies = true
         isCheckGeneratedSources = true

@@ -79,7 +79,7 @@ object Config {
         }
 
         object Ktor {
-            private const val ktorVersion = "1.2.5"
+            private const val ktorVersion = "1.3.0"
 
             const val ktorServerNetty = "io.ktor:ktor-server-netty:$ktorVersion"
             const val ktorServerTest = "io.ktor:ktor-server-tests:$ktorVersion"
@@ -163,12 +163,12 @@ object Config {
             const val common = "com.google.firebase:firebase-common-ktx:19.3.0"
             const val auth = "com.google.firebase:firebase-auth:19.2.0"
             const val firestore = "com.google.firebase:firebase-firestore-ktx:21.3.1"
-            const val analytics = "com.google.firebase:firebase-analytics:17.2.1"
+            const val analytics = "com.google.firebase:firebase-analytics:17.2.2"
             const val crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"
-            const val performance = "com.google.firebase:firebase-perf:19.0.4"
+            const val performance = "com.google.firebase:firebase-perf:19.0.5"
             const val remoteConfig = "com.google.firebase:firebase-config-ktx:19.1.0"
             const val messaging = "com.google.firebase:firebase-messaging:20.1.0"
-            const val inAppMessaging = "com.google.firebase:firebase-inappmessaging-display-ktx:19.0.2"
+            const val inAppMessaging = "com.google.firebase:firebase-inappmessaging-display-ktx:19.0.3"
 
             const val uiAuth = "com.firebaseui:firebase-ui-auth:6.2.0"
             const val uiFirestore = "com.firebaseui:firebase-ui-firestore:6.1.0"
@@ -190,7 +190,7 @@ object Config {
         }
 
         object Test {
-            const val truth = "com.google.truth:truth:1.0"
+            const val truth = "com.google.truth:truth:1.0.1"
             const val junit = "junit:junit:4.13"
             const val androidxJunit = "androidx.test.ext:junit:1.1.1"
             const val androidxtruth = "androidx.test.ext:truth:1.2.0"
@@ -200,7 +200,7 @@ object Config {
         }
 
         object Aws {
-            const val sdkBom = "software.amazon.awssdk:bom:2.10.43"
+            const val sdkBom = "software.amazon.awssdk:bom:2.10.49"
             const val apacheClient = "software.amazon.awssdk:apache-client"
             const val sdkAuth = "software.amazon.awssdk:auth"
         }

@@ -55,8 +55,8 @@ class Auth(private val authProvider: AuthProvider) {
             }
     }
 
-    suspend fun linkWithGoogleCredentials(googleIdToken: String) {
-        authProvider.linkWithGoogleCredentials(googleIdToken)
+    suspend fun linkWithGoogleCredentials(userId: String, googleIdToken: String) {
+        authProvider.linkWithGoogleCredentials(userId, googleIdToken)
     }
 
     suspend fun signInAnonymously() {
@@ -88,7 +88,6 @@ sealed class AuthState {
 data class AuthUser(
     val uid: String,
     val isAnonymous: Boolean,
-    val hasPhoneAuth: Boolean,
     val displayName: String?,
     val photoUrl: String?,
     val email: String?,

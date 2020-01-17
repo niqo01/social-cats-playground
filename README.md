@@ -43,7 +43,6 @@ Dummy social network playground use to investigate:
 - Firebase analytics & analytics module
 - Feature advance remote config usage
 - Kaespresso https://github.com/KasperskyLab/Kaspresso
-- set lower max disk cache for firestore
 
 Extras:
 - Jetpack compose test?

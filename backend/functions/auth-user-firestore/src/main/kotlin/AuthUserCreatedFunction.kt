@@ -1,7 +1,9 @@
 package com.nicolasmilliard.socialcats
 
 import com.google.cloud.functions.Context
+import com.google.cloud.functions.RawBackgroundFunction
 import com.nicolasmilliard.socialcats.store.InsertUser
+import com.squareup.moshi.JsonAdapter
 import mu.KotlinLogging
 
 private val log = KotlinLogging.logger {}
@@ -11,30 +13,35 @@ private val log = KotlinLogging.logger {}
  */
 class AuthUserCreatedFunction(
     graph: Graph = AppComponent().build()
-) {
+) : RawBackgroundFunction {
+
+    private val moshi = graph.moshi
     private val store = graph.store
 
-    fun onUserCreated(rawEvent: RawUserRecord, context: Context) {
+    override fun accept(json: String, context: Context) {
         log.debug {
             "Event ID: ${context.eventId()}, Resource: ${context.resource()}," +
                 " Event Type: ${context.eventType()}, Timestamp: ${context.timestamp()}"
         }
-        log.info { "On Auth User created, Event: $rawEvent" }
 
-        requireNotNull(rawEvent.uid)
+        val jsonAdapter: JsonAdapter<UserRecord> = moshi.adapter(UserRecord::class.java)
+        val userRecord: UserRecord = checkNotNull(jsonAdapter.fromJson(json))
 
-        val isAnonymous = rawEvent.providerData == null
+        log.info { "On Auth User created, Event: $userRecord" }
+
+        val isAnonymous = userRecord.providerData == null
         // We don't save anonymous users
         if (isAnonymous) return
 
-        val user = InsertUser(
-            rawEvent.uid,
-            rawEvent.displayName,
-            rawEvent.phoneNumber,
-            rawEvent.email,
-            rawEvent.emailVerified,
-            rawEvent.photoURL
-        )
+        val user =
+            InsertUser(
+                userRecord.uid,
+                userRecord.displayName,
+                userRecord.phoneNumber,
+                userRecord.email,
+                userRecord.emailVerified,
+                userRecord.photoURL
+            )
         store.createUser(user)
     }
 }

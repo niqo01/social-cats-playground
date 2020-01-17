@@ -7,9 +7,13 @@ import com.google.firebase.FirebaseOptions
 import com.google.firebase.cloud.FirestoreClient
 import com.nicolasmilliard.socialcats.store.RealUserStoreAdmin
 import com.nicolasmilliard.socialcats.store.UserStoreAdmin
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
+import java.util.Date
 
 data class Graph(
-    val store: UserStoreAdmin
+    val store: UserStoreAdmin,
+    val moshi: Moshi
 )
 
 class AppComponent(
@@ -20,7 +24,8 @@ class AppComponent(
         FirebaseApp.initializeApp(firebaseOptions)
         val firestore = module.provideFirestore()
         val socialCatsFirestoreAdmin = module.provideSocialCatsFirestoreAdmin(firestore)
-        return Graph(socialCatsFirestoreAdmin)
+        val moshi = module.provideMoshi()
+        return Graph(socialCatsFirestoreAdmin, moshi)
     }
 }
 
@@ -37,4 +42,8 @@ class AppModule {
     fun provideFirestore(): Firestore = FirestoreClient.getFirestore()
 
     fun provideSocialCatsFirestoreAdmin(firestore: Firestore): UserStoreAdmin = RealUserStoreAdmin(firestore)
+
+    fun provideMoshi() = Moshi.Builder()
+        .add(Date::class.java, Rfc3339DateJsonAdapter())
+        .build()
 }

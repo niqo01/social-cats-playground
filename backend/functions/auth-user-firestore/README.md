@@ -11,6 +11,12 @@ gcloud functions deploy AuthUserCreated \
 --trigger-resource "sweat-monkey" \
 --source=backend/functions/auth-user-firestore/build/libs
 
+gcloud alpha functions deploy AuthUserCreated \
+--runtime java11 \
+--entry-point com.nicolasmilliard.socialcats.AuthUserCreatedFunction \
+--trigger-event providers/firebase.auth/eventTypes/user.create \
+--trigger-resource "sweat-monkey" \
+--source=backend/functions/auth-user-firestore/build/libs
 
 # Delete 
 

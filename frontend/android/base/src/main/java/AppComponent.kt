@@ -10,6 +10,7 @@ import coil.util.CoilUtils
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.jakewharton.byteunits.BinaryByteUnit.MEBIBYTES
@@ -102,7 +103,12 @@ object AppModule {
     }
 
     fun provideFirestore(): FirebaseFirestore {
-        return Firebase.firestore
+        val db = Firebase.firestore
+        val settings = FirebaseFirestoreSettings.Builder()
+            .setCacheSizeBytes(5242880L) // 5MB
+            .build()
+        db.firestoreSettings = settings
+        return db
     }
 
     fun provideWorkManager(context: Context): WorkManager {

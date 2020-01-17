@@ -4,7 +4,6 @@ import androidx.work.WorkManager
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.FirebaseFirestoreException.Code.NOT_FOUND
 import com.google.firebase.firestore.FirebaseFirestoreException.Code.UNAVAILABLE
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
@@ -96,8 +95,8 @@ suspend inline fun <T> notFoundToNull(noinline block: suspend () -> T): T? {
     return try {
         block()
     } catch (e: FirebaseFirestoreException) {
-        if (e.code == NOT_FOUND
-            || e.code == UNAVAILABLE) { // Firebase support Case 00031299
+        if (e.code == NOT_FOUND ||
+            e.code == UNAVAILABLE) { // Firebase support Case 00031299
             null
         } else {
             throw e

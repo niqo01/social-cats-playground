@@ -136,7 +136,7 @@ fun BaseExtension.setBaseAndroidConfiguration() {
             shaders = false
         }
     }
-    if (this is com.android.build.gradle.internal.dsl.BaseAppModuleExtension){
+    if (this is com.android.build.gradle.internal.dsl.BaseAppModuleExtension) {
         buildFeatures {
             // Determines whether to enable support for Jetpack Compose.
             compose = false

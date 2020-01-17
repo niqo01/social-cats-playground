@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
+    kotlin("kapt")
     id("com.github.johnrengelman.shadow")
 }
 
@@ -28,13 +29,14 @@ dependencies {
     implementation(Config.Libs.KotlinLogging.js)
     implementation(Config.Libs.logBackClassic)
 
-    // Cloud function deps
-    implementation(Config.Libs.GoogleFunction.gson)
+    implementation(Config.Libs.Moshi.core) {
+        exclude(module = "kotlin-reflect")
+    }
+    implementation(Config.Libs.Moshi.adapters)
+    kapt(Config.Libs.Moshi.codegen)
 
-    compileOnly(Config.Libs.GoogleFunction.javaServletApi)
     compileOnly(Config.Libs.GoogleFunction.functionFrameworkApi)
 
-    testImplementation(Config.Libs.GoogleFunction.javaServletApi)
     testImplementation(Config.Libs.GoogleFunction.functionFrameworkApi)
     testImplementation(Config.Libs.Test.junit)
     testImplementation(Config.Libs.Test.truth)

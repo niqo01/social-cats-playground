@@ -10,8 +10,8 @@ object Config {
 
         object Functions {
             const val kotlinJvmTarget = "1.8"
-            val sourceCompatibility = JavaVersion.VERSION_1_8
-            val targetCompatibility = JavaVersion.VERSION_1_8
+            val sourceCompatibility = JavaVersion.VERSION_11
+            val targetCompatibility = JavaVersion.VERSION_11
         }
 
         object AppEngine {
@@ -70,12 +70,8 @@ object Config {
         }
 
         object GoogleFunction {
-            private const val servletApi = "4.0.1"
-
-            const val gson = "com.google.code.gson:gson:2.8.6"
-            const val javaServletApi = "javax.servlet:javax.servlet-api:$servletApi"
             const val functionFrameworkApi =
-                "com.google.cloud.functions:functions-framework-api:1.0.0-alpha-1"
+                "com.google.cloud.functions:functions-framework-api:1.0.0-alpha-2-rc3"
         }
 
         object Ktor {
@@ -220,10 +216,10 @@ object Config {
         }
 
         object KotlinLogging {
-            private const val kotlinLoggingVersion = "1.7.8"
-            const val common = "io.github.microutils:kotlin-logging-common:$kotlinLoggingVersion"
-            const val jdk = "io.github.microutils:kotlin-logging:$kotlinLoggingVersion"
-            const val js = "io.github.microutils:kotlin-logging-js:$kotlinLoggingVersion"
+            private const val version = "1.7.8"
+            const val common = "io.github.microutils:kotlin-logging-common:$version"
+            const val jdk = "io.github.microutils:kotlin-logging:$version"
+            const val js = "io.github.microutils:kotlin-logging-js:$version"
         }
 
         // Misc
@@ -231,9 +227,9 @@ object Config {
 //        const val statelyCollections = "co.touchlab:stately-collections:0.9.4"
         const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.1"
         const val processPhoenix = "com.jakewharton:process-phoenix:2.0.0"
-        const val material = "com.google.android.material:material:1.1.0-rc01"
+        const val material = "com.google.android.material:material:1.1.0-rc02"
         const val timber = "com.jakewharton.timber:timber:4.7.1"
-        const val coil = "io.coil-kt:coil-base:0.9.1"
+        const val coil = "io.coil-kt:coil-base:0.9.2"
 
         const val okIo = "com.squareup.okio:okio:2.4.3"
         const val shimmer = "com.facebook.shimmer:shimmer:0.5.0"
@@ -249,5 +245,16 @@ object Config {
         const val byteUnits = "com.jakewharton.byteunits:byteunits:0.9.1"
 
         const val playCore = "com.google.android.play:core-ktx:1.6.4"
+
+        object Moshi {
+            private const val version = "1.9.2"
+            const val core =
+                "com.squareup.moshi:moshi-kotlin:$version"
+            const val codegen =
+                "com.squareup.moshi:moshi-kotlin-codegen:$version"
+            const val adapters =
+                "com.squareup.moshi:moshi-adapters:$version"
+        }
+
     }
 }

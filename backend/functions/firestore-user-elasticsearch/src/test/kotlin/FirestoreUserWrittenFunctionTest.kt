@@ -2,12 +2,10 @@ package com.nicolasmilliard.socialcats
 
 import com.google.cloud.functions.Context
 import com.google.common.truth.Truth.assertThat
-import com.google.gson.JsonParser
 import com.nicolasmilliard.socialcats.search.SearchUseCase
 import com.nicolasmilliard.socialcats.search.repository.IndexUser
 import com.nicolasmilliard.socialcats.search.repository.SearchRepository
 import com.nicolasmilliard.socialcats.search.repository.SearchResult
-import java.util.Date
 import mu.KotlinLogging
 import org.apache.http.HttpHost
 import org.elasticsearch.client.RestClient
@@ -18,132 +16,87 @@ private val log = KotlinLogging.logger {}
 
 internal class FirestoreEventFunctionTest {
 
-    @Test
-    fun `on user name updated`() {
-        val event = RawFirestoreEvent(
-            oldValue = RawFirestoreValue(
-                Date(123),
-                Date(1234),
-                "name/id",
-                JsonParser().parse("{\"name\":{\"stringValue\":\"OldName\"}}")
-            ),
-            value = RawFirestoreValue(
-                Date(123),
-                Date(12345),
-                "name/id",
-                JsonParser().parse("{\"name\":{\"stringValue\":\"NewName\"}}")
-            ),
-            updateMask = RawUpdateMask(setOf("name"))
-        )
-
-        val context = FakeContext()
+    private class TestComponent {
         val fakeSearchUseCase = FakeSearchRepository()
         val searchUseCase = SearchUseCase(fakeSearchUseCase)
-        val graph =
-            Graph(
+
+        fun build(): Graph {
+            val appModule = AppModule()
+            val moshi = appModule.provideMoshi()
+            return Graph(
                 searchUseCase,
-                RestHighLevelClient(RestClient.builder(HttpHost.create("http://test.com")))
+                RestHighLevelClient(RestClient.builder(HttpHost.create("http://test.com"))),
+                moshi
             )
+        }
+    }
 
-        FirestoreUserWrittenFunction(graph).onUserWritten(event, context)
+    @Test
+    fun `on user name updated`() {
+        val json = """
+            {
+              "oldValue": {"createTime": "2002-10-02T10:00:00-05:00", "updateTime": "2002-10-02T10:00:00-05:00", "name": "name/id", "fields": {"name": {"stringValue": "OldName"}}},
+              "value": {"createTime": "2002-10-02T10:00:00-05:00", "updateTime": "2002-10-02T10:00:00-05:00", "name": "name/id", "fields": {"name": {"stringValue": "NewName"}}},
+              "updateMask": {"fieldPaths":["name"]}
+            }
+        """.trimIndent()
 
-        assertThat(fakeSearchUseCase.wasUpdatedCalled).isTrue()
+        val context = FakeContext()
+        val testComponent = TestComponent()
+        FirestoreUserWrittenFunction(testComponent.build()).accept(json, context)
+
+        assertThat(testComponent.fakeSearchUseCase.wasUpdatedCalled).isTrue()
     }
 
     @Test
     fun `on unsupported field update`() {
-        val event = RawFirestoreEvent(
-            oldValue = RawFirestoreValue(
-                Date(123),
-                Date(12345),
-                "name/id",
-                JsonParser().parse("{\"toto\":{\"stringValue\":\"OldName\"}}")
-            ),
-            value = RawFirestoreValue(
-                Date(123),
-                Date(123456),
-                "name/id",
-                JsonParser().parse("{\"toto\":{\"stringValue\":\"NewName\"}}")
-            ),
-            updateMask = RawUpdateMask(setOf("other"))
-        )
+        val json = """
+            {
+              "oldValue": {"createTime": "2002-10-02T10:00:00-05:00", "updateTime": "2002-10-02T10:00:00-05:00", "name": "name/id", "fields": {"toto": {"stringValue": "OldName"}}},
+              "value": {"createTime": "2002-10-02T10:00:00-05:00", "updateTime": "2002-10-02T10:00:00-05:00", "name": "name/id", "fields": {"toto": {"stringValue": "NewName"}}},
+              "updateMask": {"fieldPaths":["toto"]}
+            }
+        """.trimIndent()
 
         val context = FakeContext()
-        val fakeSearchUseCase = FakeSearchRepository()
-        val searchUseCase = SearchUseCase(fakeSearchUseCase)
-        val graph =
-            Graph(
-                searchUseCase,
-                RestHighLevelClient(RestClient.builder(HttpHost.create("http://test.com")))
-            )
+        val testComponent = TestComponent()
+        FirestoreUserWrittenFunction(testComponent.build()).accept(json, context)
 
-        FirestoreUserWrittenFunction(graph).onUserWritten(event, context)
-
-        assertThat(fakeSearchUseCase.wasUpdatedCalled).isFalse()
+        assertThat(testComponent.fakeSearchUseCase.wasUpdatedCalled).isFalse()
     }
 
     @Test
     fun `on new user created`() {
-        val event = RawFirestoreEvent(
-            oldValue = RawFirestoreValue(
-                null,
-                null,
-                null,
-                null
-            ),
-            value = RawFirestoreValue(
-                Date(123),
-                Date(123),
-                "name/id",
-                JsonParser().parse("{\"name\":{\"stringValue\":\"NewName\"}}")
-            ),
-            updateMask = null
-        )
+        val json = """
+            {
+              "oldValue": {"createTime": null, "updateTime": null, "name": null, "fields": null},
+              "value": {"createTime": "2002-10-02T10:00:00-05:00", "updateTime": "2002-10-02T10:00:00-05:00", "name": "name/id", "fields": {"name": {"stringValue": "NewName"}}},
+              "updateMask": null
+            }
+        """.trimIndent()
 
         val context = FakeContext()
-        val fakeSearchUseCase = FakeSearchRepository()
-        val searchUseCase = SearchUseCase(fakeSearchUseCase)
-        val graph =
-            Graph(
-                searchUseCase,
-                RestHighLevelClient(RestClient.builder(HttpHost.create("http://test.com")))
-            )
+        val testComponent = TestComponent()
+        FirestoreUserWrittenFunction(testComponent.build()).accept(json, context)
 
-        FirestoreUserWrittenFunction(graph).onUserWritten(event, context)
-
-        assertThat(fakeSearchUseCase.wasUpdatedCalled).isTrue()
+        assertThat(testComponent.fakeSearchUseCase.wasUpdatedCalled).isTrue()
     }
 
     @Test
     fun `on new user deleted`() {
-        val event = RawFirestoreEvent(
-            oldValue = RawFirestoreValue(
-                Date(123),
-                Date(12345),
-                "name/id",
-                JsonParser().parse("{\"name\":{\"stringValue\":\"OldName\"}}")
-            ),
-            value = RawFirestoreValue(
-                null,
-                null,
-                null,
-                null
-            ),
-            updateMask = null
-        )
+        val json = """
+            {
+              "oldValue": {"createTime": "2002-10-02T10:00:00-05:00", "updateTime": "2002-10-02T10:00:00-05:00", "name": "name/id", "fields": {"name": {"stringValue": "OldName"}}},
+              "value": {"createTime": null, "updateTime": null, "name": null, "fields": null},
+              "updateMask": null
+            }
+        """.trimIndent()
 
         val context = FakeContext()
-        val fakeSearchUseCase = FakeSearchRepository()
-        val searchUseCase = SearchUseCase(fakeSearchUseCase)
-        val graph =
-            Graph(
-                searchUseCase,
-                RestHighLevelClient(RestClient.builder(HttpHost.create("http://test.com")))
-            )
+        val testComponent = TestComponent()
+        FirestoreUserWrittenFunction(testComponent.build()).accept(json, context)
 
-        FirestoreUserWrittenFunction(graph).onUserWritten(event, context)
-
-        assertThat(fakeSearchUseCase.wasDeletedCalled).isTrue()
+        assertThat(testComponent.fakeSearchUseCase.wasDeletedCalled).isTrue()
     }
 
     class FakeContext : Context {

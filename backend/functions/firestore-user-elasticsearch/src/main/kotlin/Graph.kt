@@ -8,6 +8,9 @@ import com.nicolasmilliard.socialcats.data.AwsInterceptorModule
 import com.nicolasmilliard.socialcats.data.ElasticServiceInterceptorModule
 import com.nicolasmilliard.socialcats.search.SearchUseCase
 import com.nicolasmilliard.socialcats.search.repository.ElasticSearchRepository
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
+import java.util.Date
 import org.apache.http.HttpHost
 import org.apache.http.HttpRequestInterceptor
 import org.elasticsearch.client.RestClient
@@ -15,7 +18,8 @@ import org.elasticsearch.client.RestHighLevelClient
 
 data class Graph(
     val searchUseCase: SearchUseCase,
-    val esClient: RestHighLevelClient
+    val esClient: RestHighLevelClient,
+    val moshi: Moshi
 )
 
 class AppComponent(
@@ -40,7 +44,8 @@ class AppComponent(
 
         val searchRepository = module.provideSearchRepository(esClient)
         val searchUseCase = module.provideSearchUseCase(searchRepository)
-        return Graph(searchUseCase, esClient)
+        val moshi = module.provideMoshi()
+        return Graph(searchUseCase, esClient, moshi)
     }
 }
 
@@ -77,4 +82,14 @@ class AppModule {
 
     fun provideSearchUseCase(repository: ElasticSearchRepository) =
         SearchUseCase(repository)
+
+    fun provideMoshi(): Moshi {
+        val firestoreValueJsonAdapter = FirestoreValueJsonAdapter()
+        return Moshi.Builder()
+            .add(Date::class.java, Rfc3339DateJsonAdapter())
+            .add(FieldsAdapter())
+            .add(firestoreValueJsonAdapter)
+            .add(FirestoreEventJsonAdapter(firestoreValueJsonAdapter))
+            .build()
+    }
 }

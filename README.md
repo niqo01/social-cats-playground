@@ -43,6 +43,7 @@ Dummy social network playground use to investigate:
 - Firebase analytics & analytics module
 - Feature advance remote config usage
 - Kaespresso https://github.com/KasperskyLab/Kaspresso
+- try https://github.com/autonomousapps/dependency-analysis-android-gradle-plugin
 
 Extras:
 - Jetpack compose test?

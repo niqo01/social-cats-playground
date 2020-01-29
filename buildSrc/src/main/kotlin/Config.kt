@@ -27,7 +27,7 @@ object Config {
 
     object Android {
 
-        const val navigationVersion = "2.2.0-rc04" // Update gradle.properties as well
+        const val navigationVersion = "2.2.0" // Update gradle.properties as well
 
         object SdkVersions {
             const val compile = 29
@@ -121,12 +121,12 @@ object Config {
 
         object AndroidX {
             private const val pagingVersion = "2.1.1"
-            private const val fragmentVersion = "1.2.0-rc05"
-            private const val workVersion = "2.2.0"
-            private const val lifecycle = "2.2.0-rc03"
+            private const val fragmentVersion = "1.2.0"
+            private const val workVersion = "2.3.0"
+            private const val lifecycle = "2.2.0"
 
             const val appCompat = "androidx.appcompat:appcompat:1.1.0"
-            const val activityKtx = "androidx.activity:activity-ktx:1.1.0-rc03"
+            const val activityKtx = "androidx.activity:activity-ktx:1.1.0"
             const val fragmentKtx = "androidx.fragment:fragment-ktx:$fragmentVersion"
             const val fragmentTesting = "androidx.fragment:fragment-testing:$fragmentVersion"
             const val preferenceKtx = "androidx.preference:preference-ktx:1.1.0"
@@ -154,7 +154,7 @@ object Config {
 
         object Firebase {
 
-            const val admin = "com.google.firebase:firebase-admin:6.12.0"
+            const val admin = "com.google.firebase:firebase-admin:6.12.1"
 
             const val common = "com.google.firebase:firebase-common-ktx:19.3.0"
             const val auth = "com.google.firebase:firebase-auth:19.2.0"
@@ -196,7 +196,7 @@ object Config {
         }
 
         object Aws {
-            const val sdkBom = "software.amazon.awssdk:bom:2.10.49"
+            const val sdkBom = "software.amazon.awssdk:bom:2.10.56"
             const val apacheClient = "software.amazon.awssdk:apache-client"
             const val sdkAuth = "software.amazon.awssdk:auth"
         }
@@ -240,7 +240,7 @@ object Config {
         const val slf4jSimple= "org.slf4j:slf4j-simple:1.7.25"
         const val slf4jTimber = "com.arcao:slf4j-timber:3.1@aar"
         const val elasticSearchHighLevelClient =
-            "org.elasticsearch.client:elasticsearch-rest-high-level-client:7.5.1"
+            "org.elasticsearch.client:elasticsearch-rest-high-level-client:7.5.2"
 
         const val byteUnits = "com.jakewharton.byteunits:byteunits:0.9.1"
 

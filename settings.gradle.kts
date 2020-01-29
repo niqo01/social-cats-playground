@@ -1,5 +1,6 @@
 rootProject.name = "social-cats-playground"
 
+include(":analytics")
 include(":backend:ktor-api")
 include(":backend:functions:auth-user-firestore")
 include(":backend:functions:firestore-user-elasticsearch")

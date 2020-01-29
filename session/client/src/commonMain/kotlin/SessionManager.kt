@@ -1,5 +1,6 @@
 package com.nicolasmilliard.socialcats.session
 
+import com.nicolasmilliard.socialcats.analytics.Analytics
 import com.nicolasmilliard.socialcats.auth.Auth
 import com.nicolasmilliard.socialcats.auth.AuthState.Authenticated
 import com.nicolasmilliard.socialcats.auth.AuthState.UnAuthenticated
@@ -23,7 +24,8 @@ private val logger = KotlinLogging.logger {}
 class SessionManager(
     private val auth: Auth,
     private val store: UserStore,
-    private val deviceInfoProvider: DeviceInfoProvider
+    private val deviceInfoProvider: DeviceInfoProvider,
+    private val analytics: Analytics
 ) {
 
     private val _sessions = ConflatedBroadcastChannel<Session>()
@@ -53,6 +55,7 @@ class SessionManager(
                     .collect { authState ->
                         when (authState) {
                             is UnAuthenticated -> {
+                                analytics.setUserId(null)
                                 userJob?.cancel()
                                 deviceInfoJob?.cancel()
                                 sendSession(
@@ -62,6 +65,7 @@ class SessionManager(
                                 )
                             }
                             is Authenticated -> {
+                                analytics.setUserId(authState.authUser.uid)
                                 sendSession(
                                     session.copy(
                                         authData = AuthData(

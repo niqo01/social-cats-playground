@@ -31,7 +31,7 @@ Dummy social network playground use to investigate:
 - Preferences
 - App ratings Looks like play store will launch an in app rating feature
 - Data saver
-- Cache user list results
+- Cache user list results (Consider Store https://github.com/dropbox/Store)
 - Shared element transition https://medium.com/redmadrobot-mobile/hidden-mistakes-with-shared-element-transitions-65d79831c63
 - Debug Menu https://github.com/willowtreeapps/Hyperion-Android
 - Jake wharton diffuse apk

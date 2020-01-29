@@ -19,6 +19,7 @@ kotlin {
             dependencies {
                 api(project(":auth:client"))
                 api(project(":store:client"))
+                api(project(":analytics"))
                 api(project(":util"))
                 api(Config.Libs.Kotlin.common)
                 api(Config.Libs.Kotlin.Coroutine.common)

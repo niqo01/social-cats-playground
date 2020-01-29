@@ -8,12 +8,15 @@ import androidx.work.WorkManager
 import coil.ImageLoader
 import coil.util.CoilUtils
 import com.firebase.ui.auth.AuthUI
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.jakewharton.byteunits.BinaryByteUnit.MEBIBYTES
+import com.nicolasmilliard.socialcats.analytics.Analytics
+import com.nicolasmilliard.socialcats.analytics.PlatformAnalytics
 import com.nicolasmilliard.socialcats.auth.AndroidAuthProvider
 import com.nicolasmilliard.socialcats.auth.Auth
 import com.nicolasmilliard.socialcats.auth.ui.AndroidAuthUi
@@ -50,12 +53,14 @@ class AppComponent(val app: Application, scope: CoroutineScope) {
         }
         auth
     }
+    val analytics = AppModule.provideAnalytics(app)
+
     val authUi = AppModule.provideAuthUi(app)
     val firestore = AppModule.provideFirestore()
     val workManager = AppModule.provideWorkManager(app)
     val store = AppModule.provideSocialCatsStore(firestore, workManager)
     val sessionManager by lazy {
-        val manager = AppModule.provideSessionManager(auth, store, AndroidInstanceIdProvider())
+        val manager = AppModule.provideSessionManager(auth, store, AndroidInstanceIdProvider(), analytics)
         scope.launch {
             manager.start()
         }
@@ -118,8 +123,10 @@ object AppModule {
     fun provideSocialCatsStore(firestore: FirebaseFirestore, workManager: WorkManager): UserStore =
         RealUserStore(firestore, workManager)
 
-    fun provideSessionManager(auth: Auth, store: UserStore, deviceInfoProvider: DeviceInfoProvider) =
-        SessionManager(auth, store, deviceInfoProvider)
+    fun provideAnalytics(context: Context): Analytics = PlatformAnalytics(FirebaseAnalytics.getInstance(context))
+
+    fun provideSessionManager(auth: Auth, store: UserStore, deviceInfoProvider: DeviceInfoProvider, analytics: Analytics) =
+        SessionManager(auth, store, deviceInfoProvider, analytics)
 
     fun provideOkHttp(application: Application): OkHttpClient {
         val cacheDir = application.cacheDir / "http"

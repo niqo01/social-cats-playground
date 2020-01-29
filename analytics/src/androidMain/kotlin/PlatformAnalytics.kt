@@ -1,6 +1,7 @@
+package com.nicolasmilliard.socialcats.analytics
+
 import androidx.core.os.bundleOf
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.nicolasmilliard.socialcats.analytics.Analytics
 
 class PlatformAnalytics(private val analyticsProvider: FirebaseAnalytics) : Analytics {
 

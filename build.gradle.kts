@@ -22,6 +22,7 @@ plugins {
     id(Plugins.Ids.GRADLE_VERSION_PLUGIN)
     id(Plugins.Ids.SAFE_ARGS) apply false
     id(Plugins.Ids.ANDROID_OSS_LICENSES) apply false
+//    id("com.autonomousapps.dependency-analysis") version "0.18.0"
 }
 
 allprojects {

@@ -17,7 +17,11 @@ class FakeAuthProvider : AuthProvider {
 
     override fun getAuthToken(): Flow<NewToken?> = authTokenflow
 
-    override suspend fun linkWithGoogleCredentials(googleIdToken: String) {
+    override suspend fun linkWithPhoneCredentials(userId: String, verificationId: String, smsCode: String) {
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+    }
+
+    override suspend fun linkWithGoogleCredentials(uid: String, googleIdToken: String) {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 

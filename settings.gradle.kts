@@ -83,6 +83,6 @@ pluginManagement {
         id("org.jetbrains.kotlin.kotlinx-serialization") version "$kotlinVersion"
         id("com.github.johnrengelman.shadow") version "5.2.0"
         id("com.github.ben-manes.versions") version "0.27.0"
-        id("org.jlleitschuh.gradle.ktlint") version "9.1.1"
+        id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
     }
 }

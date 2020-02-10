@@ -27,7 +27,7 @@ object Config {
 
     object Android {
 
-        const val navigationVersion = "2.2.0" // Update gradle.properties as well
+        const val navigationVersion = "2.2.1" // Update gradle.properties as well
 
         object SdkVersions {
             const val compile = 29
@@ -62,7 +62,7 @@ object Config {
     object Libs {
 
         object WebFrontend {
-            const val htmlJs = "org.jetbrains.kotlinx:kotlinx-html-js:0.6.12"
+            const val htmlJs = "org.jetbrains.kotlinx:kotlinx-html-js:0.7.1"
             const val kotlinReact = "org.jetbrains:kotlin-react:16.9.0-pre.89-kotlin-1.3.60"
             const val kotlinReactDom = "org.jetbrains:kotlin-react-dom:16.9.0-pre.89-kotlin-1.3.60"
             const val kotlinReactRouterDom =
@@ -75,7 +75,7 @@ object Config {
         }
 
         object Ktor {
-            private const val ktorVersion = "1.3.0"
+            private const val ktorVersion = "1.3.1"
 
             const val ktorServerNetty = "io.ktor:ktor-server-netty:$ktorVersion"
             const val ktorServerTest = "io.ktor:ktor-server-tests:$ktorVersion"
@@ -121,8 +121,8 @@ object Config {
 
         object AndroidX {
             private const val pagingVersion = "2.1.1"
-            private const val fragmentVersion = "1.2.0"
-            private const val workVersion = "2.3.0"
+            private const val fragmentVersion = "1.2.1"
+            private const val workVersion = "2.3.1"
             private const val lifecycle = "2.2.0"
 
             const val appCompat = "androidx.appcompat:appcompat:1.1.0"
@@ -131,7 +131,7 @@ object Config {
             const val fragmentTesting = "androidx.fragment:fragment-testing:$fragmentVersion"
             const val preferenceKtx = "androidx.preference:preference-ktx:1.1.0"
             const val vectorCompat = "androidx.vectordrawable:vectordrawable-animated:1.1.0"
-            const val coreKtx = "androidx.core:core-ktx:1.1.0"
+            const val coreKtx = "androidx.core:core-ktx:1.2.0"
             const val constraintLayout = "androidx.constraintlayout:constraintlayout:1.1.3"
             const val recyclerView = "androidx.recyclerview:recyclerview:1.1.0"
             const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
@@ -154,15 +154,15 @@ object Config {
 
         object Firebase {
 
-            const val admin = "com.google.firebase:firebase-admin:6.12.1"
+            const val admin = "com.google.firebase:firebase-admin:6.12.2"
 
             const val common = "com.google.firebase:firebase-common-ktx:19.3.0"
             const val auth = "com.google.firebase:firebase-auth:19.2.0"
-            const val firestore = "com.google.firebase:firebase-firestore-ktx:21.3.1"
+            const val firestore = "com.google.firebase:firebase-firestore-ktx:21.4.0"
             const val analytics = "com.google.firebase:firebase-analytics:17.2.2"
             const val crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"
             const val performance = "com.google.firebase:firebase-perf:19.0.5"
-            const val remoteConfig = "com.google.firebase:firebase-config-ktx:19.1.0"
+            const val remoteConfig = "com.google.firebase:firebase-config-ktx:19.1.1"
             const val messaging = "com.google.firebase:firebase-messaging:20.1.0"
             const val inAppMessaging = "com.google.firebase:firebase-inappmessaging-display-ktx:19.0.3"
 
@@ -196,13 +196,13 @@ object Config {
         }
 
         object Aws {
-            const val sdkBom = "software.amazon.awssdk:bom:2.10.56"
+            const val sdkBom = "software.amazon.awssdk:bom:2.10.66"
             const val apacheClient = "software.amazon.awssdk:apache-client"
             const val sdkAuth = "software.amazon.awssdk:auth"
         }
 
         object OkHttp {
-            private const val version = "4.3.1"
+            private const val version = "4.4.0"
 
             const val client = "com.squareup.okhttp3:okhttp:$version"
             const val logging = "com.squareup.okhttp3:logging-interceptor:$version"
@@ -225,11 +225,11 @@ object Config {
         // Misc
 //        Stately Collections does not support JS just yet. Should be early 2020
 //        const val statelyCollections = "co.touchlab:stately-collections:0.9.4"
-        const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.1"
+        const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.2"
         const val processPhoenix = "com.jakewharton:process-phoenix:2.0.0"
-        const val material = "com.google.android.material:material:1.1.0-rc02"
+        const val material = "com.google.android.material:material:1.1.0"
         const val timber = "com.jakewharton.timber:timber:4.7.1"
-        const val coil = "io.coil-kt:coil-base:0.9.2"
+        const val coil = "io.coil-kt:coil-base:0.9.5"
 
         const val okIo = "com.squareup.okio:okio:2.4.3"
         const val shimmer = "com.facebook.shimmer:shimmer:0.5.0"
@@ -240,7 +240,7 @@ object Config {
         const val slf4jSimple= "org.slf4j:slf4j-simple:1.7.25"
         const val slf4jTimber = "com.arcao:slf4j-timber:3.1@aar"
         const val elasticSearchHighLevelClient =
-            "org.elasticsearch.client:elasticsearch-rest-high-level-client:7.5.2"
+            "org.elasticsearch.client:elasticsearch-rest-high-level-client:7.6.0"
 
         const val byteUnits = "com.jakewharton.byteunits:byteunits:0.9.1"
 

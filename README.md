@@ -31,7 +31,7 @@ Dummy social network playground use to investigate:
 - Preferences
 - App ratings Looks like play store will launch an in app rating feature
 - Data saver
-- Cache user list results (Consider Store https://github.com/dropbox/Store)
+- Cache user list results (Consider new Store version https://github.com/dropbox/Store)
 - Shared element transition https://medium.com/redmadrobot-mobile/hidden-mistakes-with-shared-element-transitions-65d79831c63
 - Debug Menu https://github.com/willowtreeapps/Hyperion-Android
 - Jake wharton diffuse apk
@@ -40,10 +40,11 @@ Dummy social network playground use to investigate:
 - Cloud messaging, function to send a notification
 - Android 28 notification style message with person object
 - Test UiBinding class
-- Firebase analytics & analytics module
 - Feature advance remote config usage
 - Kaespresso https://github.com/KasperskyLab/Kaspresso
 - try https://github.com/autonomousapps/dependency-analysis-android-gradle-plugin
+- try https://github.com/maskarade/gradle-android-ribbonizer-plugin 
+- try Dexter lib for handling permission  https://github.com/Karumi/Dexter
 
 Extras:
 - Jetpack compose test?

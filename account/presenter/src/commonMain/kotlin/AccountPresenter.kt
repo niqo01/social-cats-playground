@@ -9,6 +9,7 @@ import com.nicolasmilliard.socialcats.account.presenter.AccountPresenter.Model.P
 import com.nicolasmilliard.socialcats.auth.AuthRecentLoginRequiredException
 import com.nicolasmilliard.socialcats.auth.ui.AuthUi
 import com.nicolasmilliard.socialcats.session.Session
+import com.nicolasmilliard.socialcats.session.SessionAuthState
 import com.nicolasmilliard.socialcats.session.SessionManager
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.RENDEZVOUS
@@ -42,10 +43,14 @@ class AccountPresenter(
                 model = newModel
                 _models.offer(newModel)
             }
-
             launch {
                 sessionManager.sessions.collect {
-                    sendModel(model.copy(session = it, loadingStatus = IDLE))
+                    sendModel(
+                        model.copy(
+                            session = it,
+                            loadingStatus = if (it.authState == SessionAuthState.Unknown) LOADING else IDLE
+                        )
+                    )
                 }
             }
 

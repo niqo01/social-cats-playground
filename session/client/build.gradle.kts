@@ -20,7 +20,7 @@ kotlin {
                 api(project(":auth:client"))
                 api(project(":store:client"))
                 api(project(":analytics"))
-                api(project(":util"))
+                api(project(":kotlin-util"))
                 api(Config.Libs.Kotlin.common)
                 api(Config.Libs.Kotlin.Coroutine.common)
                 implementation(Config.Libs.KotlinLogging.common)

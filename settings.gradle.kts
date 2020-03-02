@@ -38,7 +38,8 @@ include(":api:social-cats:test-util")
 include(":presentation:presenter")
 include(":presentation:binder")
 include(":themes")
-include(":util")
+include(":kotlin-util")
+include(":ui-android-util")
 include(":test-settings")
 include(":test-util")
 
@@ -82,7 +83,7 @@ pluginManagement {
         id("org.jetbrains.kotlin.multiplatform") version "$kotlinVersion"
         id("org.jetbrains.kotlin.kotlinx-serialization") version "$kotlinVersion"
         id("com.github.johnrengelman.shadow") version "5.2.0"
-        id("com.github.ben-manes.versions") version "0.27.0"
+        id("com.github.ben-manes.versions") version "0.28.0"
         id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
     }
 }

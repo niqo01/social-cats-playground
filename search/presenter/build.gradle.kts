@@ -22,7 +22,7 @@ kotlin {
                 implementation(project(":search:client"))
                 api(project(":search:model"))
                 api(project(":presentation:presenter"))
-                implementation(project(":util"))
+                implementation(project(":kotlin-util"))
                 api(Config.Libs.Kotlin.common)
                 api(Config.Libs.Kotlin.Coroutine.common)
                 implementation(Config.Libs.KotlinLogging.common)

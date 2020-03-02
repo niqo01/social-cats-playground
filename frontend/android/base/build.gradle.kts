@@ -21,6 +21,7 @@ dependencies {
     implementation(project(":cloud-messaging:android"))
     implementation(project(":presentation:binder"))
     implementation(project(":main-presenter"))
+    implementation(project(":ui-android-util"))
     implementation(project(":feature-flags"))
     implementation(project(":themes"))
 

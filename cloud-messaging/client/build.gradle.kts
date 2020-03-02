@@ -16,7 +16,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":store:client"))
-                api(project(":util"))
+                api(project(":kotlin-util"))
                 api(Config.Libs.Kotlin.common)
                 api(Config.Libs.Kotlin.Coroutine.common)
                 implementation(Config.Libs.KotlinLogging.common)

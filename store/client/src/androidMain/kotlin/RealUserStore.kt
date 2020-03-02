@@ -38,25 +38,27 @@ class RealUserStore(private val db: FirebaseFirestore, private val workManager: 
     }
 
     override suspend fun deviceInfo(userId: String, instanceId: String, cacheOnly: Boolean): DeviceInfo? =
-        notFoundToNull {
-            db
-            .collection(Users.NAME)
-            .document(userId)
-            .collection(InstanceIds.name)
-            .document(instanceId)
-            .get(if (cacheOnly) Source.CACHE else Source.DEFAULT)
-            .await()
-            .toDeviceInfo()
-    }
+        withContext(Dispatchers.IO) {
+            notFoundToNull {
+                db.collection(Users.NAME)
+                    .document(userId)
+                    .collection(InstanceIds.name)
+                    .document(instanceId)
+                    .get(if (cacheOnly) Source.CACHE else Source.DEFAULT)
+                    .await()
+                    .toDeviceInfo()
+            }
+        }
 
-    override suspend fun user(uid: String, cacheOnly: Boolean): User? =
+    override suspend fun user(uid: String, cacheOnly: Boolean): User? = withContext(Dispatchers.IO) {
         notFoundToNull {
-            db.collection(Users.NAME)
+            val snapshot = db.collection(Users.NAME)
                 .document(uid)
                 .get(if (cacheOnly) Source.CACHE else Source.DEFAULT)
                 .await()
-                .toUser()
+            return@notFoundToNull if (snapshot.exists()) snapshot.toUser() else null
         }
+    }
 
     override suspend fun user(uid: String): Flow<User> = withContext(Dispatchers.IO) {
         callbackFlow {
@@ -67,10 +69,12 @@ class RealUserStore(private val db: FirebaseFirestore, private val workManager: 
                     if (e != null) {
                         close(e)
                     } else {
-                        if (snapshot != null && snapshot.exists()) {
-                            offer(snapshot.toUser())
-                        } else {
+                        if (snapshot == null) {
                             close(IllegalStateException("Snapshot is null or does not exist: $snapshot"))
+                        } else {
+                            if (snapshot.exists()) {
+                                offer(snapshot.toUser())
+                            } // does not exist when doc is empty with existing subcollection
                         }
                     }
                 }
@@ -81,14 +85,14 @@ class RealUserStore(private val db: FirebaseFirestore, private val workManager: 
 
 fun DocumentSnapshot.toUser(): User {
     val name = getString(Users.Fields.NAME)
-    val createdAt = getTimestamp(Users.Fields.CREATED_AT)!!
+    val createdAt = checkNotNull(getTimestamp(Users.Fields.CREATED_AT))
     val photoUrl = getString(Users.Fields.PHOTO_URL)
     return User(id, name, createdAt.toDate().time, photoUrl)
 }
 
 fun DocumentSnapshot.toDeviceInfo(): DeviceInfo {
-    val token = getString(InstanceIds.Fields.TOKEN)!!
-    val languageTag = getString(InstanceIds.Fields.LANGUAGE_TAG)!!
+    val token = checkNotNull(getString(InstanceIds.Fields.TOKEN))
+    val languageTag = checkNotNull(getString(InstanceIds.Fields.LANGUAGE_TAG))
     return DeviceInfo(id, token, languageTag)
 }
 
@@ -97,7 +101,8 @@ suspend inline fun <T> notFoundToNull(noinline block: suspend () -> T): T? {
         block()
     } catch (e: FirebaseFirestoreException) {
         if (e.code == NOT_FOUND ||
-            e.code == UNAVAILABLE) { // Firebase support Case 00031299
+            e.code == UNAVAILABLE
+        ) { // Firebase support Case 00031299
             null
         } else {
             throw e

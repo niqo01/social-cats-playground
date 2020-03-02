@@ -121,8 +121,8 @@ object Config {
 
         object AndroidX {
             private const val pagingVersion = "2.1.1"
-            private const val fragmentVersion = "1.2.1"
-            private const val workVersion = "2.3.1"
+            private const val fragmentVersion = "1.2.2"
+            private const val workVersion = "2.3.2"
             private const val lifecycle = "2.2.0"
 
             const val appCompat = "androidx.appcompat:appcompat:1.1.0"
@@ -158,12 +158,12 @@ object Config {
 
             const val common = "com.google.firebase:firebase-common-ktx:19.3.0"
             const val auth = "com.google.firebase:firebase-auth:19.2.0"
-            const val firestore = "com.google.firebase:firebase-firestore-ktx:21.4.0"
-            const val analytics = "com.google.firebase:firebase-analytics:17.2.2"
+            const val firestore = "com.google.firebase:firebase-firestore-ktx:21.4.1"
+            const val analytics = "com.google.firebase:firebase-analytics:17.2.3"
             const val crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"
             const val performance = "com.google.firebase:firebase-perf:19.0.5"
-            const val remoteConfig = "com.google.firebase:firebase-config-ktx:19.1.1"
-            const val messaging = "com.google.firebase:firebase-messaging:20.1.0"
+            const val remoteConfig = "com.google.firebase:firebase-config-ktx:19.1.2"
+            const val messaging = "com.google.firebase:firebase-messaging:20.1.1"
             const val inAppMessaging = "com.google.firebase:firebase-inappmessaging-display-ktx:19.0.3"
 
             const val uiAuth = "com.firebaseui:firebase-ui-auth:6.2.0"
@@ -196,7 +196,7 @@ object Config {
         }
 
         object Aws {
-            const val sdkBom = "software.amazon.awssdk:bom:2.10.66"
+            const val sdkBom = "software.amazon.awssdk:bom:2.10.76"
             const val apacheClient = "software.amazon.awssdk:apache-client"
             const val sdkAuth = "software.amazon.awssdk:auth"
         }
@@ -209,7 +209,7 @@ object Config {
         }
 
         object Retrofit {
-            private const val version = "2.7.1"
+            private const val version = "2.7.2"
 
             const val client = "com.squareup.retrofit2:retrofit:$version"
             const val converterKotlinxSerialization = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.4.0"
@@ -236,7 +236,7 @@ object Config {
 
 
         const val logBackClassic = "ch.qos.logback:logback-classic:1.2.3"
-        const val log4jToSlf4j = "org.apache.logging.log4j:log4j-to-slf4j:2.13.0"
+        const val log4jToSlf4j = "org.apache.logging.log4j:log4j-to-slf4j:2.13.1"
         const val slf4jSimple= "org.slf4j:slf4j-simple:1.7.25"
         const val slf4jTimber = "com.arcao:slf4j-timber:3.1@aar"
         const val elasticSearchHighLevelClient =
@@ -244,7 +244,7 @@ object Config {
 
         const val byteUnits = "com.jakewharton.byteunits:byteunits:0.9.1"
 
-        const val playCore = "com.google.android.play:core-ktx:1.6.4"
+        const val playCore = "com.google.android.play:core-ktx:1.6.5"
 
         object Moshi {
             private const val version = "1.9.2"
@@ -255,6 +255,8 @@ object Config {
             const val adapters =
                 "com.squareup.moshi:moshi-adapters:$version"
         }
+
+        const val guavaAndroid = "com.google.guava:guava:28.0-android"
 
     }
 }

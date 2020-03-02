@@ -15,6 +15,7 @@ import com.nicolasmilliard.socialcats.account.presenter.AccountPresenter.Model.P
 import com.nicolasmilliard.socialcats.account.presenter.AccountPresenter.Model.ProcessingStatus.FAILED_SIGN_OUT
 import com.nicolasmilliard.socialcats.account.presenter.AccountPresenter.Model.ProcessingStatus.PROCESSING
 import com.nicolasmilliard.socialcats.account.ui.databinding.AccountBinding
+import com.nicolasmilliard.socialcats.session.SessionAuthState
 
 class AccountUiBinder(
     private val binding: AccountBinding,
@@ -66,26 +67,25 @@ class AccountUiBinder(
             model.loadingStatus == LoadingStatus.LOADING -> {
                 // TODO Loading screen
             }
-            session?.authData?.isAnonymous ?: true -> {
-
-                binding.deleteAccount.isVisible = false
-                binding.auth.apply {
-                    text = resources.getString(R.string.sign_in)
-                    setOnClickListener {
-                        events(ClearErrorStatus)
-                        onSignInClick()
-                    }
-                }
-            }
-            else -> {
+            session != null && session.authState is SessionAuthState.Authenticated -> {
                 binding.deleteAccount.isVisible = true
                 binding.auth.apply {
                     text = resources.getString(R.string.sign_out)
                     setOnClickListener {
                         events(Event.SignOut)
                     }
-                    session!!.authData!!.user?.apply {
+                    (session.authState as SessionAuthState.Authenticated.User).user?.apply {
                         binding.name.text = name
+                    }
+                }
+            }
+            else -> {
+                binding.deleteAccount.isVisible = false
+                binding.auth.apply {
+                    text = resources.getString(R.string.sign_in)
+                    setOnClickListener {
+                        events(ClearErrorStatus)
+                        onSignInClick()
                     }
                 }
             }

@@ -8,6 +8,7 @@ dependencies {
     implementation(project(":connectivity"))
     implementation(project(":search:presenter"))
     implementation(project(":frontend:android:base"))
+    implementation(project(":ui-android-util"))
     implementation(project(":presentation:binder"))
     implementation(project(":themes"))
 

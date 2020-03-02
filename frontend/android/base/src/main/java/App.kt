@@ -10,6 +10,7 @@ import com.nicolasmilliard.socialcats.featureflags.MAX_PRIORITY
 import com.nicolasmilliard.socialcats.featureflags.MIN_PRIORITY
 import com.nicolasmilliard.socialcats.featureflags.RuntimeBehavior
 import com.nicolasmilliard.socialcats.featureflags.StoreFeatureFlagProvider
+import com.nicolasmilliard.socialcats.session.SessionAuthState
 import com.nicolasmilliard.socialcats.session.SessionProvider
 import com.nicolasmilliard.socialcats.store.StoreProvider
 import kotlinx.coroutines.CoroutineName
@@ -33,8 +34,9 @@ open class App : SplitCompatApplication(), AppComponentProvider, StoreProvider, 
         Timber.i("App.onCreate()")
         scope.launch(Dispatchers.Default) {
             sessionManager.sessions.collect {
-                when {
-                    it.authData?.user != null -> Crashlytics.setUserIdentifier(it.authData!!.user!!.id)
+                when (it.authState) {
+                    is SessionAuthState.Authenticated ->
+                        Crashlytics.setUserIdentifier((it.authState as SessionAuthState.Authenticated).uId)
                     else -> Crashlytics.setUserIdentifier(null)
                 }
             }

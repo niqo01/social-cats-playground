@@ -13,6 +13,7 @@ import com.nicolasmilliard.socialcats.search.presenter.SearchPresenter.Model.Ref
 import com.nicolasmilliard.socialcats.search.presenter.SearchPresenter.Model.RefreshState.IDLE
 import com.nicolasmilliard.socialcats.search.presenter.SearchPresenter.Model.RefreshState.LOADING
 import com.nicolasmilliard.socialcats.session.Session
+import com.nicolasmilliard.socialcats.session.SessionAuthState
 import com.nicolasmilliard.socialcats.session.SessionManager
 import com.nicolasmilliard.socialcats.util.IoException
 import com.nicolasmilliard.socialcats.util.isCausedBy
@@ -123,7 +124,14 @@ class SearchPresenter(
         logger.info { "onQueryChanged query: $query" }
         val session = sessionManager.sessions
             .first()
-        if (!session.hasAuthToken) {
+
+        val token =
+            if (session.authState is SessionAuthState.Authenticated) {
+                (session.authState as SessionAuthState.Authenticated)
+                    .authToken
+            } else null
+
+        if (token == null) {
             sendModel(model.copy(loadingState = Model.LoadingState.UnAuthenticated))
             return
         }
@@ -139,10 +147,7 @@ class SearchPresenter(
             sendModel(model.copy(loadingState = Loading))
         }
 
-        searchLoader.searchUsers(
-            session.authData!!.authToken!!,
-            query
-        ).collect { result ->
+        searchLoader.searchUsers(token, query).collect { result ->
             val hasData = model.loadingState is Success
             sendModel(
                 when (result) {

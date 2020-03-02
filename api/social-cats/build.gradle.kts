@@ -25,7 +25,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":search:model"))
-                api(project(":util"))
+                api(project(":kotlin-util"))
                 api(Config.Libs.Kotlin.common)
                 api(Config.Libs.Kotlin.Coroutine.common)
                 implementation(Config.Libs.Kotlin.Serialization.common)

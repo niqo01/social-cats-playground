@@ -11,7 +11,7 @@ class FirebaseFeatureFlagProvider(priority: Int, isDevModeEnabled: Boolean) : Fe
     init {
         val configSettings = FirebaseRemoteConfigSettings.Builder()
         if (isDevModeEnabled) {
-            configSettings.setMinimumFetchIntervalInSeconds(60)
+            configSettings.minimumFetchIntervalInSeconds = 60
         }
         remoteConfig.setConfigSettingsAsync(configSettings.build())
     }

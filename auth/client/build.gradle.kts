@@ -5,6 +5,8 @@ plugins {
     id("com.android.library")
 }
 
+base.archivesBaseName = "auth-client"
+
 kotlin {
     android {
         publishAllLibraryVariants()

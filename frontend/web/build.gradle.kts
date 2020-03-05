@@ -2,7 +2,6 @@ import com.android.build.gradle.internal.tasks.factory.dependsOn
 
 plugins {
     kotlin("js")
-    id("distribution")
 }
 
 group = "com.nicolasmilliard.testjs"
@@ -38,29 +37,14 @@ kotlin {
 
 tasks {
 
-    distributions {
-        main {
-            baseName = "main"
-
-            contents {
-                from("src/main/resources")
-                from("$buildDir/distributions/web.js")
-            }
-        }
-    }
-    distTar {
-        enabled = false
+    val zip = register("zipDistribution", Zip::class) {
+        from("$buildDir/distributions")
+        include("**")
     }
 
-    val unzip = register("unzipDist", Copy::class) {
-        from(zipTree("$buildDir/distributions/main-1.0-SNAPSHOT.zip"))
-        into("$buildDir/distributions")
-    }
+    zip.dependsOn("browserProductionWebpack")
 
-    distZip {
-        finalizedBy(unzip)
-        dependsOn("browserWebpack")
+    artifacts {
+        archives(zip)
     }
-
-    installDist.dependsOn("browserWebpack")
 }

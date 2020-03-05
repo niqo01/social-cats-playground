@@ -1,7 +1,7 @@
 import org.gradle.api.JavaVersion
 
 object Config {
-    const val kotlinVersion = "1.3.61" // update gradle.properties as well
+    const val kotlinVersion = "1.3.70" // update gradle.properties as well
 
     const val group = "com.nicolasmilliard.socialcats"
 
@@ -99,7 +99,7 @@ object Config {
             }
 
             object Coroutine {
-                private const val version = "1.3.3"
+                private const val version = "1.3.4"
 
                 const val common = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$version"
                 const val jdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$version"
@@ -110,7 +110,7 @@ object Config {
             }
 
             object Serialization {
-                private const val version = "0.14.0"
+                private const val version = "0.20.0"
 
                 const val common =
                     "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${version}"
@@ -122,7 +122,7 @@ object Config {
         object AndroidX {
             private const val pagingVersion = "2.1.1"
             private const val fragmentVersion = "1.2.2"
-            private const val workVersion = "2.3.2"
+            private const val workVersion = "2.3.3"
             private const val lifecycle = "2.2.0"
 
             const val appCompat = "androidx.appcompat:appcompat:1.1.0"
@@ -163,7 +163,7 @@ object Config {
             const val crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"
             const val performance = "com.google.firebase:firebase-perf:19.0.5"
             const val remoteConfig = "com.google.firebase:firebase-config-ktx:19.1.2"
-            const val messaging = "com.google.firebase:firebase-messaging:20.1.1"
+            const val messaging = "com.google.firebase:firebase-messaging:20.1.2"
             const val inAppMessaging = "com.google.firebase:firebase-inappmessaging-display-ktx:19.0.3"
 
             const val uiAuth = "com.firebaseui:firebase-ui-auth:6.2.0"
@@ -196,14 +196,13 @@ object Config {
         }
 
         object Aws {
-            const val sdkBom = "software.amazon.awssdk:bom:2.10.76"
+            const val sdkBom = "software.amazon.awssdk:bom:2.10.81"
             const val apacheClient = "software.amazon.awssdk:apache-client"
             const val sdkAuth = "software.amazon.awssdk:auth"
         }
 
         object OkHttp {
-            private const val version = "4.4.0"
-
+            private const val version = "4.4.1"
             const val client = "com.squareup.okhttp3:okhttp:$version"
             const val logging = "com.squareup.okhttp3:logging-interceptor:$version"
         }
@@ -212,7 +211,7 @@ object Config {
             private const val version = "2.7.2"
 
             const val client = "com.squareup.retrofit2:retrofit:$version"
-            const val converterKotlinxSerialization = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.4.0"
+            const val converterKotlinxSerialization = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.5.0"
         }
 
         object KotlinLogging {
@@ -240,7 +239,7 @@ object Config {
         const val slf4jSimple= "org.slf4j:slf4j-simple:1.7.25"
         const val slf4jTimber = "com.arcao:slf4j-timber:3.1@aar"
         const val elasticSearchHighLevelClient =
-            "org.elasticsearch.client:elasticsearch-rest-high-level-client:7.6.0"
+            "org.elasticsearch.client:elasticsearch-rest-high-level-client:7.6.1"
 
         const val byteUnits = "com.jakewharton.byteunits:byteunits:0.9.1"
 
@@ -256,7 +255,7 @@ object Config {
                 "com.squareup.moshi:moshi-adapters:$version"
         }
 
-        const val guavaAndroid = "com.google.guava:guava:28.0-android"
+        const val guavaAndroid = "com.google.guava:guava:28.2-android"
 
     }
 }

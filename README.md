@@ -45,6 +45,8 @@ Dummy social network playground use to investigate:
 - try https://github.com/autonomousapps/dependency-analysis-android-gradle-plugin
 - try https://github.com/maskarade/gradle-android-ribbonizer-plugin 
 - try Dexter lib for handling permission  https://github.com/Karumi/Dexter
+- review internal usage
+- review implementation vs api usage
 
 Extras:
 - Jetpack compose test?
@@ -63,4 +65,4 @@ Testing:
 - Android gradle publish issue: https://issuetracker.google.com/issues/144790367
 - Cloud App engine debug instance
 - Firebase inappmessage display depends on Picasso https://github.com/firebase/firebase-android-sdk/issues/1025
-- https://issuetracker.google.com/issues/147207696 Android 4.0.0-alpha07 buildFeatures missing
+- https://youtrack.jetbrains.com/issue/KT-35855, https://youtrack.jetbrains.com/issue/KT-32209 org.jetbrains.kotlin.js does not respect Gradle's archivesBaseName

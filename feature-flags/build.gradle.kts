@@ -53,5 +53,12 @@ kotlin {
                 api(Config.Libs.KotlinLogging.js)
             }
         }
+
+        val jsTest by getting {
+            dependencies {
+                api(Config.Libs.Kotlin.Test.js)
+                api(Config.Libs.Kotlin.Coroutine.test)
+            }
+        }
     }
 }

@@ -53,10 +53,6 @@ pluginManagement {
         google()
         mavenCentral()
         maven {
-            name = "Kotlin EAP (for kotlin-frontend-plugin)"
-            url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
-        }
-        maven {
             url = uri("https://maven.fabric.io/public")
             content {
                 includeModule("io.fabric.tools", "gradle")

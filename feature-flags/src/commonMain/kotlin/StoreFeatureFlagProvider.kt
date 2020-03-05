@@ -1,6 +1,6 @@
 package com.nicolasmilliard.socialcats.featureflags
 
-class StoreFeatureFlagProvider(priority: Int) : FeatureFlagProvider {
+class StoreFeatureFlagProvider(priority: Int = MIN_PRIORITY) : FeatureFlagProvider {
 
     override val priority = priority
 

@@ -32,7 +32,6 @@ allprojects {
     repositories {
         maven("https://kotlin.bintray.com/ktor")
         maven("https://kotlin.bintray.com/kotlin-js-wrappers/")
-        maven("https://dl.bintray.com/kotlin/kotlin-eap")
         google()
         mavenCentral()
         jcenter()

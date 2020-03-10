@@ -6,9 +6,7 @@ plugins {
 base.archivesBaseName = "store"
 
 kotlin {
-    android {
-        publishAllLibraryVariants()
-    }
+    android()
     js {
         browser()
     }

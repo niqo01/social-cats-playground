@@ -8,9 +8,7 @@ plugins {
 base.archivesBaseName = "auth-client"
 
 kotlin {
-    android {
-        publishAllLibraryVariants()
-    }
+    android()
     js {
         browser()
     }

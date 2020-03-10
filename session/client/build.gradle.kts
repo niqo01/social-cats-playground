@@ -8,9 +8,7 @@ plugins {
 base.archivesBaseName = "session"
 
 kotlin {
-    android {
-        publishAllLibraryVariants()
-    }
+    android()
     js {
         browser()
     }

@@ -74,18 +74,7 @@ android {
     }
 
     packagingOptions {
-        exclude("META-INF/atomicfu.kotlin_module")
-        exclude("META-INF/kotlinx-coroutines-core.kotlin_module")
-        exclude("META-INF/kotlinx-serialization-runtime.kotlin_module")
-        exclude("META-INF/kotlin-logging.kotlin_module")
-        exclude("META-INF/ui-android_debug.kotlin_module")
-        exclude("META-INF/session_debug.kotlin_module")
-        exclude("META-INF/ui-android_release.kotlin_module")
-        exclude("META-INF/session_release.kotlin_module")
-        exclude("META-INF/client_debug.kotlin_module")
-        exclude("META-INF/client_release.kotlin_module")
-        exclude("META-INF/search-presenter_debug.kotlin_module")
-        exclude("META-INF/search-presenter_release.kotlin_module")
+        exclude("META-INF/*.kotlin_module")
     }
 }
 

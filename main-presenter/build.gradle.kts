@@ -8,9 +8,7 @@ plugins {
 base.archivesBaseName = "search-presenter"
 
 kotlin {
-    android {
-        publishAllLibraryVariants()
-    }
+    android()
     js {
         browser()
     }

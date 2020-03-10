@@ -49,8 +49,9 @@ subprojects {
             freeCompilerArgs += listOf(
                 "-progressive",
                 "-Xnew-inference",
-                "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                "-Xuse-experimental=kotlinx.coroutines.FlowPreview"
+                "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                "-Xopt-in=kotlinx.coroutines.FlowPreview",
+                "-Xopt-in=kotlin.RequiresOptIn"
             )
         }
     }
@@ -66,6 +67,8 @@ subprojects {
                 return@afterEvaluate
             }
         }
+
+        configureAndroidPublishMultiplatformPlugins()
     }
 }
 
@@ -87,19 +90,17 @@ fun Project.configureJavaPlugins() {
     }
 }
 
-// TODO Code is not working , the android target is not present
-// fun Project.configureMultiplatformPlugins(){
-//    plugins.withId(Plugins.Ids.KOTLIN_MULTIPLATFORM) {
-//        extensions.getByType(org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension::class).apply {
-//            val androidTarget = this.targets.asMap["android"]
-//
-//            this.targets.forEach { logger.error("TEST 3: ${it.targetName}") }
-//            if (androidTarget != null){
-//                (androidTarget as KotlinAndroidTarget).publishAllLibraryVariants()
-//            }
-//        }
-//    }
-// }
+fun Project.configureAndroidPublishMultiplatformPlugins(){
+    plugins.withId(Plugins.Ids.KOTLIN_MULTIPLATFORM) {
+        extensions.getByType(org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension::class).apply {
+            val androidTarget = this.targets.asMap["android"]
+
+            if (androidTarget != null){
+                (androidTarget as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinAndroidTarget).publishAllLibraryVariants()
+            }
+        }
+    }
+}
 
 fun Project.configureAndroidPlugins() {
     ANDROID_PLUGIN_IDS.forEach {

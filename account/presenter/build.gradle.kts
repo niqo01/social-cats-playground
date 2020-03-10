@@ -8,9 +8,7 @@ plugins {
 base.archivesBaseName = "account-presenter"
 
 kotlin {
-    android {
-        publishAllLibraryVariants()
-    }
+    android()
     js {
         browser()
     }

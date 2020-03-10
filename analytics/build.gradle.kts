@@ -8,9 +8,7 @@ plugins {
 base.archivesBaseName = "analytics"
 
 kotlin {
-    android {
-        publishAllLibraryVariants()
-    }
+    android()
     js {
         browser()
     }

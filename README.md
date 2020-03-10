@@ -44,9 +44,7 @@ Dummy social network playground use to investigate:
 - Kaespresso https://github.com/KasperskyLab/Kaspresso
 - try https://github.com/autonomousapps/dependency-analysis-android-gradle-plugin
 - try https://github.com/maskarade/gradle-android-ribbonizer-plugin 
-- try Dexter lib for handling permission  https://github.com/Karumi/Dexter
-- review internal usage
-- review implementation vs api usage
+- try Dexter lib for handling permission  https://github.com/Karumi/Dexter-
 
 Extras:
 - Jetpack compose test?
@@ -62,7 +60,6 @@ Testing:
 - SessionManager token test flaky, adding a log fix the issue ...
 - No Firebase Auth update triggers
 - Read gradle.properties from buildSrc
-- Android gradle publish issue: https://issuetracker.google.com/issues/144790367
 - Cloud App engine debug instance
 - Firebase inappmessage display depends on Picasso https://github.com/firebase/firebase-android-sdk/issues/1025
 - https://youtrack.jetbrains.com/issue/KT-35855, https://youtrack.jetbrains.com/issue/KT-32209 org.jetbrains.kotlin.js does not respect Gradle's archivesBaseName

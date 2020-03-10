@@ -4,9 +4,7 @@ plugins {
 }
 
 kotlin {
-    android {
-        publishAllLibraryVariants()
-    }
+    android()
     js {
         browser()
     }

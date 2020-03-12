@@ -6,6 +6,7 @@ import com.nicolasmilliard.socialcats.search.repository.IndexUser
 import com.nicolasmilliard.socialcats.search.repository.SearchConstants.Index
 import com.nicolasmilliard.socialcats.store.DbConstants.Collections.Users
 import com.squareup.moshi.JsonAdapter
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -20,7 +21,7 @@ class FirestoreUserWrittenFunction(
     private val moshi = graph.moshi
     private val searchUseCase = graph.searchUseCase
 
-    override fun accept(json: String, context: Context) {
+    override fun accept(json: String, context: Context) = runBlocking {
         logger.debug {
             "Event ID: ${context.eventId()}, Resource: ${context.resource()}, " +
                 "Event Type: ${context.eventType()}, Timestamp: ${context.timestamp()}\n" +
@@ -41,7 +42,7 @@ class FirestoreUserWrittenFunction(
         }
     }
 
-    private fun indexUser(value: FirestoreValue) {
+    private suspend fun indexUser(value: FirestoreValue) {
         val indexFields = mutableMapOf<String, Any?>()
 
         value.fields.forEach { (k, v) ->

@@ -75,10 +75,10 @@ object Config {
         }
 
         object Ktor {
-            private const val ktorVersion = "1.3.1"
+            private const val ktorVersion = "1.3.2"
 
             const val ktorServerNetty = "io.ktor:ktor-server-netty:$ktorVersion"
-            const val ktorServerTest = "io.ktor:ktor-server-tests:$ktorVersion"
+            const val ktorServerTestHost = "io.ktor:ktor-server-test-host:$ktorVersion"
             const val ktorAuth = "io.ktor:ktor-auth:$ktorVersion"
             const val ktorSerialization = "io.ktor:ktor-serialization:$ktorVersion"
             const val ktorLocation = "io.ktor:ktor-locations:$ktorVersion"

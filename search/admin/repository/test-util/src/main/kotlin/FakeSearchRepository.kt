@@ -30,15 +30,15 @@ class FakeSearchRepository() : SearchRepository {
     val updatedUsers = HashMap<String, IndexUser>()
     val deletedUsers = HashSet<String>()
 
-    override fun indexUser(indexUser: IndexUser) {
+    override suspend fun indexUser(indexUser: IndexUser) {
         updatedUsers[indexUser.id] = indexUser
     }
 
-    override fun searchUsers(input: String): SearchResult {
+    override suspend fun searchUsers(input: String): SearchResult {
         return if (input.isEmpty()) aSearchResultNoInput else aSearchResult
     }
 
-    override fun deleteUser(id: String) {
+    override suspend fun deleteUser(id: String) {
         deletedUsers.add(id)
     }
 }

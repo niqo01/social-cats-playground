@@ -19,29 +19,35 @@ class AuthUserCreatedFunction(
     private val store = graph.store
 
     override fun accept(json: String, context: Context) {
-        log.debug {
-            "Event ID: ${context.eventId()}, Resource: ${context.resource()}," +
-                " Event Type: ${context.eventType()}, Timestamp: ${context.timestamp()}"
+        try {
+            log.debug {
+                "Event ID: ${context.eventId()}, Resource: ${context.resource()}," +
+                    " Event Type: ${context.eventType()}, Timestamp: ${context.timestamp()}"
+            }
+            log.debug { "json: $json" }
+            val jsonAdapter: JsonAdapter<UserRecord> = moshi.adapter(UserRecord::class.java)
+            val userRecord: UserRecord = checkNotNull(jsonAdapter.fromJson(json))
+
+            log.info { "On Auth User created, Event: $userRecord" }
+
+            val isAnonymous = userRecord.providerData == null
+            // We don't save anonymous users
+            if (isAnonymous) return
+
+            val userInfo = userRecord.providerData!![0]
+            val user =
+                InsertUser(
+                    userRecord.uid,
+                    userRecord.displayName ?: userInfo.displayName,
+                    userRecord.phoneNumber ?: userInfo.phoneNumber,
+                    userRecord.email ?: userInfo.email,
+                    userRecord.emailVerified,
+                    userRecord.photoURL ?: userInfo.photoURL
+                )
+            store.createUser(user)
+        } catch (e: Exception) {
+            log.error(e) { "Error while processing event" }
+            throw e
         }
-
-        val jsonAdapter: JsonAdapter<UserRecord> = moshi.adapter(UserRecord::class.java)
-        val userRecord: UserRecord = checkNotNull(jsonAdapter.fromJson(json))
-
-        log.info { "On Auth User created, Event: $userRecord" }
-
-        val isAnonymous = userRecord.providerData == null
-        // We don't save anonymous users
-        if (isAnonymous) return
-
-        val user =
-            InsertUser(
-                userRecord.uid,
-                userRecord.displayName,
-                userRecord.phoneNumber,
-                userRecord.email,
-                userRecord.emailVerified,
-                userRecord.photoURL
-            )
-        store.createUser(user)
     }
 }

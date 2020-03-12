@@ -110,18 +110,18 @@ internal class FirestoreEventFunctionTest {
     }
 
     class FakeSearchRepository : SearchRepository {
-        override fun indexUser(indexUser: IndexUser) {
+        override suspend fun indexUser(indexUser: IndexUser) {
             log.debug { "updateUserName()" }
             if (wasUpdatedCalled) IllegalStateException("updateUserName called more than once")
             wasUpdatedCalled = true
         }
 
-        override fun searchUsers(input: String): SearchResult {
+        override suspend fun searchUsers(input: String): SearchResult {
             TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
         }
 
         var wasDeletedCalled: Boolean = false
-        override fun deleteUser(id: String) {
+        override suspend fun deleteUser(id: String) {
             log.debug { "deleteUser()" }
             if (wasDeletedCalled) IllegalStateException("updateUserName called more than once")
             wasDeletedCalled = true

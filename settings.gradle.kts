@@ -66,7 +66,7 @@ pluginManagement {
                     useModule("androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion")
                 "kotlin-android", "kotlin-kapt" -> useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
                 "com.google.android.gms.oss-licenses-plugin" ->
-                    useModule("com.google.android.gms:oss-licenses-plugin:0.10.1")
+                    useModule("com.google.android.gms:oss-licenses-plugin:0.10.2")
                 "com.google.cloud.tools.appengine" -> useModule("com.google.cloud.tools:appengine-gradle-plugin:2.2.0")
                 "kotlinx-serialization" -> useModule("org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion")
             }

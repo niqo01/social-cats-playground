@@ -13,7 +13,7 @@ class SearchUseCase(
     private val repository: SearchRepository
 ) {
 
-    fun indexUser(indexUser: IndexUser) {
+    suspend fun indexUser(indexUser: IndexUser) {
         log.info { "Indexing New User name, id: $indexUser.id" }
         require(
             indexUser.fields.containsKey(Users.Fields.NAME) ||
@@ -24,12 +24,12 @@ class SearchUseCase(
         repository.indexUser(indexUser)
     }
 
-    fun deleteUser(id: String) {
+    suspend fun deleteUser(id: String) {
         log.info { "Deleting User, id: $id" }
         repository.deleteUser(id)
     }
 
-    fun searchUsers(callerUid: String?, input: String): SearchUsersResult {
+    suspend fun searchUsers(callerUid: String?, input: String): SearchUsersResult {
         log.info { "Searching Users, input: $input" }
         val searchResults = repository.searchUsers(input)
         val users = searchResults.hits.map {

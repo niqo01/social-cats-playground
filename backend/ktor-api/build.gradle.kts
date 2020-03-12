@@ -57,7 +57,7 @@ dependencies {
     implementation(Config.Libs.Firebase.admin)
     implementation(Config.Libs.OkHttp.client)
 
-    testImplementation(Config.Libs.Ktor.ktorServerTest)
+    testImplementation(Config.Libs.Ktor.ktorServerTestHost)
     testImplementation(Config.Libs.Test.truth)
 //    testImplementation(Config.Libs.OkHttp.client)
 

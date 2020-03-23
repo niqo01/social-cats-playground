@@ -13,16 +13,21 @@ internal class FirestoreEventFunctionTest {
 
     private class TestComponent {
         val fakeUserStore = FakeUserStore()
+        val fakeInitializer = object : Initializer {
+            override fun initialize() {
+            }
+        }
 
         fun build(): Graph {
             val appModule = AppModule()
             val moshi = appModule.provideMoshi()
-            return Graph(fakeUserStore, moshi)
+            return Graph(fakeUserStore, moshi, fakeInitializer)
         }
     }
 
     @Test
     fun `on user created event`() {
+
         val json = """
             {
                 "displayName": "Nicolas Milliard",

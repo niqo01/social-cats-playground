@@ -99,7 +99,7 @@ object Config {
             }
 
             object Coroutine {
-                private const val version = "1.3.4"
+                private const val version = "1.3.5"
 
                 const val common = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$version"
                 const val jdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$version"
@@ -120,9 +120,9 @@ object Config {
         }
 
         object AndroidX {
-            private const val pagingVersion = "2.1.1"
+            private const val pagingVersion = "2.1.2"
             private const val fragmentVersion = "1.2.2"
-            private const val workVersion = "2.3.3"
+            private const val workVersion = "2.3.4"
             private const val lifecycle = "2.2.0"
 
             const val appCompat = "androidx.appcompat:appcompat:1.1.0"
@@ -157,14 +157,14 @@ object Config {
             const val admin = "com.google.firebase:firebase-admin:6.12.2"
 
             const val common = "com.google.firebase:firebase-common-ktx:19.3.0"
-            const val auth = "com.google.firebase:firebase-auth:19.2.0"
+            const val auth = "com.google.firebase:firebase-auth:19.3.0"
             const val firestore = "com.google.firebase:firebase-firestore-ktx:21.4.1"
             const val analytics = "com.google.firebase:firebase-analytics:17.2.3"
             const val crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"
             const val performance = "com.google.firebase:firebase-perf:19.0.5"
-            const val remoteConfig = "com.google.firebase:firebase-config-ktx:19.1.2"
-            const val messaging = "com.google.firebase:firebase-messaging:20.1.2"
-            const val inAppMessaging = "com.google.firebase:firebase-inappmessaging-display-ktx:19.0.3"
+            const val remoteConfig = "com.google.firebase:firebase-config-ktx:19.1.3"
+            const val messaging = "com.google.firebase:firebase-messaging:20.1.3"
+            const val inAppMessaging = "com.google.firebase:firebase-inappmessaging-display-ktx:19.0.4"
 
             const val uiAuth = "com.firebaseui:firebase-ui-auth:6.2.0"
             const val uiFirestore = "com.firebaseui:firebase-ui-firestore:6.1.0"
@@ -196,7 +196,7 @@ object Config {
         }
 
         object Aws {
-            const val sdkBom = "software.amazon.awssdk:bom:2.10.81"
+            const val sdkBom = "software.amazon.awssdk:bom:2.10.90"
             const val apacheClient = "software.amazon.awssdk:apache-client"
             const val sdkAuth = "software.amazon.awssdk:auth"
         }
@@ -215,7 +215,7 @@ object Config {
         }
 
         object KotlinLogging {
-            private const val version = "1.7.8"
+            private const val version = "1.7.9"
             const val common = "io.github.microutils:kotlin-logging-common:$version"
             const val jdk = "io.github.microutils:kotlin-logging:$version"
             const val js = "io.github.microutils:kotlin-logging-js:$version"
@@ -230,7 +230,7 @@ object Config {
         const val timber = "com.jakewharton.timber:timber:4.7.1"
         const val coil = "io.coil-kt:coil-base:0.9.5"
 
-        const val okIo = "com.squareup.okio:okio:2.4.3"
+        const val okIo = "com.squareup.okio:okio:2.5.0"
         const val shimmer = "com.facebook.shimmer:shimmer:0.5.0"
 
 
@@ -243,7 +243,7 @@ object Config {
 
         const val byteUnits = "com.jakewharton.byteunits:byteunits:0.9.1"
 
-        const val playCore = "com.google.android.play:core-ktx:1.6.5"
+        const val playCore = "com.google.android.play:core-ktx:1.7.0"
 
         object Moshi {
             private const val version = "1.9.2"

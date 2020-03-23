@@ -1,22 +1,22 @@
 package com.nicolasmilliard.socialcats.search.repository
 
+import java.lang.Exception
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlinx.coroutines.suspendCancellableCoroutine
+import mu.KotlinLogging
 import org.elasticsearch.action.ActionListener
 import org.elasticsearch.action.delete.DeleteRequest
+import org.elasticsearch.action.delete.DeleteResponse
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.action.index.IndexResponse
 import org.elasticsearch.action.search.SearchRequest
+import org.elasticsearch.action.search.SearchResponse
 import org.elasticsearch.client.RequestOptions
 import org.elasticsearch.client.RestHighLevelClient
 import org.elasticsearch.index.VersionType
 import org.elasticsearch.index.query.QueryBuilders
 import org.elasticsearch.search.builder.SearchSourceBuilder
-import java.lang.Exception
-import kotlinx.coroutines.suspendCancellableCoroutine
-import mu.KotlinLogging
-import org.elasticsearch.action.delete.DeleteResponse
-import org.elasticsearch.action.search.SearchResponse
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.resume
 
 private val log = KotlinLogging.logger {}
 

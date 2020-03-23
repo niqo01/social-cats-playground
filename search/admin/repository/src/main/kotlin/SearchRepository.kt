@@ -1,7 +1,6 @@
 package com.nicolasmilliard.socialcats.search.repository
 
 import java.util.Date
-import mu.KotlinLogging
 
 interface SearchRepository {
     suspend fun indexUser(indexUser: IndexUser)
@@ -46,4 +45,3 @@ data class Document(
     val id: String,
     val fields: Map<String, Any?>
 )
-

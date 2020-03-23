@@ -3,7 +3,8 @@ package com.nicolasmilliard.socialcats
 import com.google.cloud.functions.Context
 import com.google.cloud.functions.RawBackgroundFunction
 import com.nicolasmilliard.socialcats.store.InsertUser
-import com.squareup.moshi.JsonAdapter
+import com.nicolasmilliard.socialcats.store.UserStoreAdmin
+import com.squareup.moshi.Moshi
 import mu.KotlinLogging
 
 private val log = KotlinLogging.logger {}
@@ -11,12 +12,16 @@ private val log = KotlinLogging.logger {}
 /**
  * Function triggered on new Auth user (/databases/(default)/documents/users/{id}) modifications.
  */
-class AuthUserCreatedFunction(
-    graph: Graph = AppComponent().build()
-) : RawBackgroundFunction {
+class AuthUserCreatedFunction : RawBackgroundFunction {
 
-    private val moshi = graph.moshi
-    private val store = graph.store
+    private val userConverter: UserConverter
+    private val store: UserStoreAdmin
+
+    constructor(graph: Graph = AppComponent().build()) {
+        userConverter = UserConverter(graph.moshi)
+        store = graph.store
+        graph.appInitializer.initialize()
+    }
 
     override fun accept(json: String, context: Context) {
         try {
@@ -25,9 +30,8 @@ class AuthUserCreatedFunction(
                     " Event Type: ${context.eventType()}, Timestamp: ${context.timestamp()}"
             }
             log.debug { "json: $json" }
-            val jsonAdapter: JsonAdapter<UserRecord> = moshi.adapter(UserRecord::class.java)
-            val userRecord: UserRecord = checkNotNull(jsonAdapter.fromJson(json))
 
+            val userRecord = userConverter.convert(json)
             log.info { "On Auth User created, Event: $userRecord" }
 
             val isAnonymous = userRecord.providerData == null
@@ -48,6 +52,15 @@ class AuthUserCreatedFunction(
         } catch (e: Exception) {
             log.error(e) { "Error while processing event" }
             throw e
+        }
+    }
+
+    private class UserConverter(moshi: Moshi) {
+
+        private val adapter = moshi.adapter(UserRecord::class.java)
+
+        fun convert(json: String): UserRecord {
+            return checkNotNull(adapter.fromJson(json))
         }
     }
 }

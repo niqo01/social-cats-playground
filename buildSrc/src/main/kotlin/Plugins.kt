@@ -18,7 +18,7 @@ object Plugins {
         const val ktlint = "0.36.0"
     }
     object OldWay  {
-        const val android = "com.android.tools.build:gradle:4.0.0-beta02"
+        const val android = "com.android.tools.build:gradle:4.0.0-beta03"
         const val appDistribution = "com.google.firebase:firebase-appdistribution-gradle:1.3.1"
         const val googleServices = "com.google.gms:google-services:4.3.3"
         const val fabric =  "io.fabric.tools:gradle:1.31.2"

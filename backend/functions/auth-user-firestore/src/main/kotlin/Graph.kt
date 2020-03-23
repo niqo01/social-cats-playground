@@ -13,7 +13,8 @@ import java.util.Date
 
 data class Graph(
     val store: UserStoreAdmin,
-    val moshi: Moshi
+    val moshi: Moshi,
+    val appInitializer: Initializer
 )
 
 class AppComponent(
@@ -21,11 +22,13 @@ class AppComponent(
 ) {
     fun build(): Graph {
         val firebaseOptions = module.provideFirebaseOptions()
+        // Can't move the following into initialize otherwise getting firestore fails
         FirebaseApp.initializeApp(firebaseOptions)
+        val appInitializer = AppInitializer()
         val firestore = module.provideFirestore()
         val socialCatsFirestoreAdmin = module.provideSocialCatsFirestoreAdmin(firestore)
         val moshi = module.provideMoshi()
-        return Graph(socialCatsFirestoreAdmin, moshi)
+        return Graph(socialCatsFirestoreAdmin, moshi, appInitializer)
     }
 }
 
@@ -46,4 +49,13 @@ class AppModule {
     fun provideMoshi() = Moshi.Builder()
         .add(Date::class.java, Rfc3339DateJsonAdapter())
         .build()
+}
+
+interface Initializer {
+    fun initialize()
+}
+
+class AppInitializer() : Initializer {
+    override fun initialize() {
+    }
 }

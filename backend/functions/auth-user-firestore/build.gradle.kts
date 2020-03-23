@@ -20,6 +20,18 @@ tasks.withType<ShadowJar> {
     mergeServiceFiles()
 }
 
+val functionalTest: SourceSet by sourceSets.creating {
+    compileClasspath += sourceSets.getByName("main").output
+    runtimeClasspath += sourceSets.getByName("main").output
+}
+
+val functionalTestImplementation: Configuration by configurations.getting {
+    extendsFrom(configurations.implementation.get())
+}
+val functionalTestRuntimeOnly: Configuration by configurations.getting {
+    extendsFrom(configurations.runtimeOnly.get())
+}
+
 dependencies {
 
     implementation(project(":store:admin"))
@@ -40,4 +52,21 @@ dependencies {
     testImplementation(Config.Libs.GoogleFunction.functionFrameworkApi)
     testImplementation(Config.Libs.Test.junit)
     testImplementation(Config.Libs.Test.truth)
+
+    functionalTestImplementation(Config.Libs.Test.junit)
+    functionalTestImplementation(Config.Libs.Test.truth)
+    functionalTestImplementation(Config.Libs.GoogleFunction.functionFrameworkApi)
+}
+
+tasks {
+    register("functionalTest", Test::class) {
+        description = "Run functional tests"
+        group = "verification"
+
+        testClassesDirs = functionalTest.output.classesDirs
+        classpath = functionalTest.runtimeClasspath
+        maxParallelForks = 1
+
+        environment("GOOGLE_APPLICATION_CREDENTIALS", "src/functionalTest/service-account.json")
+    }
 }

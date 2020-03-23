@@ -90,12 +90,12 @@ fun Project.configureJavaPlugins() {
     }
 }
 
-fun Project.configureAndroidPublishMultiplatformPlugins(){
+fun Project.configureAndroidPublishMultiplatformPlugins() {
     plugins.withId(Plugins.Ids.KOTLIN_MULTIPLATFORM) {
         extensions.getByType(org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension::class).apply {
             val androidTarget = this.targets.asMap["android"]
 
-            if (androidTarget != null){
+            if (androidTarget != null) {
                 (androidTarget as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinAndroidTarget).publishAllLibraryVariants()
             }
         }

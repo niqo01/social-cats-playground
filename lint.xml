@@ -11,4 +11,6 @@
     </issue>
     <!-- No one cares. -->
     <issue id="GoogleAppIndexingWarning" severity="ignore" />
+    <!-- Wong alert. -->
+    <issue id="RemoveWorkManagerInitializer" severity="ignore" />
 </lint>

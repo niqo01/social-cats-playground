@@ -18,7 +18,8 @@
         android:textAppearance="?attr/textAppearanceListItemSecondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/textview_testsettings_featuretoggle"
@@ -32,7 +33,9 @@
         android:textAppearance="?attr/textAppearanceListItem"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview_testsettings_explanation" />
+        app:layout_constraintTop_toBottomOf="@+id/textview_testsettings_explanation"
+        tools:targetApi="m"
+        tools:ignore="HardcodedText,UnusedAttribute" />
 
     <TextView
         android:id="@+id/formattextview_testsettings_testsetting"
@@ -46,6 +49,8 @@
         android:textAppearance="?attr/textAppearanceListItem"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview_testsettings_featuretoggle" />
+        app:layout_constraintTop_toBottomOf="@+id/textview_testsettings_featuretoggle"
+        tools:targetApi="m"
+        tools:ignore="HardcodedText,UnusedAttribute" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

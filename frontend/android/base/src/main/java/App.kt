@@ -1,7 +1,6 @@
 package com.nicolasmilliard.socialcats
 
 import androidx.work.Configuration
-import com.crashlytics.android.Crashlytics
 import com.google.android.play.core.splitcompat.SplitCompatApplication
 import com.nicolasmilliard.socialcats.cloudmessaging.CloudMessagingProvider
 import com.nicolasmilliard.socialcats.cloudmessaging.NotificationChannelHelper
@@ -29,27 +28,20 @@ open class App : SplitCompatApplication(), AppComponentProvider, StoreProvider, 
     override fun onCreate() {
         super.onCreate()
 
-        Timber.plant(CrashlyticsTree())
-
+        Timber.plant(BugReporterTree(bugReporter))
         Timber.i("App.onCreate()")
-        scope.launch(Dispatchers.Default) {
-            sessionManager.sessions.collect {
-                when (it.authState) {
-                    is SessionAuthState.Authenticated ->
-                        Crashlytics.setUserIdentifier((it.authState as SessionAuthState.Authenticated).uId)
-                    else -> Crashlytics.setUserIdentifier(null)
-                }
-            }
-        }
-        initializeFeatureFlag()
+
+        appInitializer.initialize()
 
         NotificationChannelHelper(this).initChannels()
         Timber.d("Trigger cloudMessaging to start $cloudMessaging")
     }
 
+    val appInitializer by lazy { appComponent.appInitializer }
     override val appComponent by lazy { AppComponent(this, scope) }
     override val store by lazy { appComponent.store }
     override val sessionManager by lazy { appComponent.sessionManager }
+    val bugReporter by lazy { appComponent.bugReporter }
     override val cloudMessaging by lazy { appComponent.cloudMessaging }
 
     override fun getWorkManagerConfiguration() =
@@ -57,8 +49,4 @@ open class App : SplitCompatApplication(), AppComponentProvider, StoreProvider, 
             .setMinimumLoggingLevel(android.util.Log.INFO)
             .build()
 
-    open fun initializeFeatureFlag() {
-        RuntimeBehavior.addProvider(StoreFeatureFlagProvider(MIN_PRIORITY))
-        RuntimeBehavior.addProvider(FirebaseFeatureFlagProvider(MAX_PRIORITY, false))
-    }
 }

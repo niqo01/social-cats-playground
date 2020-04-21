@@ -1,7 +1,6 @@
 package com.nicolasmilliard.socialcats.featureflags
 
-import com.nicolasmilliard.socialcats.util.Lock
-import com.nicolasmilliard.socialcats.util.withLock
+import co.touchlab.stately.collections.IsoMutableList
 
 /**
  * Check whether a feature should be enabled or not. Based on the priority of the different providers and if said
@@ -9,11 +8,9 @@ import com.nicolasmilliard.socialcats.util.withLock
  */
 object RuntimeBehavior {
 
-    // TODO Use CopyOnWrite list when stately support collections in JS
-    private val mutex = Lock()
-    internal val providers = mutableListOf<FeatureFlagProvider>()
+    internal val providers = IsoMutableList<FeatureFlagProvider>()
 
-    fun isFeatureEnabled(feature: Feature): Boolean = mutex.withLock {
+    fun isFeatureEnabled(feature: Feature): Boolean {
         return providers
             .filter { it.hasFeature(feature) }
             .minBy(FeatureFlagProvider::priority)
@@ -22,29 +19,29 @@ object RuntimeBehavior {
     }
 
     suspend fun fetchFeatureFlags(forceRefresh: Boolean) {
-        val remoteProviders = mutex.withLock {
+        val remoteProviders =
             providers
                 .filter { it is RemoteFeatureFlagProvider }.toList()
-        }
+
         remoteProviders
                 .forEach { (it as RemoteFeatureFlagProvider).fetch(forceRefresh) }
     }
 
-    suspend fun activateFeatureFlags() = mutex.withLock {
-        val remoteProviders = mutex.withLock {
+    suspend fun activateFeatureFlags() {
+        val remoteProviders =
             providers
                 .filter { it is RemoteFeatureFlagProvider }.toList()
-        }
+
         remoteProviders
             .filter { it is RemoteFeatureFlagProvider }
             .forEach { (it as RemoteFeatureFlagProvider).activate() }
     }
 
-    fun addProvider(provider: FeatureFlagProvider): Unit = mutex.withLock {
+    fun addProvider(provider: FeatureFlagProvider) {
         providers.add(provider)
     }
 
-    fun clearFeatureFlagProviders() = mutex.withLock { providers.clear() }
+    fun clearFeatureFlagProviders() = providers.clear()
 
     fun removeAllFeatureFlagProviders(priority: Int) = providers.removeAll(providers.filter { it.priority == priority })
 }

@@ -20,13 +20,11 @@ import com.nicolasmilliard.socialcats.util.isCausedBy
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.RENDEZVOUS
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
@@ -39,26 +37,19 @@ class SearchPresenter(
     private val connectivityChecker: ConnectivityChecker
 ) : Presenter<Model, Event> {
 
-    private val _models = ConflatedBroadcastChannel<Model>()
-    override val models: Flow<Model> get() = _models.asFlow().distinctUntilChanged()
+    private val _models = MutableStateFlow<Model>(Model())
+    override val models: StateFlow<Model> get() = _models
 
     private val _events = Channel<Event>(RENDEZVOUS)
     override val events: (Event) -> Unit get() = { _events.offer(it) }
 
     override suspend fun start() {
         coroutineScope {
-            var model = Model()
-            fun sendModel(newModel: Model) {
-                model = newModel
-                _models.offer(newModel)
-            }
-
-            sendModel(model)
 
             launch {
                 connectivityChecker.connectedStatus
                     .collect {
-                        sendModel(model.copy(isConnected = it))
+                        _models.value = _models.value.copy(isConnected = it)
                     }
             }
 
@@ -69,11 +60,11 @@ class SearchPresenter(
                 sessionManager.sessions
                     .collect {
                         if (!it.hasAuthToken) {
-                            sendModel(model.copy(loadingState = Model.LoadingState.UnAuthenticated))
+                            _models.value = _models.value.copy(loadingState = Model.LoadingState.UnAuthenticated)
                         } else if (session == null || !session!!.hasAuthToken) {
                             activeQueryJob?.cancel()
                             activeQueryJob = launch {
-                                onQueryChanged(activeQuery, ::sendModel, model)
+                                onQueryChanged(activeQuery)
                             }
                         }
 
@@ -85,15 +76,14 @@ class SearchPresenter(
                 _events.consumeEach {
                     when (it) {
                         is Event.ClearRefreshStatus -> {
-                            val hasData = model.loadingState is Success
+                            val hasData = _models.value.loadingState is Success
                             if (hasData) {
-                                sendModel(
-                                    model.copy(
-                                        loadingState = (model.loadingState as Success).copy(
+                                _models.value =
+                                    _models.value.copy(
+                                        loadingState = (_models.value.loadingState as Success).copy(
                                             refreshing = IDLE
                                         )
                                     )
-                                )
                             } else {
                                 logger.warn { "Clearing refresh state while not in success state" }
                             }
@@ -104,14 +94,14 @@ class SearchPresenter(
                                 activeQuery = query
                                 activeQueryJob?.cancel()
                                 activeQueryJob = launch {
-                                    onQueryChanged(query, ::sendModel, model)
+                                    onQueryChanged(query)
                                 }
                             }
                         }
                         is Event.Retry -> {
                             activeQueryJob?.cancel()
                             activeQueryJob = launch {
-                                onQueryChanged(activeQuery, ::sendModel, model)
+                                onQueryChanged(activeQuery)
                             }
                         }
                     }
@@ -120,7 +110,7 @@ class SearchPresenter(
         }
     }
 
-    suspend fun onQueryChanged(query: String, sendModel: (Model) -> Unit, model: Model) {
+    suspend fun onQueryChanged(query: String) {
         logger.info { "onQueryChanged query: $query" }
         val session = sessionManager.sessions
             .first()
@@ -132,47 +122,46 @@ class SearchPresenter(
             } else null
 
         if (token == null) {
-            sendModel(model.copy(loadingState = Model.LoadingState.UnAuthenticated))
+            _models.value = _models.value.copy(loadingState = Model.LoadingState.UnAuthenticated)
             return
         }
-        if (model.loadingState is Success) {
-            sendModel(
-                model.copy(
-                    loadingState = (model.loadingState).copy(
+        if (_models.value.loadingState is Success) {
+            _models.value =
+                _models.value.copy(
+                    loadingState = (_models.value.loadingState as Success).copy(
                         refreshing = LOADING
                     )
                 )
-            )
         } else {
-            sendModel(model.copy(loadingState = Loading))
+            _models.value = _models.value.copy(loadingState = Loading)
         }
 
         searchLoader.searchUsers(token, query).collect { result ->
-            val hasData = model.loadingState is Success
-            sendModel(
+            val hasData = _models.value.loadingState is Success
+            _models.value =
                 when (result) {
                     SearchLoader.Status.InProgress -> {
                         if (hasData) {
-                            model.copy(
-                                loadingState = (model.loadingState as Success).copy(
+                            _models.value.copy(
+                                loadingState = (_models.value.loadingState as Success).copy(
                                     refreshing = LOADING
                                 )
                             )
                         } else {
-                            model.copy(
+                            _models.value.copy(
                                 loadingState = Loading
                             )
                         }
                     }
                     is SearchLoader.Status.Success -> {
                         if (hasData) {
-                            model.copy(
-                                loadingState = (model.loadingState as Success).copy(
+                            _models.value.copy(
+                                loadingState = (_models.value.loadingState as Success).copy(
                                     refreshing = IDLE
                                 )
                             )
                         } else {
-                            model.copy(
+                            _models.value.copy(
                                 loadingState = Success(
                                     result.data.totalHits, Model.QueryResults(
                                         query,
@@ -190,18 +179,18 @@ class SearchPresenter(
                         }
 
                         if (hasData) {
-                            model.copy(
-                                loadingState = (model.loadingState as Success).copy(
+                            _models.value.copy(
+                                loadingState = (_models.value.loadingState as Success).copy(
                                     refreshing = FAILED
                                 )
                             )
                         } else {
-                            model.copy(
+                            _models.value.copy(
                                 loadingState = Failed
                             )
                         }
                     }
-                })
+                }
         }
     }
 
@@ -212,7 +201,7 @@ class SearchPresenter(
     }
 
     data class Model(
-        val isConnected: Boolean = true,
+        val isConnected: Boolean = false,
         val loadingState: LoadingState = Loading
     ) {
         data class QueryResults(

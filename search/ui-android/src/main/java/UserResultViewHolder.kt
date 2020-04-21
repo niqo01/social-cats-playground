@@ -4,7 +4,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
-import coil.api.load
+import coil.request.LoadRequest
 import coil.transform.CircleCropTransformation
 import com.nicolasmilliard.socialcats.model.User
 import com.nicolasmilliard.socialcats.search.ui.databinding.UserBinding
@@ -29,11 +29,12 @@ internal class UserResultViewHolder(
         val user = userResult.user
         this.user = user
 
-        imageLoader.load(binding.userPhoto.context, user.photoUrl) {
-            crossfade(true)
-            transformations(CircleCropTransformation())
-            target(binding.userPhoto)
-        }
+        val request = LoadRequest.Builder(binding.userPhoto.context)
+            .data(user.photoUrl)
+            .target(binding.userPhoto)
+            .transformations(CircleCropTransformation())
+            .build()
+        imageLoader.execute(request)
 
         binding.userName.text = user.name
         binding.userAdditional.text = user.id

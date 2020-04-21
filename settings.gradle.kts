@@ -1,6 +1,7 @@
 rootProject.name = "social-cats-playground"
 
 include(":analytics")
+include(":bug-reporter")
 include(":backend:ktor-api")
 include(":backend:functions:auth-user-firestore")
 include(":backend:functions:firestore-user-elasticsearch")
@@ -52,12 +53,6 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
-        maven {
-            url = uri("https://maven.fabric.io/public")
-            content {
-                includeModule("io.fabric.tools", "gradle")
-            }
-        }
     }
     resolutionStrategy {
         eachPlugin {

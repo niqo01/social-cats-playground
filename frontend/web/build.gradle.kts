@@ -23,10 +23,10 @@ kotlin {
         implementation(Config.Libs.WebFrontend.kotlinReactRouterDom)
         implementation(Config.Libs.KotlinLogging.js)
 
-        implementation(npm("firebase", "7.3.0"))
+        implementation(npm("firebase", "7.14.1"))
         implementation(npm("react-firebaseui", "4.0.0"))
-        implementation(npm("react", "16.11.0"))
-        implementation(npm("react-dom", "16.11.0"))
+        implementation(npm("react", "16.13.1"))
+        implementation(npm("react-dom", "16.13.1"))
         implementation(npm("react-router-dom", "5.1.2"))
 
         // TODO Should be dev dependency

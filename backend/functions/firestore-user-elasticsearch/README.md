@@ -20,4 +20,4 @@ gcloud alpha functions deploy FirestoreUserWritten \
 --trigger-event providers/cloud.firestore/eventTypes/document.write \
 --trigger-resource "projects/sweat-monkey/databases/(default)/documents/users/{userId}" \
 --source=backend/functions/firestore-user-elasticsearch/build/libs \
---set-env-vars "ES_ENDPOINT=...,ES_API_KEY_ID=...,ES_API_KEY=..."
+--set-env-vars "JAVA_TOOL_OPTIONS=-XX:MaxRAM=256m,ES_ENDPOINT=...,ES_API_KEY_ID=...,ES_API_KEY=..."

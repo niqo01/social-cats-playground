@@ -1,19 +1,21 @@
 package com.nicolasmilliard.socialcats.auth
 
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class FakeAuthProvider : AuthProvider {
 
-    private val _authUserChannel: BroadcastChannel<AuthUser?> = ConflatedBroadcastChannel()
-    private val authUserflow: Flow<AuthUser?> = _authUserChannel.asFlow()
+    private val _authUserChannel = MutableStateFlow<AuthUser?>(null)
+    private val authUserflow: StateFlow<AuthUser?> = _authUserChannel
 
     override fun getAuthUser(): Flow<AuthUser?> = authUserflow
 
-    private val _authTokenChannel: BroadcastChannel<NewToken?> = ConflatedBroadcastChannel()
-    private val authTokenflow: Flow<NewToken?> = _authTokenChannel.asFlow()
+    private val _authTokenChannel = MutableStateFlow<NewToken?>(null)
+    private val authTokenflow: StateFlow<NewToken?> = _authTokenChannel
 
     override fun getAuthToken(): Flow<NewToken?> = authTokenflow
 
@@ -33,12 +35,17 @@ class FakeAuthProvider : AuthProvider {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
-    fun offerUser(user: AuthUser?) {
-        _authUserChannel.offer(user)
+    suspend fun offerUser(delay: Long, user: AuthUser?) {
+        coroutineScope {
+            launch {
+                delay(delay)
+                _authUserChannel.value = user
+            }
+        }
     }
 
-    fun offerToken(token: NewToken?) {
-        _authTokenChannel.offer(token)
+    suspend fun offerToken(token: NewToken?) {
+        _authTokenChannel.value = token
     }
 }
 

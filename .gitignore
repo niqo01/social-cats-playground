@@ -7,4 +7,4 @@ out
 *.iws
 local.properties
 env_variables.yaml
-service-account-*
+*service-account.json

@@ -22,7 +22,7 @@ import io.ktor.locations.Locations
 import io.ktor.request.header
 import io.ktor.request.path
 import io.ktor.routing.routing
-import io.ktor.serialization.serialization
+import io.ktor.serialization.json
 import io.ktor.server.engine.ShutDownUrl
 import kotlinx.atomicfu.atomic
 import org.slf4j.event.Level
@@ -61,7 +61,7 @@ fun Application.module(testing: Boolean = false) {
         }
     }
     install(ContentNegotiation) {
-        serialization()
+        json()
     }
     install(Locations)
     install(CallId) {

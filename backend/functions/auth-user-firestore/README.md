@@ -16,6 +16,7 @@ gcloud alpha functions deploy AuthUserCreated \
 --entry-point com.nicolasmilliard.socialcats.AuthUserCreatedFunction \
 --trigger-event providers/firebase.auth/eventTypes/user.create \
 --trigger-resource "sweat-monkey" \
+--set-env-vars="JAVA_TOOL_OPTIONS=-XX:MaxRAM=256m" \
 --source=backend/functions/auth-user-firestore/build/libs
 
 # Delete 

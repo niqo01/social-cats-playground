@@ -55,7 +55,7 @@ interface Initializer {
     fun initialize()
 }
 
-class AppInitializer() : Initializer {
+class AppInitializer : Initializer {
     override fun initialize() {
     }
 }

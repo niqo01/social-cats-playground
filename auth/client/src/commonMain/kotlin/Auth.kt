@@ -1,16 +1,15 @@
 package com.nicolasmilliard.socialcats.auth
 
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
 import mu.KotlinLogging
 
 interface AuthProvider {
@@ -25,17 +24,13 @@ interface AuthProvider {
 private val logger = KotlinLogging.logger {}
 
 class Auth(private val authProvider: AuthProvider) {
-    private val _authState = ConflatedBroadcastChannel<AuthState>()
-    val authStates: Flow<AuthState> get() = _authState.asFlow()
+    private val _authState = MutableStateFlow<AuthState?>(null)
+    val authStates: Flow<AuthState> get() = _authState.filterNotNull()
 
-    suspend fun start() {
-        coroutineScope {
-            launch {
-                getAuthState()
-                    .onEach { logger.info { "$it" } }
-                    .collect { _authState.offer(it) }
-            }
-        }
+    suspend fun start() = coroutineScope {
+        getAuthState()
+            .onEach { logger.info { "$it" } }
+            .collect { _authState.value = it }
     }
 
     private fun getAuthState(): Flow<AuthState> {

@@ -27,7 +27,7 @@ class SearchFragment : Fragment() {
         val imageLoader = requireContext().component.imageLoader
 
         val onItemUserClick = OpenProfileUserHandler(findNavController())
-        val onCheckConnectivityClick = CheckConnectivityHandler(activity!!, CHECK_CONNECTIVITY_SETTINGS_CODE)
+        val onCheckConnectivityClick = CheckConnectivityHandler(requireActivity(), CHECK_CONNECTIVITY_SETTINGS_CODE)
 
         val binding = SearchBinding.inflate(inflater, container, false)
         viewLifecycleOwner.lifecycleScope.launch {

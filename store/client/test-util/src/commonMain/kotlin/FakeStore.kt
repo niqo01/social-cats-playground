@@ -1,14 +1,13 @@
 package com.nicolasmilliard.socialcats.store
 
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 
 class FakeStore : UserStore {
 
-    private val storeUserChannel: BroadcastChannel<User> = ConflatedBroadcastChannel()
-    private val userFlow = storeUserChannel.asFlow()
+    private val storeUserChannel = MutableStateFlow<User?>(null)
+    private val userFlow = storeUserChannel.filterNotNull()
 
     var user: User? = null
 
@@ -37,7 +36,7 @@ class FakeStore : UserStore {
 
     fun offer(user: User) {
         this.user = user
-        storeUserChannel.offer(user)
+        storeUserChannel.value = user
     }
 }
 

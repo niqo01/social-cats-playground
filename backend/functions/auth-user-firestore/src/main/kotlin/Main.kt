@@ -1,6 +1,6 @@
 package com.nicolasmilliard.socialcats
 
-fun main(){
+fun main() {
     val context = FakeContext()
 //        val testComponent = TestComponent()
 

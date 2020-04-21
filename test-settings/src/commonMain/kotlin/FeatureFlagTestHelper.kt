@@ -4,6 +4,7 @@ import com.nicolasmilliard.socialcats.featureflags.Feature
 import com.nicolasmilliard.socialcats.featureflags.FeatureFlagProvider
 import com.nicolasmilliard.socialcats.featureflags.MAX_PRIORITY
 import com.nicolasmilliard.socialcats.featureflags.RuntimeBehavior
+import kotlin.jvm.JvmStatic
 
 /**
  * Must be used only from test source code.

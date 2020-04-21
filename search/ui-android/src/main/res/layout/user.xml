@@ -8,7 +8,8 @@
     android:paddingStart="@dimen/list_item_margins"
     android:paddingEnd="@dimen/list_item_margins"
     android:paddingBottom="@dimen/list_item_margins"
-    tools:ignore="Overdraw">
+    tools:ignore="Overdraw,UnusedAttribute"
+    tools:targetApi="m">
 
     <ImageView
         android:id="@+id/user_photo"
@@ -17,7 +18,8 @@
         android:layout_marginTop="@dimen/list_item_margins"
         app:srcCompat="@drawable/ic_baseline_account_circle_40"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/user_name"

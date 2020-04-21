@@ -2,15 +2,12 @@ import components.TermsComponent
 import components.home
 import kotlin.browser.document
 import kotlin.browser.window
-import kotlinext.js.require
-import kotlinext.js.requireAll
 import react.dom.render
 import react.router.dom.hashRouter
 import react.router.dom.route
 import react.router.dom.switch
 
 fun main() {
-    requireAll(require.context(".", true, js("/\\.css$/")))
 
     initFirebase()
 

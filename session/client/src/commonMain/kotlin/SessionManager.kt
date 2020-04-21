@@ -1,17 +1,15 @@
 package com.nicolasmilliard.socialcats.session
 
-import com.nicolasmilliard.socialcats.analytics.Analytics
 import com.nicolasmilliard.socialcats.auth.Auth
 import com.nicolasmilliard.socialcats.auth.AuthState
 import com.nicolasmilliard.socialcats.store.DeviceInfo
 import com.nicolasmilliard.socialcats.store.UserStore
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -22,116 +20,158 @@ private val logger = KotlinLogging.logger {}
 class SessionManager(
     private val auth: Auth,
     private val store: UserStore,
-    private val deviceInfoProvider: DeviceInfoProvider,
-    private val analytics: Analytics
+    private val deviceInfoProvider: DeviceInfoProvider
 ) {
 
-    private val _sessions = ConflatedBroadcastChannel<Session>()
-    val sessions: Flow<Session> get() = _sessions.asFlow()
+    private val _sessions = MutableStateFlow(Session())
+    val sessions: StateFlow<Session> get() = _sessions
 
     private val _newTokens = Channel<String>(Channel.CONFLATED)
     val onNewTokens: (String) -> Unit get() = { _newTokens.offer(it) }
 
-    suspend fun start() {
+    suspend fun start() = coroutineScope {
         logger.info { "start" }
-        coroutineScope {
-            var session = Session()
 
-            fun sendSession(newSession: Session) {
-                session = newSession
-                logger.info {
-                    "Sending session, Authenticated: ${session.isAuthenticated}, " +
-                        " anonymous: ${session.authState is SessionAuthState.Authenticated.Anonymous}" +
-                        ", Device: ${session.device}"
-                }
-                _sessions.offer(session)
+        fun sendSession(newSession: Session) {
+            logger.info {
+                "Sending session, $newSession"
             }
+            _sessions.value = newSession
+        }
 
-            launch {
-                var userJob: Job? = null
-                var deviceInfoJob: Job? = null
-                auth.authStates
-                    .collect { authState ->
-                        when (authState) {
-                            is AuthState.UnAuthenticated -> {
-                                analytics.setUserId(null)
-                                userJob?.cancel()
-                                deviceInfoJob?.cancel()
-                                sendSession(
-                                    session.copy(
-                                        authState = SessionAuthState.UnAuthenticated
-                                    )
+        launch {
+            var userJob: Job? = null
+            var deviceInfoJob: Job? = null
+            auth.authStates
+                .collect { authState ->
+                    val savedSession = _sessions.value
+
+                    when (authState) {
+                        is AuthState.UnAuthenticated -> {
+                            userJob?.cancel()
+                            deviceInfoJob?.cancel()
+                            logger.info { "1" }
+                            sendSession(
+                                savedSession.copy(
+                                    authState = SessionAuthState.UnAuthenticated
+                                )
+                            )
+                        }
+                        is AuthState.Authenticated -> {
+
+                            val newState = if (authState.authUser.isAnonymous) {
+                                SessionAuthState.Authenticated.Anonymous(
+                                    authState.authUser.uid,
+                                    authState.authToken?.token
+                                )
+                            } else {
+                                val sameAuthUser = savedSession.authState is SessionAuthState.Authenticated &&
+                                    authState.authUser.uid == savedSession.authState.uId
+                                val user =
+                                    if (savedSession.authState is SessionAuthState.Authenticated.User &&
+                                        sameAuthUser
+                                    ) {
+                                        savedSession.authState.user
+                                    } else null
+                                SessionAuthState.Authenticated.User(
+                                    authState.authUser.uid,
+                                    authState.authToken?.token,
+                                    user
                                 )
                             }
-                            is AuthState.Authenticated -> {
-                                analytics.setUserId(authState.authUser.uid)
-                                val state = if (authState.authUser.isAnonymous) {
-                                    SessionAuthState.Authenticated.Anonymous(
-                                        authState.authUser.uid,
-                                        authState.authToken?.token
-                                    )
-                                } else {
-                                    SessionAuthState.Authenticated.User(
-                                        authState.authUser.uid,
-                                        authState.authToken?.token,
-                                        null
-                                    )
-                                }
-                                sendSession(session.copy(authState = state))
 
-                                userJob?.cancel()
-                                if (state is SessionAuthState.Authenticated.User) {
-                                    userJob = launch {
-                                        var currentUser = store.user(authState.authUser.uid, true)
-
-                                        if (currentUser == null) {
-                                            currentUser = store.user(authState.authUser.uid).first()
-                                        }
-                                        sendSession(
-                                            session.copy(
-                                                authState = (session.authState as SessionAuthState.Authenticated.User).copy(
-                                                    user = currentUser
-                                                )
-                                            )
-                                        )
-                                    }
-                                }
-
-                                deviceInfoJob?.cancel()
-                                deviceInfoJob = launch {
-                                    val localDeviceInfo = deviceInfoProvider.getDeviceInfo()
-                                    var deviceInfoStored =
-                                        store.deviceInfo(authState.authUser.uid, localDeviceInfo.instanceId, true)
-
-                                    sendSession(session.copy(device = localDeviceInfo))
-                                    if (localDeviceInfo != deviceInfoStored) {
-                                        store.saveDeviceInfo(authState.authUser.uid, localDeviceInfo)
-                                    }
-                                }
-                            }
+                            logger.info { "2" }
+                            sendSession(savedSession.copy(authState = newState))
                         }
                     }
-            }
 
-            launch {
-                val deviceInfo = deviceInfoProvider.getDeviceInfo()
-                sendSession(session.copy(device = deviceInfo))
-            }
+                    val currentSession = _sessions.value
 
-            launch {
-                var storeTokenJob: Job? = null
-                _newTokens.consumeEach {
-                    val currentSession = session
-                    if (currentSession.device?.token != it &&
-                        currentSession.device?.instanceId != null &&
-                        currentSession.authState is SessionAuthState.Authenticated
-                    ) {
-                        storeTokenJob?.cancel()
-                        storeTokenJob = launch {
-                            val deviceInfo = DeviceInfo(currentSession.device.instanceId, it, currentSession.device.languageTag)
-                            store.saveDeviceInfo(currentSession.authState.uId, deviceInfo)
-                            sendSession(session.copy(device = deviceInfo))
+                    // Load Current user store if needed
+                    val stateChangedToAuthenticatedUser = savedSession.authState !is SessionAuthState.Authenticated.User &&
+                        currentSession.authState is SessionAuthState.Authenticated.User
+
+                    val authUserChanged = savedSession.authState is SessionAuthState.Authenticated.User &&
+                        currentSession.authState is SessionAuthState.Authenticated.User &&
+                        savedSession.authState.uId != currentSession.authState.uId
+
+                    val stateChangedFromAuthenticatedUser = savedSession.authState is SessionAuthState.Authenticated.User &&
+                        currentSession.authState !is SessionAuthState.Authenticated.User
+
+                    logger.info { "stateChangedToAuthenticatedUser: $stateChangedToAuthenticatedUser, " +
+                        "authUserChanged: $authUserChanged, " +
+                        "stateChangedFromAuthenticatedUser $stateChangedFromAuthenticatedUser" }
+
+                    if (stateChangedToAuthenticatedUser || authUserChanged) {
+                        logger.info { "Auth user changed or authenticated, loading store user" }
+                        val uId = (currentSession.authState as SessionAuthState.Authenticated).uId
+                        userJob?.cancel()
+                        userJob = launch {
+                            var currentUser = store.user(uId, true)
+
+                            if (currentUser == null) {
+                                currentUser = store.user(uId).first()
+                            }
+                            logger.info { "3.   " }
+                            sendSession(
+                                _sessions.value.copy(
+                                    authState = (_sessions.value.authState as SessionAuthState.Authenticated.User).copy(
+                                        user = currentUser
+                                    )
+                                )
+                            )
                         }
+                    } else if (stateChangedFromAuthenticatedUser) {
+                        userJob?.cancel()
+                    }
+
+                    // save device info if needed
+                    val stateChangedToAuthenticated = savedSession.authState !is SessionAuthState.Authenticated &&
+                        currentSession.authState is SessionAuthState.Authenticated
+                    val stateChangedToFromAuthenticated = savedSession.authState is SessionAuthState.Authenticated &&
+                        currentSession.authState !is SessionAuthState.Authenticated
+
+                    logger.info { "stateChangedToAuthenticated: $stateChangedToAuthenticated. " +
+                        "stateChangedToFromAuthenticated: $stateChangedToFromAuthenticated " }
+
+                    if (stateChangedToAuthenticated) {
+                        logger.info { "Authentication detected, checking store device info" }
+                        val uId = (currentSession.authState as SessionAuthState.Authenticated).uId
+                        deviceInfoJob = launch {
+                            val localDeviceInfo = deviceInfoProvider.getDeviceInfo()
+                            var deviceInfoStored =
+                                store.deviceInfo(uId, localDeviceInfo.instanceId, true)
+
+                            if (localDeviceInfo != deviceInfoStored) {
+                                store.saveDeviceInfo(uId, localDeviceInfo)
+                            }
+                        }
+                    } else if (stateChangedToFromAuthenticated) {
+                        deviceInfoJob?.cancel()
+                    }
+                }
+        }
+
+        launch {
+            val deviceInfo = deviceInfoProvider.getDeviceInfo()
+            logger.info { "4" }
+            sendSession(_sessions.value.copy(device = deviceInfo))
+        }
+
+        launch {
+            var storeTokenJob: Job? = null
+            _newTokens.consumeEach {
+                val currentSession = _sessions.value
+                if (currentSession.device?.token != it &&
+                    currentSession.device?.instanceId != null &&
+                    currentSession.authState is SessionAuthState.Authenticated
+                ) {
+                    storeTokenJob?.cancel()
+                    storeTokenJob = launch {
+                        val deviceInfo = DeviceInfo(currentSession.device.instanceId, it, currentSession.device.languageTag)
+                        store.saveDeviceInfo(currentSession.authState.uId, deviceInfo)
+                        logger.info { "5" }
+                        sendSession(_sessions.value.copy(device = deviceInfo))
                     }
                 }
             }

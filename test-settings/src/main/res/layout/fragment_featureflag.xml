@@ -15,4 +15,6 @@
         android:layout_height="match_parent"
         tools:listitem="@layout/item_featureflag"
         android:paddingBottom="80dp"
-        android:clipToPadding="false"/>
+        android:clipToPadding="false"
+        tools:ignore="UnusedIds"
+    />

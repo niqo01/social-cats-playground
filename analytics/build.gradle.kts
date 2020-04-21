@@ -24,7 +24,7 @@ kotlin {
             dependencies {
                 api(Config.Libs.Kotlin.jdk8)
                 api(Config.Libs.KotlinLogging.jdk)
-                api(Config.Libs.Firebase.analytics)
+                implementation(Config.Libs.Firebase.analytics)
                 api(Config.Libs.AndroidX.coreKtx)
             }
         }

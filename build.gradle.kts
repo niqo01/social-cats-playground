@@ -9,8 +9,8 @@ buildscript {
 
     dependencies {
         classpath(Plugins.OldWay.googleServices)
-        classpath(Plugins.OldWay.fabric)
         classpath(Plugins.OldWay.firebasePerformance)
+        classpath(Plugins.OldWay.crashlytics)
         classpath(Plugins.OldWay.android)
         classpath(Plugins.OldWay.appDistribution)
     }
@@ -124,7 +124,6 @@ fun BaseExtension.setBaseAndroidConfiguration() {
         sourceCompatibility = Config.Android.sourceCompatibility
         targetCompatibility = Config.Android.targetCompatibility
     }
-
     // replace with getBuildFeature() getter on BaseExtension when ready
     if (this is com.android.build.gradle.LibraryExtension) {
         buildFeatures {

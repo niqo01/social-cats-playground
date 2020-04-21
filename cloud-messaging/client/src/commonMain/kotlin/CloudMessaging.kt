@@ -5,7 +5,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -15,14 +14,10 @@ class CloudMessaging {
     val messages = _messages.asFlow().distinctUntilChanged()
     val offerMessage: (Message) -> Unit get() = { _messages.offer(it) }
 
-    suspend fun start() {
-        coroutineScope {
-            launch {
-                messages.collect {
-                    logger.info { "CloudMessaging message received: $it" }
-                }
+    suspend fun start() = coroutineScope {
+            messages.collect {
+                logger.info { "CloudMessaging message received: $it" }
             }
-        }
     }
 
     fun onDeletedMessages() {

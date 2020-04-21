@@ -8,7 +8,6 @@ import androidx.work.WorkManager
 import coil.ImageLoader
 import coil.util.CoilUtils
 import com.firebase.ui.auth.AuthUI
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
@@ -16,11 +15,13 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.jakewharton.byteunits.BinaryByteUnit.MEBIBYTES
 import com.nicolasmilliard.socialcats.analytics.Analytics
-import com.nicolasmilliard.socialcats.analytics.PlatformAnalytics
+import com.nicolasmilliard.socialcats.analytics.AnalyticsModule
 import com.nicolasmilliard.socialcats.auth.AndroidAuthProvider
 import com.nicolasmilliard.socialcats.auth.Auth
 import com.nicolasmilliard.socialcats.auth.ui.AndroidAuthUi
 import com.nicolasmilliard.socialcats.base.BuildConfig
+import com.nicolasmilliard.socialcats.bugreporter.BugReporter
+import com.nicolasmilliard.socialcats.bugreporter.BugReporterModule
 import com.nicolasmilliard.socialcats.cloudmessaging.CloudMessaging
 import com.nicolasmilliard.socialcats.http.UserAgentInterceptor
 import com.nicolasmilliard.socialcats.session.AndroidInstanceIdProvider
@@ -29,9 +30,11 @@ import com.nicolasmilliard.socialcats.session.SessionManager
 import com.nicolasmilliard.socialcats.store.RealUserStore
 import com.nicolasmilliard.socialcats.store.UserStore
 import com.nicolasmilliard.socialcats.ui.AndroidNetworkManager
-import java.io.File
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -39,6 +42,7 @@ import okhttp3.logging.HttpLoggingInterceptor.Level.BASIC
 import okhttp3.logging.HttpLoggingInterceptor.Level.BODY
 import okhttp3.logging.HttpLoggingInterceptor.Logger
 import timber.log.Timber
+import java.io.File
 
 interface AppComponentProvider {
     val appComponent: AppComponent
@@ -53,14 +57,15 @@ class AppComponent(val app: Application, scope: CoroutineScope) {
         }
         auth
     }
-    val analytics = AppModule.provideAnalytics(app)
+    val analytics = AnalyticsModule.provideAnalytics(app)
+    val bugReporter = BugReporterModule.provideBugReporter()
 
     val authUi = AppModule.provideAuthUi(app)
     val firestore = AppModule.provideFirestore()
     val workManager = AppModule.provideWorkManager(app)
     val store = AppModule.provideSocialCatsStore(firestore, workManager)
     val sessionManager by lazy {
-        val manager = AppModule.provideSessionManager(auth, store, AndroidInstanceIdProvider(), analytics)
+        val manager = AppModule.provideSessionManager(auth, store, AndroidInstanceIdProvider())
         scope.launch {
             manager.start()
         }
@@ -82,16 +87,31 @@ class AppComponent(val app: Application, scope: CoroutineScope) {
         cloudMessaging
     }
 
-    val imageLoader = ImageLoader(app) {
-        okHttpClient {
+    val imageLoader = ImageLoader.Builder(app)
+        .okHttpClient(
             httpClient.value.newBuilder()
                 .cache(CoilUtils.createDefaultCache(app))
                 .build()
-        }
-    }
+        ).build()
+
+    val appScope = AppModule.provideAppScope()
+    val appInitializer = AppModule.provideAppInitializer(appScope, analytics, sessionManager, bugReporter)
 }
 
 object AppModule {
+
+    fun provideAppScope(): CoroutineScope {
+        return MainScope() + CoroutineName("App")
+    }
+
+    fun provideAppInitializer(
+        appScope: CoroutineScope,
+        analytics: Analytics,
+        sessionManager: SessionManager,
+        bugReporter: BugReporter
+    ): AppInitializer {
+        return AppInitializer(appScope, analytics, sessionManager, bugReporter)
+    }
 
     fun provideConnectivityChecker(context: Context): ConnectivityChecker {
         val connectivityManager = context.getSystemService<ConnectivityManager>()
@@ -123,10 +143,8 @@ object AppModule {
     fun provideSocialCatsStore(firestore: FirebaseFirestore, workManager: WorkManager): UserStore =
         RealUserStore(firestore, workManager)
 
-    fun provideAnalytics(context: Context): Analytics = PlatformAnalytics(FirebaseAnalytics.getInstance(context))
-
-    fun provideSessionManager(auth: Auth, store: UserStore, deviceInfoProvider: DeviceInfoProvider, analytics: Analytics) =
-        SessionManager(auth, store, deviceInfoProvider, analytics)
+    fun provideSessionManager(auth: Auth, store: UserStore, deviceInfoProvider: DeviceInfoProvider) =
+        SessionManager(auth, store, deviceInfoProvider)
 
     fun provideOkHttp(application: Application): OkHttpClient {
         val cacheDir = application.cacheDir / "http"

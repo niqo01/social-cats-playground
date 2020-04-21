@@ -20,16 +20,18 @@ import com.nicolasmilliard.socialcats.store.FakeStore
 import com.nicolasmilliard.socialcats.store.aDeviceInfo
 import com.nicolasmilliard.socialcats.store.aStoreUser
 import com.nicolasmilliard.socialcats.test.runTest
+import com.nicolasmilliard.socialcats.test.test
+import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.assertTrue
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.plus
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -45,8 +47,10 @@ class SearchPresenterTest {
     private lateinit var searchLoader: SearchLoader
     private lateinit var networkManager: FakeNetworkManager
     private lateinit var connectivityChecker: ConnectivityChecker
+    private lateinit var appScope: CoroutineScope
 
     private val unAuthState = Model(isConnected = true, loadingState = Model.LoadingState.UnAuthenticated)
+    private val loadingState = Model(isConnected = true, loadingState = Model.LoadingState.Loading)
     private val successState = Model(
         isConnected = true,
         loadingState = Success(
@@ -70,63 +74,79 @@ class SearchPresenterTest {
         searchLoader = SearchLoader(searchService)
         networkManager = FakeNetworkManager()
         connectivityChecker = ConnectivityChecker(networkManager)
+        appScope = CoroutineScope(Dispatchers.Default) + CoroutineName("App")
+    }
+
+    @AfterTest
+    fun after() {
+        appScope.cancel()
     }
 
     @Test
     fun testDefaultStateAndNotAuthenticated() = runTest {
-        withTimeout(500) {
 
-            fakeStore.offer(aStoreUser)
-            fakeAuthProvider.offerUser(null)
-            networkManager.offer(true)
+        val searchPresenter =
+            SearchPresenter(sessionManager, searchLoader, connectivityChecker)
+        startComponents(appScope, searchPresenter)
 
-            val searchPresenter =
-                SearchPresenter(sessionManager, searchLoader, connectivityChecker)
+        val authorizedStates =
+            mutableSetOf(loadingState, unAuthState)
 
-            val job = startComponents(this, searchPresenter)
+        fakeStore.offer(aStoreUser)
+        fakeAuthProvider.offerUser(0, null)
+        networkManager.offer(true)
 
-            searchPresenter.models.onEach { logger.info { "Received $it" } }.filter { it == unAuthState }.first()
-
-            job.cancel()
+        searchPresenter.models.test(500) {
+            do {
+                val item = expectItem()
+                assertTrue(authorizedStates.remove(item), "Item not expected: $item")
+            } while (item != unAuthState)
+            delay(100)
+            expectNoEvents()
+            cancel()
         }
     }
 
     @Test
     fun testDefaultStateAndAuthenticated() = runTest {
-        withTimeout(500) {
 
-            fakeStore.offer(aStoreUser)
-            fakeAuthProvider.offerUser(anAuthUser)
-            fakeAuthProvider.offerToken(NewToken(AuthToken("token"), anAuthUser))
-            networkManager.offer(true)
+        val searchPresenter =
+            SearchPresenter(sessionManager, searchLoader, connectivityChecker)
+        startComponents(appScope, searchPresenter)
 
-            val searchPresenter =
-                SearchPresenter(sessionManager, searchLoader, connectivityChecker)
+        val authorizedStates =
+            mutableSetOf(unAuthState, loadingState, successState)
 
-            val job = startComponents(this, searchPresenter)
+        fakeStore.offer(aStoreUser)
+        fakeAuthProvider.offerUser(0, anAuthUser)
+        fakeAuthProvider.offerToken(NewToken(AuthToken("token"), anAuthUser))
+        networkManager.offer(true)
 
-            searchPresenter.models.onEach { logger.info { "Received $it" } }.filter { it == successState }.first()
-            logger.info { "Before cancel" }
-            job.cancel()
+        searchPresenter.models.test {
+            do {
+                val item = expectItem()
+                assertTrue(authorizedStates.remove(item), "Item not expected: $item")
+            } while (item != successState)
+            delay(100)
+            expectNoEvents()
+            cancel()
         }
     }
 
-    private fun startComponents(scope: CoroutineScope, presenter: SearchPresenter): Job {
-        val job = Job()
+    private fun startComponents(scope: CoroutineScope, presenter: SearchPresenter) {
         scope.apply {
-            launch(Dispatchers.Default + job) {
+            launch {
                 auth.start()
             }
-            launch(Dispatchers.Default + job) {
+            launch {
                 sessionManager.start()
             }
-            launch(Dispatchers.Default + job) {
+            launch {
                 connectivityChecker.start()
             }
-            launch(Dispatchers.Default + job) {
+            launch {
                 presenter.start()
             }
         }
-        return job
     }
 }

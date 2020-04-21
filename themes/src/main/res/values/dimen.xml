@@ -5,6 +5,5 @@
 
     <dimen name="list_item_margins">16dp</dimen>
     <dimen name="list_item_image_size">40dp</dimen>
-    <dimen name="list_item_first_line_height">32dp</dimen>
     <dimen name="list_item_second_line_height">20dp</dimen>
 </resources>

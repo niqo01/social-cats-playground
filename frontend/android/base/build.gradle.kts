@@ -12,10 +12,12 @@ tasks.withType<KotlinCompile> {
 
 dependencies {
 
+    api(project(":analytics"))
     implementation(project(":auth:client"))
     implementation(project(":auth:ui"))
     implementation(project(":store:client"))
     implementation(project(":session:client"))
+    implementation(project(":bug-reporter"))
     implementation(project(":connectivity"))
     implementation(project(":cloud-messaging:client"))
     implementation(project(":cloud-messaging:android"))
@@ -44,8 +46,6 @@ dependencies {
     implementation(Config.Libs.AndroidX.lifecycleCommon)
 
     implementation(Config.Libs.Firebase.common)
-    implementation(Config.Libs.Firebase.analytics)
-    implementation(Config.Libs.Firebase.crashlytics)
     implementation(Config.Libs.Firebase.performance)
     implementation(Config.Libs.Firebase.inAppMessaging)
 

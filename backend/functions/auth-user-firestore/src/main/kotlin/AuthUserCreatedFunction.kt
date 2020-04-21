@@ -3,7 +3,6 @@ package com.nicolasmilliard.socialcats
 import com.google.cloud.functions.Context
 import com.google.cloud.functions.RawBackgroundFunction
 import com.nicolasmilliard.socialcats.store.InsertUser
-import com.nicolasmilliard.socialcats.store.UserStoreAdmin
 import com.squareup.moshi.Moshi
 import mu.KotlinLogging
 
@@ -12,14 +11,12 @@ private val log = KotlinLogging.logger {}
 /**
  * Function triggered on new Auth user (/databases/(default)/documents/users/{id}) modifications.
  */
-class AuthUserCreatedFunction : RawBackgroundFunction {
+class AuthUserCreatedFunction(graph: Graph = AppComponent().build()) : RawBackgroundFunction {
 
-    private val userConverter: UserConverter
-    private val store: UserStoreAdmin
+    private val userConverter = UserConverter(graph.moshi)
+    private val store = graph.store
 
-    constructor(graph: Graph = AppComponent().build()) {
-        userConverter = UserConverter(graph.moshi)
-        store = graph.store
+    init {
         graph.appInitializer.initialize()
     }
 

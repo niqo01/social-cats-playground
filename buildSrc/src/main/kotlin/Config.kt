@@ -1,7 +1,7 @@
 import org.gradle.api.JavaVersion
 
 object Config {
-    const val kotlinVersion = "1.3.70" // update gradle.properties as well
+    const val kotlinVersion = "1.3.72" // update gradle.properties as well
 
     const val group = "com.nicolasmilliard.socialcats"
 
@@ -63,15 +63,15 @@ object Config {
 
         object WebFrontend {
             const val htmlJs = "org.jetbrains.kotlinx:kotlinx-html-js:0.7.1"
-            const val kotlinReact = "org.jetbrains:kotlin-react:16.9.0-pre.89-kotlin-1.3.60"
-            const val kotlinReactDom = "org.jetbrains:kotlin-react-dom:16.9.0-pre.89-kotlin-1.3.60"
+            const val kotlinReact = "org.jetbrains:kotlin-react:16.13.1-pre.104-kotlin-1.3.72"
+            const val kotlinReactDom = "org.jetbrains:kotlin-react-dom:16.13.1-pre.104-kotlin-1.3.72"
             const val kotlinReactRouterDom =
-                "org.jetbrains:kotlin-react-router-dom:4.3.1-pre.89-kotlin-1.3.60"
+                "org.jetbrains:kotlin-react-router-dom:5.1.2-pre.104-kotlin-1.3.72"
         }
 
         object GoogleFunction {
             const val functionFrameworkApi =
-                "com.google.cloud.functions:functions-framework-api:1.0.0-alpha-2-rc3"
+                "com.google.cloud.functions:functions-framework-api:1.0.1"
         }
 
         object Ktor {
@@ -99,7 +99,7 @@ object Config {
             }
 
             object Coroutine {
-                private const val version = "1.3.5"
+                private const val version = "1.3.6"
 
                 const val common = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$version"
                 const val jdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$version"
@@ -129,7 +129,7 @@ object Config {
             const val activityKtx = "androidx.activity:activity-ktx:1.1.0"
             const val fragmentKtx = "androidx.fragment:fragment-ktx:$fragmentVersion"
             const val fragmentTesting = "androidx.fragment:fragment-testing:$fragmentVersion"
-            const val preferenceKtx = "androidx.preference:preference-ktx:1.1.0"
+            const val preferenceKtx = "androidx.preference:preference-ktx:1.1.1"
             const val vectorCompat = "androidx.vectordrawable:vectordrawable-animated:1.1.0"
             const val coreKtx = "androidx.core:core-ktx:1.2.0"
             const val constraintLayout = "androidx.constraintlayout:constraintlayout:1.1.3"
@@ -157,16 +157,16 @@ object Config {
             const val admin = "com.google.firebase:firebase-admin:6.12.2"
 
             const val common = "com.google.firebase:firebase-common-ktx:19.3.0"
-            const val auth = "com.google.firebase:firebase-auth:19.3.0"
-            const val firestore = "com.google.firebase:firebase-firestore-ktx:21.4.1"
-            const val analytics = "com.google.firebase:firebase-analytics:17.2.3"
-            const val crashlytics = "com.crashlytics.sdk.android:crashlytics:2.10.1"
-            const val performance = "com.google.firebase:firebase-perf:19.0.5"
-            const val remoteConfig = "com.google.firebase:firebase-config-ktx:19.1.3"
-            const val messaging = "com.google.firebase:firebase-messaging:20.1.3"
-            const val inAppMessaging = "com.google.firebase:firebase-inappmessaging-display-ktx:19.0.4"
+            const val auth = "com.google.firebase:firebase-auth-ktx:19.3.1"
+            const val firestore = "com.google.firebase:firebase-firestore-ktx:21.4.3"
+            const val analytics = "com.google.firebase:firebase-analytics:17.4.1"
+            const val crashlytics = "com.google.firebase:firebase-crashlytics:17.0.0"
+            const val performance = "com.google.firebase:firebase-perf:19.0.7"
+            const val remoteConfig = "com.google.firebase:firebase-config-ktx:19.1.4"
+            const val messaging = "com.google.firebase:firebase-messaging:20.1.7"
+            const val inAppMessaging = "com.google.firebase:firebase-inappmessaging-display-ktx:19.0.6"
 
-            const val uiAuth = "com.firebaseui:firebase-ui-auth:6.2.0"
+            const val uiAuth = "com.firebaseui:firebase-ui-auth:6.2.1"
             const val uiFirestore = "com.firebaseui:firebase-ui-firestore:6.1.0"
         }
 
@@ -196,19 +196,19 @@ object Config {
         }
 
         object Aws {
-            const val sdkBom = "software.amazon.awssdk:bom:2.10.90"
+            const val sdkBom = "software.amazon.awssdk:bom:2.13.15"
             const val apacheClient = "software.amazon.awssdk:apache-client"
             const val sdkAuth = "software.amazon.awssdk:auth"
         }
 
         object OkHttp {
-            private const val version = "4.4.1"
+            private const val version = "4.6.0"
             const val client = "com.squareup.okhttp3:okhttp:$version"
             const val logging = "com.squareup.okhttp3:logging-interceptor:$version"
         }
 
         object Retrofit {
-            private const val version = "2.7.2"
+            private const val version = "2.8.1"
 
             const val client = "com.squareup.retrofit2:retrofit:$version"
             const val converterKotlinxSerialization = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.5.0"
@@ -222,24 +222,24 @@ object Config {
         }
 
         // Misc
-//        Stately Collections does not support JS just yet. Should be early 2020
-//        const val statelyCollections = "co.touchlab:stately-collections:0.9.4"
-        const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.2"
+        const val statelyIsolate = "co.touchlab:stately-isolate:1.0.3-a4"
+        const val statelyIsoCollections = "co.touchlab:stately-iso-collections:1.0.3-a4"
+        const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.3"
         const val processPhoenix = "com.jakewharton:process-phoenix:2.0.0"
         const val material = "com.google.android.material:material:1.1.0"
         const val timber = "com.jakewharton.timber:timber:4.7.1"
-        const val coil = "io.coil-kt:coil-base:0.9.5"
+        const val coil = "io.coil-kt:coil-base:0.10.1"
 
-        const val okIo = "com.squareup.okio:okio:2.5.0"
+        const val okIo = "com.squareup.okio:okio:2.6.0"
         const val shimmer = "com.facebook.shimmer:shimmer:0.5.0"
 
 
         const val logBackClassic = "ch.qos.logback:logback-classic:1.2.3"
-        const val log4jToSlf4j = "org.apache.logging.log4j:log4j-to-slf4j:2.13.1"
+        const val log4jToSlf4j = "org.apache.logging.log4j:log4j-to-slf4j:2.13.2"
         const val slf4jSimple= "org.slf4j:slf4j-simple:1.7.25"
         const val slf4jTimber = "com.arcao:slf4j-timber:3.1@aar"
         const val elasticSearchHighLevelClient =
-            "org.elasticsearch.client:elasticsearch-rest-high-level-client:7.6.1"
+            "org.elasticsearch.client:elasticsearch-rest-high-level-client:7.7.0"
 
         const val byteUnits = "com.jakewharton.byteunits:byteunits:0.9.1"
 

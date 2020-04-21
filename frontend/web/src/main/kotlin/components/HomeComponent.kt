@@ -19,7 +19,6 @@ import react.dom.h2
 import react.dom.p
 import react.dom.section
 import react.dom.span
-import react.router.dom.navLink
 import react.setState
 import views.topBar
 
@@ -74,9 +73,9 @@ class HomeComponent(props: HomeProps) : RComponent<HomeProps, HomeState>() {
 
                 article {
                     p(classes = "mdc-typography--body1") { +"An article" }
-                    navLink("/terms", className = "mdc-button  mdc-button--raised") {
-                        span(classes = "mdc-button__label") { +"Terms of Use" }
-                    }
+//                    navLink("/terms", className = "mdc-button  mdc-button--raised") {
+//                        span(classes = "mdc-button__label") { +"Terms of Use" }
+//                    }
                     if (state.isSignedIn) {
                         button(classes = "mdc-button  mdc-button--raised") {
                             attrs {

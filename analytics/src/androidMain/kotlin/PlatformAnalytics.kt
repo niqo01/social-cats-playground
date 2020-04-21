@@ -1,20 +1,23 @@
 package com.nicolasmilliard.socialcats.analytics
 
+import android.content.Context
 import androidx.core.os.bundleOf
 import com.google.firebase.analytics.FirebaseAnalytics
 
-class PlatformAnalytics(private val analyticsProvider: FirebaseAnalytics) : Analytics {
+class PlatformAnalytics(context: Context) : Analytics {
+
+    private val firebase = FirebaseAnalytics.getInstance(context)
 
     override fun logEvent(name: String, params: Map<String, String>?) {
         val bundle = params?.let { bundleOf(*params.toList().toTypedArray()) }
-        analyticsProvider.logEvent(name, bundle)
+        firebase.logEvent(name, bundle)
     }
 
     override fun setUserId(id: String?) {
-        analyticsProvider.setUserId(id)
+        firebase.setUserId(id)
     }
 
     override fun setUserProperty(name: String, value: String?) {
-        analyticsProvider.setUserProperty(name, value)
+        firebase.setUserProperty(name, value)
     }
 }

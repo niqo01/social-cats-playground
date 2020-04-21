@@ -12,10 +12,14 @@ class FakeDeviceInfoProvider(var deviceInfo: DeviceInfo) : DeviceInfoProvider {
     }
 }
 
-val unAuthNoDeviceSession = Session(null, null)
-val unAuthSession = Session(null, aDeviceInfo)
-val authSession = Session(AuthData(anAuthUser.uid, anAuthToken.token, false, aStoreUser), aDeviceInfo)
-val authSessionNoDevice = Session(AuthData(anAuthUser.uid, anAuthToken.token, false, aStoreUser), null)
-val authSessionAnonymous = Session(AuthData(anAuthUser.uid, anAuthToken.token, true, aStoreUser), aDeviceInfo)
-val authSessionNoUserNoDevice = Session(AuthData(anAuthUser.uid, anAuthToken.token, false, null), null)
-val authSessionNoUser = Session(AuthData(anAuthUser.uid, anAuthToken.token, false, null), aDeviceInfo)
+val unknownAuthSession = Session(SessionAuthState.Unknown, aDeviceInfo)
+val unknownAuthSessionNoDevice = Session(SessionAuthState.Unknown, null)
+val unAuthNoDeviceSession = Session(SessionAuthState.UnAuthenticated, null)
+val unAuthSession = Session(SessionAuthState.UnAuthenticated, aDeviceInfo)
+val authSession = Session(SessionAuthState.Authenticated.User(anAuthUser.uid, anAuthToken.token, aStoreUser), aDeviceInfo)
+val authSessionNoTokenNoUser = Session(SessionAuthState.Authenticated.User(anAuthUser.uid, null, null), aDeviceInfo)
+val authSessionNoToken = Session(SessionAuthState.Authenticated.User(anAuthUser.uid, null, aStoreUser), aDeviceInfo)
+val authSessionNoDevice = Session(SessionAuthState.Authenticated.User(anAuthUser.uid, anAuthToken.token, aStoreUser), null)
+val authSessionAnonymous = Session(SessionAuthState.Authenticated.Anonymous(anAuthUser.uid, anAuthToken.token), aDeviceInfo)
+val authSessionNoUserNoDevice = Session(SessionAuthState.Authenticated.User(anAuthUser.uid, anAuthToken.token, null), null)
+val authSessionNoUser = Session(SessionAuthState.Authenticated.User(anAuthUser.uid, anAuthToken.token, null), aDeviceInfo)

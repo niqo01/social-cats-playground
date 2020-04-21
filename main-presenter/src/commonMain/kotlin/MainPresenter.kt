@@ -8,13 +8,11 @@ import com.nicolasmilliard.socialcats.auth.ui.AuthUi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.RENDEZVOUS
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
 
@@ -25,8 +23,8 @@ class MainPresenter(
     private val auth: Auth
 ) : Presenter<MainPresenter.Model, MainPresenter.Event> {
 
-    private val _models = ConflatedBroadcastChannel<Model>()
-    override val models: Flow<Model> get() = _models.asFlow().distinctUntilChanged()
+    private val _models = MutableStateFlow(Model())
+    override val models: StateFlow<Model> get() = _models
 
     private val _events = Channel<Event>(RENDEZVOUS)
     override val events: (Event) -> Unit get() = { _events.offer(it) }
@@ -34,14 +32,6 @@ class MainPresenter(
     override suspend fun start() {
         logger.info { "start" }
         coroutineScope {
-
-            var model = Model()
-            fun sendModel(newModel: Model) {
-                model = newModel
-                _models.offer(newModel)
-            }
-
-            sendModel(model)
 
             launch {
                 var silentSignInJob: Job? = null
@@ -53,7 +43,7 @@ class MainPresenter(
                         ) {
                             silentSignInJob = launch {
                                 try {
-                                    sendModel(model.copy(authStatus = Model.SignInStatus.SIGNING_IN))
+                                    _models.value = _models.value.copy(authStatus = Model.SignInStatus.SIGNING_IN)
                                     logger.info { "Start Silent Signin" }
                                     authUi.silentSignIn()
                                 } catch (e: Throwable) {
@@ -65,7 +55,7 @@ class MainPresenter(
 //                                        sendModel(model.copy(authStatus = Model.SignInStatus.FAILED))
 //                                    }
                                 }
-                                sendModel(model.copy(authStatus = Model.SignInStatus.IDLE))
+                                _models.value = _models.value.copy(authStatus = Model.SignInStatus.IDLE)
                             }
                         }
                     }
@@ -79,12 +69,13 @@ class MainPresenter(
                             if (signInJob?.isActive != true) {
                                 signInJob = launch {
                                     try {
-                                        sendModel(model.copy(authConflictStatus = Model.AuthConflictStatus.RESOLVING_CONFLICT))
+                                        _models.value =
+                                            _models.value.copy(authConflictStatus = Model.AuthConflictStatus.RESOLVING_CONFLICT)
                                         auth.signInWithCredential(it.authCredential)
-                                        sendModel(model.copy(authConflictStatus = Model.AuthConflictStatus.IDLE))
+                                        _models.value = _models.value.copy(authConflictStatus = Model.AuthConflictStatus.IDLE)
                                     } catch (e: Throwable) {
                                         logger.error(e) { "Sign in with Credential failed" }
-                                        sendModel(model.copy(authConflictStatus = Model.AuthConflictStatus.FAILED))
+                                        _models.value = _models.value.copy(authConflictStatus = Model.AuthConflictStatus.FAILED)
                                     }
                                 }
                             }

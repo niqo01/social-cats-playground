@@ -26,7 +26,8 @@ class AccountUiBinder(
     private val events: (Event) -> Unit
 ) : UiBinder<Model> {
 
-    private var snackbar: Snackbar? = null
+    // Synthetic accessor
+    internal var snackbar: Snackbar? = null
     private var reloginDialog: AlertDialog? = null
     init {
         binding.apply {

@@ -63,7 +63,7 @@ class ElasticSearchRepository(
             val response = search(searchRequest, RequestOptions.DEFAULT)
             log.debug { "Response: $response" }
 
-            val hitCount = response.hits.totalHits.value
+            val hitCount = response.hits.totalHits!!.value
 
             return SearchResult(
                 hitCount,

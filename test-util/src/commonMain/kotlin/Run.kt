@@ -1,3 +1,5 @@
 package com.nicolasmilliard.socialcats.test
 
-expect fun <T> runTest(block: suspend () -> T)
+import kotlinx.coroutines.CoroutineScope
+
+expect fun runTest(body: suspend CoroutineScope.() -> Unit)

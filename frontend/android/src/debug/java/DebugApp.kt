@@ -11,6 +11,7 @@ import com.nicolasmilliard.socialcats.featureflags.FirebaseFeatureFlagProvider
 import com.nicolasmilliard.socialcats.featureflags.MAX_PRIORITY
 import com.nicolasmilliard.socialcats.featureflags.MEDIUM_PRIORITY
 import com.nicolasmilliard.socialcats.featureflags.RuntimeBehavior.addProvider
+import com.nicolasmilliard.socialcats.featureflags.RuntimeBehavior.clearFeatureFlagProviders
 import com.nicolasmilliard.socialcats.featureflags.RuntimeBehavior.isFeatureEnabled
 import com.nicolasmilliard.socialcats.featureflags.TEST_PRIORITY
 import com.nicolasmilliard.socialcats.testsettings.RuntimeFeatureFlagProvider
@@ -23,6 +24,7 @@ open class DebugApp : App() {
 
     override fun onCreate() {
         super.onCreate()
+        initializeFeatureFlag()
         LeakCanary.config.copy(dumpHeap = isFeatureEnabled(TestSetting.LEAK_CANARY))
         if (isFeatureEnabled(TestSetting.STRICT_MODE)) {
             StrictMode.setThreadPolicy(
@@ -56,9 +58,11 @@ open class DebugApp : App() {
             }
             StrictMode.setVmPolicy(builder.build())
         }
+
     }
 
-    override fun initializeFeatureFlag() {
+    fun initializeFeatureFlag() {
+        clearFeatureFlagProviders()
         val runtimeFeatureFlagProvider = RuntimeFeatureFlagProvider(MEDIUM_PRIORITY, this)
 
         if (runtimeFeatureFlagProvider.isFeatureEnabled(TestSetting.CRASH_APP)) {

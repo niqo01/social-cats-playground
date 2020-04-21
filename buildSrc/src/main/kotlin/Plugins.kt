@@ -18,10 +18,10 @@ object Plugins {
         const val ktlint = "0.36.0"
     }
     object OldWay  {
-        const val android = "com.android.tools.build:gradle:4.0.0-beta03"
-        const val appDistribution = "com.google.firebase:firebase-appdistribution-gradle:1.3.1"
+        const val android = "com.android.tools.build:gradle:4.0.0-rc01"
+        const val appDistribution = "com.google.firebase:firebase-appdistribution-gradle:1.4.1"
         const val googleServices = "com.google.gms:google-services:4.3.3"
-        const val fabric =  "io.fabric.tools:gradle:1.31.2"
+        const val crashlytics =  "com.google.firebase:firebase-crashlytics-gradle:2.1.0"
         const val firebasePerformance = "com.google.firebase:perf-plugin:1.3.1"
         const val navigation =
             "androidx.navigation:navigation-safe-args-gradle-plugin:${Config.Android.navigationVersion}"

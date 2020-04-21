@@ -13,11 +13,10 @@ import com.nicolasmilliard.socialcats.session.SessionAuthState
 import com.nicolasmilliard.socialcats.session.SessionManager
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.RENDEZVOUS
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
@@ -29,8 +28,8 @@ class AccountPresenter(
     private val sessionManager: SessionManager
 ) : Presenter<Model, Event> {
 
-    private val _models = ConflatedBroadcastChannel(Model())
-    override val models: Flow<Model> get() = _models.asFlow()
+    private val _models = MutableStateFlow(Model())
+    override val models: StateFlow<Model> get() = _models
 
     private val _events = Channel<Event>(RENDEZVOUS)
     override val events: (Event) -> Unit get() = { _events.offer(it) }
@@ -38,15 +37,14 @@ class AccountPresenter(
     override suspend fun start() {
         logger.info { "start" }
         coroutineScope {
-            var model = Model()
+
             fun sendModel(newModel: Model) {
-                model = newModel
-                _models.offer(newModel)
+                _models.value = newModel
             }
             launch {
                 sessionManager.sessions.collect {
                     sendModel(
-                        model.copy(
+                        _models.value.copy(
                             session = it,
                             loadingStatus = if (it.authState == SessionAuthState.Unknown) LOADING else IDLE
                         )
@@ -58,19 +56,19 @@ class AccountPresenter(
                 _events.consumeEach {
                     when (it) {
                         is Event.ClearErrorStatus -> {
-                            sendModel(model.copy(loadingStatus = IDLE, processingStatus = ProcessingStatus.IDLE))
+                            sendModel(_models.value.copy(loadingStatus = IDLE, processingStatus = ProcessingStatus.IDLE))
                         }
                         is Event.ClearNeedRecentLogin -> {
-                            sendModel(model.copy(needRecentLogin = false))
+                            sendModel(_models.value.copy(needRecentLogin = false))
                         }
                         is Event.SignOut -> {
                             launch {
-                                onSignOut(::sendModel, model)
+                                onSignOut(::sendModel)
                             }
                         }
                         is Event.DeleteAccount -> {
                             launch {
-                                onDeleteAccount(::sendModel, model)
+                                onDeleteAccount(::sendModel)
                             }
                         }
                     }
@@ -79,27 +77,27 @@ class AccountPresenter(
         }
     }
 
-    suspend fun onSignOut(sendModel: (Model) -> Unit, model: Model) {
-        sendModel(model.copy(processingStatus = ProcessingStatus.PROCESSING))
+    suspend fun onSignOut(sendModel: (Model) -> Unit) {
+        sendModel(_models.value.copy(processingStatus = ProcessingStatus.PROCESSING))
         try {
             authUi.signOut()
-            sendModel(model.copy(processingStatus = ProcessingStatus.IDLE))
+            sendModel(_models.value.copy(processingStatus = ProcessingStatus.IDLE))
         } catch (e: Exception) {
             logger.error(e) { "Error while signing out" }
-            sendModel(model.copy(processingStatus = ProcessingStatus.FAILED_SIGN_OUT))
+            sendModel(_models.value.copy(processingStatus = ProcessingStatus.FAILED_SIGN_OUT))
         }
     }
 
-    suspend fun onDeleteAccount(sendModel: (Model) -> Unit, model: Model) {
-        sendModel(model.copy(processingStatus = ProcessingStatus.PROCESSING))
+    suspend fun onDeleteAccount(sendModel: (Model) -> Unit) {
+        sendModel(_models.value.copy(processingStatus = ProcessingStatus.PROCESSING))
         try {
             authUi.delete()
-            sendModel(model.copy(processingStatus = ProcessingStatus.IDLE))
+            sendModel(_models.value.copy(processingStatus = ProcessingStatus.IDLE))
         } catch (e: AuthRecentLoginRequiredException) {
-            sendModel(model.copy(processingStatus = ProcessingStatus.IDLE, needRecentLogin = true))
+            sendModel(_models.value.copy(processingStatus = ProcessingStatus.IDLE, needRecentLogin = true))
         } catch (e: Exception) {
             logger.error(e) { "Error while signing out" }
-            sendModel(model.copy(processingStatus = ProcessingStatus.FAILED_DELETE_ACCOUNT))
+            sendModel(_models.value.copy(processingStatus = ProcessingStatus.FAILED_DELETE_ACCOUNT))
         }
     }
 

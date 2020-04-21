@@ -12,7 +12,7 @@ class FunctionalTest {
     fun searchTest() = runBlocking {
         println("Search test")
 
-        val searchService = SocialCatsApiModule.searchService(OkHttpClient())
+        val searchService = SocialCatsApiModule.searchService(lazy { OkHttpClient() })
         val searchUsers = searchService.searchUsers("token", null)
         println("Search user result: $searchUsers")
         assertThat(searchUsers.users).isNotEmpty()

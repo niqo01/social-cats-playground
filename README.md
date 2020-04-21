@@ -12,9 +12,11 @@ Dummy social network playground use to investigate:
 - auto deploy ktor and function
 - cleanup Cloud functions resources like ES REST client close()
 - Use flow share operator when ready
-- Replace Broadcast channels with DataFlow when ready
 - Run dependency graph script in CI
 - Publish Android library and applications, waiting on bug
+- Use Kermit
+- Move internal dependency builder inside each module
+- Try Koin 3.0
 
 # Architecture 
 - Module vs library
@@ -23,7 +25,7 @@ Dummy social network playground use to investigate:
 - try deploying new js plugin
 
 ## Android
-- Handle FirebaseAuthRecentLoginRequiredException and exception in general
+- Handle exception in general
 - Handle network error
 - Handle Backend API error
 - Instant enabled app bundle
@@ -45,6 +47,7 @@ Dummy social network playground use to investigate:
 - try https://github.com/autonomousapps/dependency-analysis-android-gradle-plugin
 - try https://github.com/maskarade/gradle-android-ribbonizer-plugin 
 - try Dexter lib for handling permission  https://github.com/Karumi/Dexter-
+- try Retrofit call adapter https://proandroiddev.com/create-retrofit-calladapter-for-coroutines-to-handle-response-as-states-c102440de37a
 
 Extras:
 - Jetpack compose test?
@@ -57,7 +60,6 @@ Testing:
 # Issues
 - Failed to Apply plugin in current context https://youtrack.jetbrains.com/issue/KT-33569
 - Firebase Auth anonymous to existing user https://github.com/firebase/FirebaseUI-Android/issues/1702
-- SessionManager token test flaky, adding a log fix the issue ...
 - No Firebase Auth update triggers
 - Read gradle.properties from buildSrc
 - Cloud App engine debug instance

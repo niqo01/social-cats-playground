@@ -58,7 +58,6 @@ open class DebugApp : App() {
             }
             StrictMode.setVmPolicy(builder.build())
         }
-
     }
 
     fun initializeFeatureFlag() {

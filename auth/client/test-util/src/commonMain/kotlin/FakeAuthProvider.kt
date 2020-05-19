@@ -23,7 +23,7 @@ class FakeAuthProvider : AuthProvider {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
-    override suspend fun linkWithGoogleCredentials(uid: String, googleIdToken: String) {
+    override suspend fun linkWithGoogleCredentials(userId: String, googleIdToken: String) {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 

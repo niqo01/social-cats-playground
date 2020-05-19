@@ -1,6 +1,5 @@
-package com.nicolasmilliard.socialcats.http
+package com.nicolasmilliard.socialcats.di
 
-import com.nicolasmilliard.socialcats.base.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Response
 

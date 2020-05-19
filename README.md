@@ -15,8 +15,7 @@ Dummy social network playground use to investigate:
 - Run dependency graph script in CI
 - Publish Android library and applications, waiting on bug
 - Use Kermit
-- Move internal dependency builder inside each module
-- Try Koin 3.0
+- Use SharedFlow when ready https://github.com/Kotlin/kotlinx.coroutines/issues/2034
 
 # Architecture 
 - Module vs library

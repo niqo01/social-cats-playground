@@ -4,17 +4,12 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.nicolasmilliard.socialcats.session.SessionManager
 import com.nicolasmilliard.socialcats.session.sessionManager
+import org.koin.android.ext.android.inject
 
 class MessagingService : FirebaseMessagingService() {
 
-    private lateinit var cloudMessaging: CloudMessaging
-    private lateinit var sessionManager: SessionManager
-
-    override fun onCreate() {
-        super.onCreate()
-        cloudMessaging = applicationContext.cloudMessaging
-        sessionManager = applicationContext.sessionManager
-    }
+    private val cloudMessaging: CloudMessaging by inject()
+    private val sessionManager: SessionManager by inject()
 
     override fun onNewToken(token: String) {
         sessionManager.onNewDeviceIdToken(token)

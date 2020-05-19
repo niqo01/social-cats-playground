@@ -9,6 +9,7 @@ import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 
+// TODO Replace with SharedFlow https://github.com/Kotlin/kotlinx.coroutines/issues/2034
 class ConnectivityChecker(val networkManager: NetworkManager) {
     private val _connectedStatus = MutableStateFlow<Boolean?>(null)
     val connectedStatus: Flow<Boolean> get() = _connectedStatus.filterNotNull()

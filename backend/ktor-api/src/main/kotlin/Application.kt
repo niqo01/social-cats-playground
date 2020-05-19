@@ -3,11 +3,13 @@ package com.nicolasmilliard.socialcats.searchapi
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
+import com.nicolasmilliard.socialcats.search.SearchUseCase
 import com.nicolasmilliard.socialcats.searchapi.routes.dummySearch2
 import com.nicolasmilliard.socialcats.searchapi.routes.home
 import com.nicolasmilliard.socialcats.searchapi.routes.search
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
+import io.ktor.application.ApplicationStopped
 import io.ktor.application.install
 import io.ktor.auth.Authentication
 import io.ktor.features.CallId
@@ -25,6 +27,9 @@ import io.ktor.routing.routing
 import io.ktor.serialization.json
 import io.ktor.server.engine.ShutDownUrl
 import kotlinx.atomicfu.atomic
+import org.elasticsearch.client.RestHighLevelClient
+import org.koin.ktor.ext.Koin
+import org.koin.ktor.ext.inject
 import org.slf4j.event.Level
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -38,7 +43,16 @@ fun Application.module(testing: Boolean = false) {
         initFirebaseApp(projectId)
     }
 
-    val appGraph = AppComponent(this, if (testing) TestAppModule() else AppModule()).build()
+    install(Koin) {
+        modules(getModules(environment.config, testing))
+    }
+
+    val esClient: RestHighLevelClient by inject()
+
+    environment.monitor.subscribe(ApplicationStopped) {
+        println("Time to clean up")
+        esClient.close()
+    }
 
     install(CallLogging) {
         level = Level.INFO
@@ -54,9 +68,10 @@ fun Application.module(testing: Boolean = false) {
         exitCodeSupplier = { 0 } // ApplicationCall.() -> Int
     }
 
+    val tokenVerifier: FirebaseTokenVerifier by inject()
     install(Authentication) {
         firebaseAuth(FirebaseAuthKey) {
-            firebaseTokenVerifier = appGraph.firebaseTokenVerifier
+            firebaseTokenVerifier = tokenVerifier
             validate = { PrincipalToken(it) }
         }
     }
@@ -81,10 +96,12 @@ fun Application.module(testing: Boolean = false) {
     install(Compression)
     install(ConditionalHeaders)
 
+    val searchUseCase: SearchUseCase by inject()
+
     routing {
         home()
-        search(appGraph.searchUseCase)
-        dummySearch2(appGraph.searchUseCase)
+        search(searchUseCase)
+        dummySearch2(searchUseCase)
     }
 }
 

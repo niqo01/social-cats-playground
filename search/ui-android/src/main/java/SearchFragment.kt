@@ -6,25 +6,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import coil.ImageLoader
 import com.nicolasmilliard.presentation.bindTo
-import com.nicolasmilliard.socialcats.component
+import com.nicolasmilliard.socialcats.search.SearchComponent
 import com.nicolasmilliard.socialcats.search.ui.databinding.SearchBinding
 import com.nicolasmilliard.socialcats.ui.CHECK_CONNECTIVITY_SETTINGS_CODE
 import com.nicolasmilliard.socialcats.ui.CheckConnectivityHandler
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+
+internal val loadFeature by lazy { SearchComponent.init() }
+internal fun injectFeature() = loadFeature
 
 class SearchFragment : Fragment() {
 
-    private val searchViewModel: SearchViewModel by viewModels()
+    private val searchViewModel: SearchViewModel by viewModel()
+    private val imageLoader: ImageLoader by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
-        val presenter = searchViewModel.searchPresenter
-        val imageLoader = requireContext().component.imageLoader
+        injectFeature()
+        val presenter = searchViewModel.presenter
 
         val onItemUserClick = OpenProfileUserHandler(findNavController())
         val onCheckConnectivityClick = CheckConnectivityHandler(requireActivity(), CHECK_CONNECTIVITY_SETTINGS_CODE)

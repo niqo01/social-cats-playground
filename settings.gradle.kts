@@ -2,6 +2,7 @@ rootProject.name = "social-cats-playground"
 
 include(":analytics")
 include(":bug-reporter")
+include(":frontend:di")
 include(":backend:ktor-api")
 include(":backend:functions:auth-user-firestore")
 include(":backend:functions:firestore-user-elasticsearch")

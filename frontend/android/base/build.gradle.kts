@@ -13,18 +13,11 @@ tasks.withType<KotlinCompile> {
 dependencies {
 
     api(project(":analytics"))
-    implementation(project(":auth:client"))
-    implementation(project(":auth:ui"))
-    implementation(project(":store:client"))
-    implementation(project(":session:client"))
+    implementation(project(":frontend:di"))
     implementation(project(":bug-reporter"))
-    implementation(project(":connectivity"))
-    implementation(project(":cloud-messaging:client"))
     implementation(project(":cloud-messaging:android"))
     implementation(project(":presentation:binder"))
     implementation(project(":main-presenter"))
-    implementation(project(":ui-android-util"))
-    implementation(project(":feature-flags"))
     implementation(project(":themes"))
 
     api(Config.Libs.Kotlin.jdk8)
@@ -57,4 +50,5 @@ dependencies {
     implementation(Config.Libs.timber)
 
     implementation(Config.Libs.coil)
+    api(Config.Libs.Koin.koinAndroidViewModel)
 }

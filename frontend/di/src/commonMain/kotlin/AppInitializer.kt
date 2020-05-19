@@ -1,12 +1,7 @@
-package com.nicolasmilliard.socialcats
+package com.nicolasmilliard.socialcats.di
 
 import com.nicolasmilliard.socialcats.analytics.Analytics
 import com.nicolasmilliard.socialcats.bugreporter.BugReporter
-import com.nicolasmilliard.socialcats.featureflags.FirebaseFeatureFlagProvider
-import com.nicolasmilliard.socialcats.featureflags.MAX_PRIORITY
-import com.nicolasmilliard.socialcats.featureflags.MIN_PRIORITY
-import com.nicolasmilliard.socialcats.featureflags.RuntimeBehavior
-import com.nicolasmilliard.socialcats.featureflags.StoreFeatureFlagProvider
 import com.nicolasmilliard.socialcats.session.SessionAuthState
 import com.nicolasmilliard.socialcats.session.SessionManager
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +17,8 @@ class AppInitializer(
     val appScope: CoroutineScope,
     val analytics: Analytics,
     val sessionManager: SessionManager,
-    val bugReporter: BugReporter
+    val bugReporter: BugReporter,
+    val platformInitializer: PlatformInitializer
 ) : Initializer {
     override fun initialize() {
         appScope.launch(Dispatchers.Default) {
@@ -40,11 +36,11 @@ class AppInitializer(
                 }
             }
         }
-        initializeFeatureFlag()
+        platformInitializer.initialize()
+        platformInitializer.initializeFeatureFlag()
     }
+}
 
-    private fun initializeFeatureFlag() {
-        RuntimeBehavior.addProvider(StoreFeatureFlagProvider(MIN_PRIORITY))
-        RuntimeBehavior.addProvider(FirebaseFeatureFlagProvider(MAX_PRIORITY, false))
-    }
+interface PlatformInitializer : Initializer {
+    fun initializeFeatureFlag()
 }

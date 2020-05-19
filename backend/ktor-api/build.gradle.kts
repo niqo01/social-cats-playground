@@ -50,6 +50,7 @@ dependencies {
     implementation(Config.Libs.Ktor.ktorSerialization)
     implementation(Config.Libs.Ktor.ktorAuth)
     implementation(Config.Libs.Ktor.ktorLocation)
+    implementation(Config.Libs.Koin.koinKtor)
     implementation(Config.Libs.Kotlin.Serialization.jdk)
     implementation(Config.Libs.logBackClassic)
     // Elastic search High level client uses log4j

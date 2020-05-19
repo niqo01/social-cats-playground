@@ -30,11 +30,12 @@ allprojects {
     version = Config.Modules.Versions.name
 
     repositories {
-        maven("https://kotlin.bintray.com/ktor")
-        maven("https://kotlin.bintray.com/kotlin-js-wrappers/")
         google()
         mavenCentral()
         jcenter()
+        maven("https://kotlin.bintray.com/ktor")
+        maven("https://kotlin.bintray.com/kotlin-js-wrappers/")
+        maven("https://dl.bintray.com/touchlabpublic/kotlin")
     }
 
     apply(plugin = Plugins.Ids.MAVEN_PUBLISH)

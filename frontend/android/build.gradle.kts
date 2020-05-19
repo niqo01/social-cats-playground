@@ -88,6 +88,7 @@ dependencies {
     debugImplementation(project(":cloud-messaging:client"))
     debugImplementation(Config.Libs.playCore)
     debugImplementation(Config.Libs.leakCanary)
+    debugImplementation(Config.Libs.Koin.koinCore)
 
     testImplementation(Config.Libs.Test.androidxJunit)
     testImplementation(Config.Libs.Test.androidxtruth)

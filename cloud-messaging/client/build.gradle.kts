@@ -7,9 +7,9 @@ plugins {
 
 kotlin {
     android()
-//    js {
-//        browser()
-//    }
+    js {
+        browser()
+    }
     sourceSets {
         commonMain {
             dependencies {
@@ -26,6 +26,7 @@ kotlin {
                 api(Config.Libs.Kotlin.jdk8)
                 api(Config.Libs.Kotlin.Coroutine.jdk8)
                 api(Config.Libs.KotlinLogging.jdk)
+                implementation(Config.Libs.Koin.koinAndroid)
                 implementation(Config.Libs.Firebase.messaging)
             }
         }

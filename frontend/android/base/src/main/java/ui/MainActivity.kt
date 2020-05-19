@@ -2,7 +2,6 @@ package com.nicolasmilliard.socialcats.ui
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.firebase.ui.auth.ErrorCodes
@@ -15,13 +14,18 @@ import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.nicolasmilliard.presentation.bindTo
 import com.nicolasmilliard.socialcats.base.databinding.ActivityMainBinding
+import com.nicolasmilliard.socialcats.search.MainComponent
 import com.nicolasmilliard.socialcats.search.presenter.MainPresenter
 import com.nicolasmilliard.socialcats.search.presenter.MainPresenter.Event.AnonymousUpdateMergeConflict
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 private const val SIGN_IN_REQUEST_CODE = 6666
 private const val IN_APP_UPDATE_REQUEST_CODE = 6667
+
+internal val loadFeature by lazy { MainComponent.init() }
+internal fun injectFeature() = loadFeature
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val mainViewModel: MainViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +45,8 @@ class MainActivity : AppCompatActivity() {
             throw RuntimeException("Crash! Bang! Pow! This is only a test...")
         }
 
+        injectFeature()
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -48,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 
         checkForAppUpdate()
 
-        mainPresenter = mainViewModel.mainPresenter
+        mainPresenter = mainViewModel.presenter
 
         lifecycleScope.launch {
             val binder = MainUiBinder(binding, this@MainActivity, mainPresenter.events)

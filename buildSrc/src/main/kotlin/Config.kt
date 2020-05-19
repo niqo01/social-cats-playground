@@ -99,7 +99,7 @@ object Config {
             }
 
             object Coroutine {
-                private const val version = "1.3.6"
+                private const val version = "1.3.7"
 
                 const val common = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$version"
                 const val jdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$version"
@@ -154,7 +154,7 @@ object Config {
 
         object Firebase {
 
-            const val admin = "com.google.firebase:firebase-admin:6.12.2"
+            const val admin = "com.google.firebase:firebase-admin:6.13.0"
 
             const val common = "com.google.firebase:firebase-common-ktx:19.3.0"
             const val auth = "com.google.firebase:firebase-auth-ktx:19.3.1"
@@ -196,19 +196,19 @@ object Config {
         }
 
         object Aws {
-            const val sdkBom = "software.amazon.awssdk:bom:2.13.15"
+            const val sdkBom = "software.amazon.awssdk:bom:2.13.20"
             const val apacheClient = "software.amazon.awssdk:apache-client"
             const val sdkAuth = "software.amazon.awssdk:auth"
         }
 
         object OkHttp {
-            private const val version = "4.6.0"
+            private const val version = "4.7.2"
             const val client = "com.squareup.okhttp3:okhttp:$version"
             const val logging = "com.squareup.okhttp3:logging-interceptor:$version"
         }
 
         object Retrofit {
-            private const val version = "2.8.1"
+            private const val version = "2.9.0"
 
             const val client = "com.squareup.retrofit2:retrofit:$version"
             const val converterKotlinxSerialization = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.5.0"
@@ -228,14 +228,14 @@ object Config {
         const val processPhoenix = "com.jakewharton:process-phoenix:2.0.0"
         const val material = "com.google.android.material:material:1.1.0"
         const val timber = "com.jakewharton.timber:timber:4.7.1"
-        const val coil = "io.coil-kt:coil-base:0.10.1"
+        const val coil = "io.coil-kt:coil-base:0.11.0"
 
         const val okIo = "com.squareup.okio:okio:2.6.0"
         const val shimmer = "com.facebook.shimmer:shimmer:0.5.0"
 
 
         const val logBackClassic = "ch.qos.logback:logback-classic:1.2.3"
-        const val log4jToSlf4j = "org.apache.logging.log4j:log4j-to-slf4j:2.13.2"
+        const val log4jToSlf4j = "org.apache.logging.log4j:log4j-to-slf4j:2.13.3"
         const val slf4jSimple= "org.slf4j:slf4j-simple:1.7.25"
         const val slf4jTimber = "com.arcao:slf4j-timber:3.1@aar"
         const val elasticSearchHighLevelClient =
@@ -255,7 +255,16 @@ object Config {
                 "com.squareup.moshi:moshi-adapters:$version"
         }
 
-        const val guavaAndroid = "com.google.guava:guava:28.2-android"
+        const val guavaAndroid = "com.google.guava:guava:29.0-android"
 
+        object Koin {
+            private const val version = "3.0.0-alpha-9"
+
+            const val koinKtor = "org.koin:koin-ktor:$version"
+            const val koinCore = "org.koin:koin-core:$version"
+            const val koinAndroid = "org.koin:koin-android:$version"
+            const val koinAndroidViewModel = "org.koin:koin-androidx-viewmodel:$version"
+            const val koinTest= "org.koin:koin-test:$version"
+        }
     }
 }

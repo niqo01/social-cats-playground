@@ -1,14 +1,6 @@
 package com.nicolasmilliard.socialcats.searchapi
 
 import com.google.firebase.auth.FirebaseAuthException
-import com.nicolasmilliard.socialcats.search.repository.FakeSearchRepository
-import com.nicolasmilliard.socialcats.search.repository.SearchRepository
-import org.elasticsearch.client.RestHighLevelClient
-
-class TestAppModule : AppModule() {
-    override fun provideFirebaseTokenVerifier(): FirebaseTokenVerifier = FakeFirebaseAuth()
-    override fun provideSearchRepository(client: RestHighLevelClient): SearchRepository = FakeSearchRepository()
-}
 
 const val TEST_VALID_TOKEN = "validToken"
 

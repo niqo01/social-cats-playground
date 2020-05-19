@@ -17,17 +17,28 @@ private val logger = KotlinLogging.logger {}
 
 class AndroidNetworkManager(private val connectivityManager: ConnectivityManager) : NetworkManager {
     override fun listenNetworkStatus(): Flow<Boolean> = channelFlow<Boolean> {
-        val counter = AtomicInteger(0)
+
+        fun onConnectivityChange(network: Network, isOnline: Boolean) {
+            val isAnyOnline = connectivityManager.allNetworks.any {
+                if (it == network) {
+                    // Don't trust the network capabilities for the network that just changed.
+                    isOnline
+                } else {
+                    it.isOnline()
+                }
+            }
+            offer(isAnyOnline)
+        }
+
         val connectivityCallback = object : NetworkCallback() {
             override fun onAvailable(network: Network) {
                 logger.info { "AndroidNetworkManager network onAvailable" }
-                counter.incrementAndGet()
-                offer(true)
+                onConnectivityChange(network,true)
             }
 
             override fun onLost(network: Network) {
                 logger.info { "AndroidNetworkManager network onLost" }
-                offer(counter.decrementAndGet() > 0)
+                onConnectivityChange(network,false)
             }
         }
         connectivityManager.registerNetworkCallback(
@@ -40,4 +51,9 @@ class AndroidNetworkManager(private val connectivityManager: ConnectivityManager
             connectivityManager.unregisterNetworkCallback(connectivityCallback)
         }
     }.conflate()
+
+    private fun Network.isOnline(): Boolean {
+        val capabilities: NetworkCapabilities? = connectivityManager.getNetworkCapabilities(this)
+        return capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
 }

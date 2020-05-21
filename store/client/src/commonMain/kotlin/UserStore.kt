@@ -15,7 +15,8 @@ data class User(
     val id: String,
     val name: String?,
     val createdAt: Long,
-    val photoUrl: String?
+    val photoUrl: String?,
+    val isMember: Boolean
 )
 
 data class DeviceInfo(

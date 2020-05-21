@@ -1,5 +1,6 @@
 package com.nicolasmilliard.socialcats.search
 
+import com.nicolasmilliard.socialcats.api.bearer
 import com.nicolasmilliard.socialcats.model.SearchUsersResult
 import com.nicolasmilliard.socialcats.util.IO
 import kotlinx.coroutines.Dispatchers
@@ -12,10 +13,8 @@ class SearchLoader(
     fun searchUsers(authToken: String, input: String?) = flow {
         emit(Status.InProgress)
         try {
-            val bearer = "$AUTHORIZATION_SCHEME $authToken"
-            val searchUsers = withContext(Dispatchers.IO()) {
-                searchService.searchUsers(bearer, input)
-            }
+            val bearer = bearer(authToken)
+            val searchUsers = withContext(Dispatchers.IO()) { searchService.searchUsers(bearer, input) }
             emit(Status.Success(searchUsers))
         } catch (exception: Throwable) {
             emit(Status.Failure(exception))

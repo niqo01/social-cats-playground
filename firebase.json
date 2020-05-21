@@ -16,6 +16,15 @@
   "emulators": {
     "firestore": {
       "port": "8282"
+    },
+    "functions": {
+      "port": 5001
+    },
+    "hosting": {
+      "port": 5000
+    },
+    "pubsub": {
+      "port": 8085
     }
   }
 }

@@ -26,7 +26,7 @@ kotlin {
                 api(Config.Libs.Kotlin.common)
                 api(Config.Libs.Kotlin.Coroutine.common)
                 implementation(Config.Libs.KotlinLogging.common)
-                api(Config.Libs.Koin.koinCore)
+                api(Config.Libs.Koin.core)
             }
         }
 
@@ -35,7 +35,7 @@ kotlin {
                 implementation(project(":test-util"))
                 implementation(Config.Libs.Kotlin.Test.common)
                 implementation(Config.Libs.Kotlin.Test.annotations)
-                implementation(Config.Libs.Koin.koinTest)
+                implementation(Config.Libs.Koin.test)
             }
         }
 

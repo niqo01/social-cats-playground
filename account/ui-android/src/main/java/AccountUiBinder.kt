@@ -67,6 +67,7 @@ class AccountUiBinder(
         when {
             model.loadingStatus == LoadingStatus.LOADING -> {
                 // TODO Loading screen
+                binding.name.text = null
             }
             session != null && session.authState is SessionAuthState.Authenticated -> {
                 binding.deleteAccount.isVisible = true
@@ -76,11 +77,12 @@ class AccountUiBinder(
                         events(Event.SignOut)
                     }
                     (session.authState as SessionAuthState.Authenticated.User).user?.apply {
-                        binding.name.text = name
+                        binding.name.text = "$name : Member: $isMember"
                     }
                 }
             }
             else -> {
+                binding.name.text = null
                 binding.deleteAccount.isVisible = false
                 binding.auth.apply {
                     text = resources.getString(R.string.sign_in)

@@ -13,8 +13,8 @@
 # limitations under the License.
 
 runtime: java11
-instance_class: F1
+instance_class: F2
 service: searchapi
-entrypoint: 'java -Xmx64m -jar ktor-api-0.1.0-SNAPSHOT.jar'
+entrypoint: 'java -jar ktor-api-0.1.0-SNAPSHOT.jar'
 includes:
   - env_variables.yaml

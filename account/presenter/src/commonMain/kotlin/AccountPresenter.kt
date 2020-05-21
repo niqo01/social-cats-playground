@@ -6,7 +6,7 @@ import com.nicolasmilliard.socialcats.account.presenter.AccountPresenter.Model
 import com.nicolasmilliard.socialcats.account.presenter.AccountPresenter.Model.LoadingStatus.IDLE
 import com.nicolasmilliard.socialcats.account.presenter.AccountPresenter.Model.LoadingStatus.LOADING
 import com.nicolasmilliard.socialcats.account.presenter.AccountPresenter.Model.ProcessingStatus
-import com.nicolasmilliard.socialcats.auth.AuthRecentLoginRequiredException
+import com.nicolasmilliard.socialcats.auth.DeleteStatus
 import com.nicolasmilliard.socialcats.auth.ui.AuthUi
 import com.nicolasmilliard.socialcats.session.Session
 import com.nicolasmilliard.socialcats.session.SessionAuthState
@@ -91,10 +91,13 @@ class AccountPresenter(
     suspend fun onDeleteAccount(sendModel: (Model) -> Unit) {
         sendModel(_models.value.copy(processingStatus = ProcessingStatus.PROCESSING))
         try {
-            authUi.delete()
-            sendModel(_models.value.copy(processingStatus = ProcessingStatus.IDLE))
-        } catch (e: AuthRecentLoginRequiredException) {
-            sendModel(_models.value.copy(processingStatus = ProcessingStatus.IDLE, needRecentLogin = true))
+            val status = authUi.delete()
+            sendModel(
+                _models.value.copy(
+                    processingStatus = ProcessingStatus.IDLE,
+                    needRecentLogin = status == DeleteStatus.AUTH_RECENT_LOGIN_REQUIRED
+                )
+            )
         } catch (e: Exception) {
             logger.error(e) { "Error while signing out" }
             sendModel(_models.value.copy(processingStatus = ProcessingStatus.FAILED_DELETE_ACCOUNT))

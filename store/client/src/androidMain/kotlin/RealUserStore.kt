@@ -10,13 +10,11 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
 import com.nicolasmilliard.socialcats.store.DbConstants.Collections.InstanceIds
 import com.nicolasmilliard.socialcats.store.DbConstants.Collections.Users
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
 class RealUserStore(private val db: FirebaseFirestore, private val workManager: WorkManager) : UserStore {
 
@@ -24,7 +22,7 @@ class RealUserStore(private val db: FirebaseFirestore, private val workManager: 
         db.waitForPendingWrites().await()
     }
 
-    override suspend fun saveDeviceInfo(userId: String, deviceInfo: DeviceInfo): Unit = withContext(Dispatchers.IO) {
+    override suspend fun saveDeviceInfo(userId: String, deviceInfo: DeviceInfo) {
         val data = mapOf(
             InstanceIds.Fields.TOKEN to deviceInfo.token,
             InstanceIds.Fields.LANGUAGE_TAG to deviceInfo.languageTag
@@ -34,23 +32,22 @@ class RealUserStore(private val db: FirebaseFirestore, private val workManager: 
             .collection(InstanceIds.name)
             .document(deviceInfo.instanceId)
             .set(data, SetOptions.merge())
+            .await()
         workManager.requestStoreSync()
     }
 
     override suspend fun deviceInfo(userId: String, instanceId: String, cacheOnly: Boolean): DeviceInfo? =
-        withContext(Dispatchers.IO) {
-            notFoundToNull {
-                db.collection(Users.NAME)
-                    .document(userId)
-                    .collection(InstanceIds.name)
-                    .document(instanceId)
-                    .get(if (cacheOnly) Source.CACHE else Source.DEFAULT)
-                    .await()
-                    .toDeviceInfo()
-            }
+        notFoundToNull {
+            db.collection(Users.NAME)
+                .document(userId)
+                .collection(InstanceIds.name)
+                .document(instanceId)
+                .get(if (cacheOnly) Source.CACHE else Source.DEFAULT)
+                .await()
+                .toDeviceInfo()
         }
 
-    override suspend fun user(uid: String, cacheOnly: Boolean): User? = withContext(Dispatchers.IO) {
+    override suspend fun user(uid: String, cacheOnly: Boolean): User? =
         notFoundToNull {
             val snapshot = db.collection(Users.NAME)
                 .document(uid)
@@ -58,9 +55,8 @@ class RealUserStore(private val db: FirebaseFirestore, private val workManager: 
                 .await()
             return@notFoundToNull if (snapshot.exists()) snapshot.toUser() else null
         }
-    }
 
-    override suspend fun user(uid: String): Flow<User> = withContext(Dispatchers.IO) {
+    override suspend fun user(uid: String): Flow<User> =
         callbackFlow {
             val listener = db
                 .collection(Users.NAME)
@@ -80,14 +76,14 @@ class RealUserStore(private val db: FirebaseFirestore, private val workManager: 
                 }
             awaitClose { listener.remove() }
         }.conflate()
-    }
 }
 
 fun DocumentSnapshot.toUser(): User {
     val name = getString(Users.Fields.NAME)
     val createdAt = checkNotNull(getTimestamp(Users.Fields.CREATED_AT))
     val photoUrl = getString(Users.Fields.PHOTO_URL)
-    return User(id, name, createdAt.toDate().time, photoUrl)
+    val isMember = getBoolean(Users.Fields.MEMBERSHIP_STATUS) ?: false
+    return User(id, name, createdAt.toDate().time, photoUrl, isMember)
 }
 
 fun DocumentSnapshot.toDeviceInfo(): DeviceInfo {

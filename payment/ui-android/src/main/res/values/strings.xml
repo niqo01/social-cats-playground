@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="unauthenticated">Not Authenticated</string>
+    <string name="pay">Pay</string>
+    <string name="new_subscription">New Subscription</string>
+    <string name="cancel_subscription">Cancel Subscription</string>
+    <string name="unknown_card_error">Unknown Card error</string>
+    <string name="dismiss">Dismiss</string>
+</resources>

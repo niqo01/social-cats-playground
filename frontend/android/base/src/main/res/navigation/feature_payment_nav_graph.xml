@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/payment_nav_graph"
+    app:startDestination="@id/manageSubscriptionFragment">
+    <fragment
+        android:id="@+id/manageSubscriptionFragment"
+        android:name="com.nicolasmilliard.socialcats.payment.ui.ManageSubscriptionFragment"
+        android:label="ManageSubscriptionFragment">
+
+        <action
+            android:id="@+id/action_manageSubscriptionFragment_to_newSubscriptionFragment"
+            app:destination="@id/newSubscriptionFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/newSubscriptionFragment"
+        android:name="com.nicolasmilliard.socialcats.payment.ui.new.NewSubscriptionFragment"
+        android:label="NewSubscriptionFragment">
+
+    </fragment>
+</navigation>

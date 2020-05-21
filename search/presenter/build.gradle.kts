@@ -34,7 +34,7 @@ kotlin {
                 implementation(project(":auth:client:test-util"))
                 implementation(project(":session:client:test-util"))
                 implementation(project(":connectivity:test-util"))
-                implementation(project(":api:social-cats:test-util"))
+                implementation(project(":search:client:test-util"))
                 implementation(Config.Libs.Kotlin.Test.common)
                 implementation(Config.Libs.Kotlin.Test.annotations)
             }

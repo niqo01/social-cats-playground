@@ -6,7 +6,6 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest.Builder
 import com.nicolasmilliard.socialcats.NetworkManager
-import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
@@ -33,12 +32,12 @@ class AndroidNetworkManager(private val connectivityManager: ConnectivityManager
         val connectivityCallback = object : NetworkCallback() {
             override fun onAvailable(network: Network) {
                 logger.info { "AndroidNetworkManager network onAvailable" }
-                onConnectivityChange(network,true)
+                onConnectivityChange(network, true)
             }
 
             override fun onLost(network: Network) {
                 logger.info { "AndroidNetworkManager network onLost" }
-                onConnectivityChange(network,false)
+                onConnectivityChange(network, false)
             }
         }
         connectivityManager.registerNetworkCallback(

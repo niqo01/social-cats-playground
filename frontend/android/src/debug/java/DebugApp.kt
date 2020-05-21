@@ -5,7 +5,6 @@ import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.O
 import android.os.Build.VERSION_CODES.Q
 import android.os.StrictMode
-import android.os.StrictMode.ThreadPolicy
 import android.os.StrictMode.VmPolicy
 import com.nicolasmilliard.socialcats.featureflags.FirebaseFeatureFlagProvider
 import com.nicolasmilliard.socialcats.featureflags.MAX_PRIORITY
@@ -24,16 +23,17 @@ open class DebugApp : App() {
 
     override fun onCreate() {
         super.onCreate()
+        Timber.plant(Timber.DebugTree())
         initializeFeatureFlag()
         LeakCanary.config.copy(dumpHeap = isFeatureEnabled(TestSetting.LEAK_CANARY))
         if (isFeatureEnabled(TestSetting.STRICT_MODE)) {
-            StrictMode.setThreadPolicy(
-                ThreadPolicy.Builder()
-                    .detectAll()
-                    .penaltyLog()
-                    .penaltyDeath()
-                    .build()
-            )
+//            StrictMode.setThreadPolicy(
+//                ThreadPolicy.Builder()
+//                    .detectAll()
+//                    .penaltyLog()
+//                    .penaltyDeath()
+//                    .build()
+//            )
             val builder = VmPolicy.Builder()
                 .detectActivityLeaks()
                 .detectFileUriExposure()

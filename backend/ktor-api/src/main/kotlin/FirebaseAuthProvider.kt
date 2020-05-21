@@ -3,6 +3,7 @@ package com.nicolasmilliard.socialcats.searchapi
 import com.google.firebase.auth.FirebaseAuthException
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
+import io.ktor.application.log
 import io.ktor.auth.Authentication
 import io.ktor.auth.AuthenticationContext
 import io.ktor.auth.AuthenticationFailedCause
@@ -57,8 +58,13 @@ class FirebaseAuthProvider internal constructor(
 
     suspend fun verifyIdToken(call: ApplicationCall, tokenStr: String): Principal? =
         withContext(Dispatchers.IO) {
-            val firebaseToken = firebaseAuth.verifyIdToken(tokenStr)
-            call.validateFunc(firebaseToken)
+            try {
+                val firebaseToken = firebaseAuth.verifyIdToken(tokenStr)
+                call.validateFunc(firebaseToken)
+            } catch (e: Throwable) {
+                call.application.log.warn("Verifying token failed", e)
+                throw e
+            }
         }
 }
 

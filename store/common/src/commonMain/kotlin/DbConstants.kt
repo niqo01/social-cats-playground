@@ -12,6 +12,19 @@ object DbConstants {
                 const val PHOTO_URL = "photoUrl"
                 const val EMAIL = "email"
                 const val EMAIL_VERIFIED = "emailVerified"
+                const val MEMBERSHIP_STATUS = "membershipStatus"
+            }
+
+            object PaymentProcessor {
+                const val NAME = "paymentProcessor"
+
+                enum class Processor(val id: String) {
+                    STRIPE("stripe"),
+                }
+
+                object Fields {
+                    const val CUSTOMER_ID = "customerId"
+                }
             }
         }
 

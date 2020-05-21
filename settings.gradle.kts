@@ -4,10 +4,18 @@ include(":analytics")
 include(":bug-reporter")
 include(":frontend:di")
 include(":backend:ktor-api")
-include(":backend:functions:auth-user-firestore")
-include(":backend:functions:firestore-user-elasticsearch")
+include(":backend:functions:auth-user-created")
+include(":backend:functions:firestore-user-changed")
+include(":payment:admin")
+include(":payment:admin:test-util")
+include(":payment:client")
+include(":payment:model")
+include(":payment:presenter")
+include(":payment:ui-android")
+include(":profile:ui-android")
 include(":store:common")
 include(":store:admin")
+include(":store:admin:test-util")
 include(":store:client")
 include(":store:client:test-util")
 include(":feature-flags")
@@ -33,15 +41,16 @@ include(":search:admin")
 include(":search:admin:repository")
 include(":search:admin:repository:test-util")
 include(":search:client")
+include(":search:client:test-util")
 include(":search:presenter")
 include(":search:ui-android")
 include(":api:social-cats")
-include(":api:social-cats:test-util")
 include(":presentation:presenter")
 include(":presentation:binder")
 include(":themes")
 include(":kotlin-util")
 include(":ui-android-util")
+include(":cloud-tasks")
 include(":test-settings")
 include(":test-util")
 
@@ -74,7 +83,7 @@ pluginManagement {
         id("org.jetbrains.kotlin.kapt") version "$kotlinVersion"
         id("org.jetbrains.kotlin.multiplatform") version "$kotlinVersion"
         id("org.jetbrains.kotlin.kotlinx-serialization") version "$kotlinVersion"
-        id("com.github.johnrengelman.shadow") version "5.2.0"
+        id("com.github.johnrengelman.shadow") version "6.0.0"
         id("com.github.ben-manes.versions") version "0.28.0"
         id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
     }

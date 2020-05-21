@@ -16,6 +16,13 @@ Dummy social network playground use to investigate:
 - Publish Android library and applications, waiting on bug
 - Use Kermit
 - Use SharedFlow when ready https://github.com/Kotlin/kotlinx.coroutines/issues/2034
+- Try resiliency with cloud task
+- Rename package independent of project without "socialcats
+- unit test should not fake project implementation
+- Http client request id
+- try In app billing
+- try Google one tap and back store something
+- try having ktor test client depends on payment client jvm (Need kotlin 1.4 plugin) 
 
 # Architecture 
 - Module vs library
@@ -46,7 +53,8 @@ Dummy social network playground use to investigate:
 - try https://github.com/autonomousapps/dependency-analysis-android-gradle-plugin
 - try https://github.com/maskarade/gradle-android-ribbonizer-plugin 
 - try Dexter lib for handling permission  https://github.com/Karumi/Dexter-
-- try Retrofit call adapter https://proandroiddev.com/create-retrofit-calladapter-for-coroutines-to-handle-response-as-states-c102440de37a
+- Try App launcher
+- Image Http Caching
 
 Extras:
 - Jetpack compose test?

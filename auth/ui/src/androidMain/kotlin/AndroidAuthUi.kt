@@ -5,7 +5,7 @@ import android.content.Intent
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.AuthUI.IdpConfig
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
-import com.nicolasmilliard.socialcats.auth.AuthRecentLoginRequiredException
+import com.nicolasmilliard.socialcats.auth.DeleteStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -27,11 +27,12 @@ class AndroidAuthUi(
         authUI.silentSignIn(context, PROVIDERS).await()
     }
 
-    override suspend fun delete(): Unit = withContext(Dispatchers.IO) {
+    override suspend fun delete(): DeleteStatus = withContext(Dispatchers.IO) {
         try {
             authUI.delete(context).await()
+            DeleteStatus.SUCCESS
         } catch (e: FirebaseAuthRecentLoginRequiredException) {
-            throw AuthRecentLoginRequiredException(e)
+            DeleteStatus.AUTH_RECENT_LOGIN_REQUIRED
         }
     }
 

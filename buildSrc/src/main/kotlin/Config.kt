@@ -5,11 +5,25 @@ object Config {
 
     const val group = "com.nicolasmilliard.socialcats"
 
+    object Common {
+        // lowest shared Java compatibility
+        const val kotlinJvmTarget = Android.kotlinJvmTarget
+        val sourceCompatibility = Android.sourceCompatibility
+        val targetCompatibility = Android.targetCompatibility
+    }
+
+    object CloudCommon {
+        // lowest shared Java Cloud compatibility
+        const val kotlinJvmTarget = GoogleCloud.AppEngine.kotlinJvmTarget
+        val sourceCompatibility = GoogleCloud.AppEngine.sourceCompatibility
+        val targetCompatibility = GoogleCloud.AppEngine.targetCompatibility
+    }
+
     object GoogleCloud {
         const val projectId = "sweat-monkey"
 
         object Functions {
-            const val kotlinJvmTarget = "1.8"
+            const val kotlinJvmTarget = "11"
             val sourceCompatibility = JavaVersion.VERSION_11
             val targetCompatibility = JavaVersion.VERSION_11
         }
@@ -27,7 +41,7 @@ object Config {
 
     object Android {
 
-        const val navigationVersion = "2.2.1" // Update gradle.properties as well
+        const val navigationVersion = "2.2.2" // Update gradle.properties as well
 
         object SdkVersions {
             const val compile = 29
@@ -121,7 +135,7 @@ object Config {
 
         object AndroidX {
             private const val pagingVersion = "2.1.2"
-            private const val fragmentVersion = "1.2.2"
+            private const val fragmentVersion = "1.2.5"
             private const val workVersion = "2.3.4"
             private const val lifecycle = "2.2.0"
 
@@ -131,7 +145,7 @@ object Config {
             const val fragmentTesting = "androidx.fragment:fragment-testing:$fragmentVersion"
             const val preferenceKtx = "androidx.preference:preference-ktx:1.1.1"
             const val vectorCompat = "androidx.vectordrawable:vectordrawable-animated:1.1.0"
-            const val coreKtx = "androidx.core:core-ktx:1.2.0"
+            const val coreKtx = "androidx.core:core-ktx:1.3.0"
             const val constraintLayout = "androidx.constraintlayout:constraintlayout:1.1.3"
             const val recyclerView = "androidx.recyclerview:recyclerview:1.1.0"
             const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
@@ -140,7 +154,7 @@ object Config {
             const val pagingRuntimeKtx = "androidx.paging:paging-runtime-ktx:$pagingVersion"
             const val pagingCommon = "androidx.paging:paging-common:$pagingVersion"
             const val dynamicAnimation =
-                "androidx.dynamicanimation:dynamicanimation-ktx:1.0.0-alpha02"
+                "androidx.dynamicanimation:dynamicanimation-ktx:1.0.0"
             const val navigationFragmentKtx =
                 "androidx.navigation:navigation-fragment-ktx:${Android.navigationVersion}"
             const val navigationUiKtx = "androidx.navigation:navigation-ui-ktx:${Android.navigationVersion}"
@@ -159,12 +173,12 @@ object Config {
             const val common = "com.google.firebase:firebase-common-ktx:19.3.0"
             const val auth = "com.google.firebase:firebase-auth-ktx:19.3.1"
             const val firestore = "com.google.firebase:firebase-firestore-ktx:21.4.3"
-            const val analytics = "com.google.firebase:firebase-analytics:17.4.1"
-            const val crashlytics = "com.google.firebase:firebase-crashlytics:17.0.0"
+            const val analytics = "com.google.firebase:firebase-analytics-ktx:17.4.3"
+            const val crashlytics = "com.google.firebase:firebase-crashlytics:17.0.1"
             const val performance = "com.google.firebase:firebase-perf:19.0.7"
             const val remoteConfig = "com.google.firebase:firebase-config-ktx:19.1.4"
-            const val messaging = "com.google.firebase:firebase-messaging:20.1.7"
-            const val inAppMessaging = "com.google.firebase:firebase-inappmessaging-display-ktx:19.0.6"
+            const val messaging = "com.google.firebase:firebase-messaging:20.2.0"
+            const val inAppMessaging = "com.google.firebase:firebase-inappmessaging-display-ktx:19.0.7"
 
             const val uiAuth = "com.firebaseui:firebase-ui-auth:6.2.1"
             const val uiFirestore = "com.firebaseui:firebase-ui-firestore:6.1.0"
@@ -196,7 +210,7 @@ object Config {
         }
 
         object Aws {
-            const val sdkBom = "software.amazon.awssdk:bom:2.13.20"
+            const val sdkBom = "software.amazon.awssdk:bom:2.13.35"
             const val apacheClient = "software.amazon.awssdk:apache-client"
             const val sdkAuth = "software.amazon.awssdk:auth"
         }
@@ -215,16 +229,22 @@ object Config {
         }
 
         object KotlinLogging {
-            private const val version = "1.7.9"
+            private const val version = "1.7.10"
             const val common = "io.github.microutils:kotlin-logging-common:$version"
             const val jdk = "io.github.microutils:kotlin-logging:$version"
             const val js = "io.github.microutils:kotlin-logging-js:$version"
         }
 
+        object LeakCanary {
+            private const val version = "2.4"
+            const val android = "com.squareup.leakcanary:leakcanary-android:$version"
+            const val plumber = "com.squareup.leakcanary:plumber-android:$version"
+        }
+
         // Misc
         const val statelyIsolate = "co.touchlab:stately-isolate:1.0.3-a4"
         const val statelyIsoCollections = "co.touchlab:stately-iso-collections:1.0.3-a4"
-        const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.3"
+
         const val processPhoenix = "com.jakewharton:process-phoenix:2.0.0"
         const val material = "com.google.android.material:material:1.1.0"
         const val timber = "com.jakewharton.timber:timber:4.7.1"
@@ -239,14 +259,14 @@ object Config {
         const val slf4jSimple= "org.slf4j:slf4j-simple:1.7.25"
         const val slf4jTimber = "com.arcao:slf4j-timber:3.1@aar"
         const val elasticSearchHighLevelClient =
-            "org.elasticsearch.client:elasticsearch-rest-high-level-client:7.7.0"
+            "org.elasticsearch.client:elasticsearch-rest-high-level-client:7.7.1"
 
         const val byteUnits = "com.jakewharton.byteunits:byteunits:0.9.1"
 
         const val playCore = "com.google.android.play:core-ktx:1.7.0"
 
         object Moshi {
-            private const val version = "1.9.2"
+            private const val version = "1.9.3"
             const val core =
                 "com.squareup.moshi:moshi-kotlin:$version"
             const val codegen =
@@ -260,11 +280,19 @@ object Config {
         object Koin {
             private const val version = "3.0.0-alpha-9"
 
-            const val koinKtor = "org.koin:koin-ktor:$version"
-            const val koinCore = "org.koin:koin-core:$version"
-            const val koinAndroid = "org.koin:koin-android:$version"
-            const val koinAndroidViewModel = "org.koin:koin-androidx-viewmodel:$version"
-            const val koinTest= "org.koin:koin-test:$version"
+            const val ktor = "org.koin:koin-ktor:$version"
+            const val core = "org.koin:koin-core:$version"
+            const val android = "org.koin:koin-android:$version"
+            const val androidxViewModel = "org.koin:koin-androidx-viewmodel:$version"
+            const val test= "org.koin:koin-test:$version"
         }
+
+        object Stripe {
+            const val java = "com.stripe:stripe-java:19.23.0"
+            const val android = "com.stripe:stripe-android:14.5.0"
+        }
+
+        const val cloudTask = "com.google.cloud:google-cloud-tasks:1.29.1"
+        const val cloudLoggingLogback = "com.google.cloud:google-cloud-logging-logback:0.117.0-alpha"
     }
 }

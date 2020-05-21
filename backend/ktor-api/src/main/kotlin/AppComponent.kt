@@ -2,13 +2,17 @@ package com.nicolasmilliard.socialcats.searchapi
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseToken
+import com.google.firebase.cloud.FirestoreClient
 import com.nicolasmilliard.socialcats.data.AwsInterceptorModule
 import com.nicolasmilliard.socialcats.data.ElasticServiceInterceptorModule
+import com.nicolasmilliard.socialcats.payment.PaymentProcessor
+import com.nicolasmilliard.socialcats.payment.Payments
+import com.nicolasmilliard.socialcats.payment.StripeProcessor
 import com.nicolasmilliard.socialcats.search.SearchUseCase
 import com.nicolasmilliard.socialcats.search.repository.ElasticSearchRepository
-import com.nicolasmilliard.socialcats.search.repository.FakeSearchRepository
 import com.nicolasmilliard.socialcats.search.repository.SearchRepository
-import io.ktor.application.Application
+import com.nicolasmilliard.socialcats.store.RealUserStoreAdmin
+import com.nicolasmilliard.socialcats.store.UserStoreAdmin
 import io.ktor.config.ApplicationConfig
 import org.apache.http.HttpHost
 import org.apache.http.HttpRequestInterceptor
@@ -17,24 +21,20 @@ import org.elasticsearch.client.RestHighLevelClient
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-fun getModules(config: ApplicationConfig, testing: Boolean): List<Module> {
+fun getModules(config: ApplicationConfig): List<Module> {
 
     val isProduction = config
         .property("env.isProduction").getString() == "true"
     val useAwsEs = config
         .property("elasticSearch.useAws").getString() == "true"
-    val mods = ArrayList<Module>(4)
+    val mods = ArrayList<Module>(6)
     mods.add(module { single { config } })
-    if (testing) {
-        mods.add(testAppModule)
-    } else {
-        mods.add(appModule)
-    }
+
+    mods.add(storeModule)
+    mods.add(paymentModule)
+    mods.add(searchModule)
 
     when {
-        testing -> {
-            mods.add(testAuthModule)
-        }
         isProduction -> {
             mods.add(authModule)
         }
@@ -48,6 +48,7 @@ fun getModules(config: ApplicationConfig, testing: Boolean): List<Module> {
     } else {
         mods.add(esModule)
     }
+
     return mods
 }
 
@@ -75,19 +76,13 @@ val authModule = module {
     }
 }
 
-val testAuthModule = module {
-    single<FirebaseTokenVerifier> {
-        FakeFirebaseAuth()
-    }
-}
-
 val allowByPassAuthModule = module {
     single<FirebaseTokenVerifier> {
         AllowByPassTokenAuth(FirebaseAuthImpl(FirebaseAuth.getInstance()))
     }
 }
 
-val appModule = module {
+val searchModule = module {
     single {
         val config: ApplicationConfig = get()
         val endpoint: String = config.property("elasticSearch.endpoint").getString()
@@ -110,26 +105,24 @@ val appModule = module {
     }
 }
 
-val testAppModule = module {
+val storeModule = module {
     single {
-        val application: Application = get()
-        val endpoint: String = application.environment.config.property("elasticSearch.endpoint").getString()
-        val interceptor: HttpRequestInterceptor = get()
-        RestHighLevelClient(
-            RestClient.builder(HttpHost.create(endpoint))
-                .setHttpClientConfigCallback { hacb ->
-                    hacb.addInterceptorLast(
-                        interceptor
-                    )
-                })
+        FirestoreClient.getFirestore()
     }
-
-    single<SearchRepository> {
-        FakeSearchRepository()
+    single<UserStoreAdmin> {
+        RealUserStoreAdmin(get())
     }
+}
 
+val paymentModule = module {
+    single<PaymentProcessor> {
+        val config: ApplicationConfig = get()
+        val stripePKey: String = config.property("stripe.pKey").getString()
+        val stripeSKey: String = config.property("stripe.sKey").getString()
+        StripeProcessor(stripePKey, stripeSKey)
+    }
     single {
-        SearchUseCase(get())
+        Payments(get(), get())
     }
 }
 
@@ -140,6 +133,7 @@ class FirebaseAuthImpl(private val auth: FirebaseAuth) : FirebaseTokenVerifier {
 }
 
 const val BYPASS_TOKEN = "123454321qwertyytrewq"
+
 class AllowByPassTokenAuth(private val original: FirebaseTokenVerifier) : FirebaseTokenVerifier {
     override fun verifyIdToken(token: String): Token {
         if (token == BYPASS_TOKEN) {

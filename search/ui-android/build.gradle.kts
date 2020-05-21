@@ -11,6 +11,7 @@ dependencies {
     implementation(project(":ui-android-util"))
     implementation(project(":presentation:binder"))
     implementation(project(":themes"))
+    implementation(project(":profile:ui-android"))
 
     implementation(Config.Libs.Kotlin.jdk8)
     implementation(Config.Libs.Kotlin.Coroutine.android)

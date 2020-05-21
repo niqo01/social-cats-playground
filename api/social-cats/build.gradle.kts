@@ -6,10 +6,10 @@ plugins {
 kotlin {
     jvm {
         val main by compilations.getting {
-            java.sourceCompatibility = Config.Android.sourceCompatibility
-            java.targetCompatibility = Config.Android.targetCompatibility
+            java.sourceCompatibility = Config.Common.sourceCompatibility
+            java.targetCompatibility = Config.Common.targetCompatibility
             kotlinOptions {
-                jvmTarget = Config.Android.kotlinJvmTarget
+                jvmTarget = Config.Common.kotlinJvmTarget
             }
         }
     }
@@ -24,8 +24,6 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":search:model"))
-                api(project(":kotlin-util"))
                 api(Config.Libs.Kotlin.common)
                 api(Config.Libs.Kotlin.Coroutine.common)
                 implementation(Config.Libs.Kotlin.Serialization.common)
@@ -36,19 +34,12 @@ kotlin {
                 api(Config.Libs.Kotlin.jdk8)
                 api(Config.Libs.Kotlin.Coroutine.jdk8)
                 implementation(Config.Libs.Kotlin.Serialization.jdk)
-                implementation(Config.Libs.Retrofit.client)
-                implementation(Config.Libs.Retrofit.converterKotlinxSerialization)
+                api(Config.Libs.Retrofit.client)
                 api(Config.Libs.OkHttp.client)
-                api(Config.Libs.okIo)
+                implementation(Config.Libs.Retrofit.converterKotlinxSerialization)
             }
         }
 
-        val jvmTest by getting {
-            dependencies {
-                implementation(kotlin("test-junit5"))
-                implementation(Config.Libs.Test.truth)
-            }
-        }
         val jsMain by getting {
             dependencies {
                 api(Config.Libs.Kotlin.js)

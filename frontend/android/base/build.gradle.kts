@@ -50,5 +50,5 @@ dependencies {
     implementation(Config.Libs.timber)
 
     implementation(Config.Libs.coil)
-    api(Config.Libs.Koin.koinAndroidViewModel)
+    api(Config.Libs.Koin.androidxViewModel)
 }

@@ -100,4 +100,7 @@ data class NewToken(
 )
 
 expect abstract class AuthCredential
-class AuthRecentLoginRequiredException(cause: Throwable) : Exception(cause)
+enum class DeleteStatus {
+    SUCCESS,
+    AUTH_RECENT_LOGIN_REQUIRED
+}

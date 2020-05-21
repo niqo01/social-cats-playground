@@ -6,13 +6,12 @@ plugins {
 }
 
 java {
-    // (4)
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = Config.CloudCommon.sourceCompatibility
+    targetCompatibility = Config.CloudCommon.targetCompatibility
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = Config.CloudCommon.kotlinJvmTarget
 }
 
 dependencies {

@@ -2,7 +2,7 @@ package com.nicolasmilliard.socialcats.search.presenter
 
 import com.nicolasmilliard.socialcats.ConnectivityChecker
 import com.nicolasmilliard.socialcats.search.SearchLoader
-import com.nicolasmilliard.socialcats.search.SocialCatsApiModule
+import com.nicolasmilliard.socialcats.search.SearchServiceModule
 import com.nicolasmilliard.socialcats.session.SessionManager
 import okhttp3.OkHttpClient
 
@@ -13,7 +13,7 @@ object SearchPresenterModule {
         connectivityChecker: ConnectivityChecker
     ): SearchPresenter {
 
-        val service = SocialCatsApiModule.searchService(httpClient)
+        val service = SearchServiceModule.searchService(httpClient)
 
         val searchLoader = SearchLoader(service)
 

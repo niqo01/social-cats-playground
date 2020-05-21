@@ -10,5 +10,4 @@
     <string name="retry">Retry</string>
     <string name="updating">Updating class list…</string>
     <string name="updating_failed">Failed to update class list.</string>
-    <string name="a_profile">A Profile</string>
 </resources>

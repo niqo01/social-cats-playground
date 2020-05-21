@@ -82,13 +82,15 @@ dependencies {
 
     implementation(project(":frontend:android:base"))
     implementation(project(":search:ui-android"))
+    implementation(project(":payment:ui-android"))
     implementation(project(":account:ui-android"))
+    implementation(Config.Libs.LeakCanary.plumber)
 
     debugImplementation(project(":test-settings"))
     debugImplementation(project(":cloud-messaging:client"))
     debugImplementation(Config.Libs.playCore)
-    debugImplementation(Config.Libs.leakCanary)
-    debugImplementation(Config.Libs.Koin.koinCore)
+    debugImplementation(Config.Libs.LeakCanary.android)
+    debugImplementation(Config.Libs.Koin.core)
 
     testImplementation(Config.Libs.Test.androidxJunit)
     testImplementation(Config.Libs.Test.androidxtruth)

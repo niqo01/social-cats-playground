@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets.UTF_8
 import java.util.zip.GZIPInputStream
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.junit.Test
 
 class FunctionalTest {
@@ -21,7 +22,7 @@ class FunctionalTest {
         client.newCall(request).execute().use { response ->
             assertThat(response.isSuccessful).isTrue()
             assertThat(response.body).isNotNull()
-            assertThat(response.body!!.string()).isEqualTo("Hello World")
+            assertThat(response.body!!.string()).isEqualTo("Pong")
         }
     }
 
@@ -36,10 +37,10 @@ class FunctionalTest {
         client.newCall(request).execute().use { response ->
             assertThat(response.isSuccessful).isTrue()
             assertThat(response.header("Content-Encoding")).isEqualTo("gzip")
-            assertThat(response.header("Content-Length")).isEqualTo("31")
+            assertThat(response.header("Content-Length")).isEqualTo("24")
             assertThat(response.body).isNotNull()
             GZIPInputStream(response.body!!.byteStream()).bufferedReader(UTF_8).use {
-                assertThat(it.readText()).isEqualTo("Hello World")
+                assertThat(it.readText()).isEqualTo("Pong")
             }
         }
     }
@@ -67,6 +68,21 @@ class FunctionalTest {
 
         client.newCall(request).execute().use { response ->
             assertThat(response.isSuccessful).isTrue()
+        }
+    }
+
+    @Test
+    fun testSetuPaymentIntentNotFound() {
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url("https://searchapi-dot-sweat-monkey.appspot.com/v1/payment/setupIntent")
+            .header("Authorization", "Bearer $BYPASS_TOKEN")
+            .post("".toRequestBody())
+            .build()
+
+        client.newCall(request).execute().use { response ->
+            assertThat(response.isSuccessful).isFalse()
+            assertThat(response.code).isEqualTo(404)
         }
     }
 }

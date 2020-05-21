@@ -50,7 +50,6 @@ class SessionManager(
                         is AuthState.UnAuthenticated -> {
                             userJob?.cancel()
                             deviceInfoJob?.cancel()
-                            logger.info { "1" }
                             sendSession(
                                 savedSession.copy(
                                     authState = SessionAuthState.UnAuthenticated
@@ -79,8 +78,6 @@ class SessionManager(
                                     user
                                 )
                             }
-
-                            logger.info { "2" }
                             sendSession(savedSession.copy(authState = newState))
                         }
                     }
@@ -112,7 +109,6 @@ class SessionManager(
                             if (currentUser == null) {
                                 currentUser = store.user(uId).first()
                             }
-                            logger.info { "3.   " }
                             sendSession(
                                 _sessions.value.copy(
                                     authState = (_sessions.value.authState as SessionAuthState.Authenticated.User).copy(
@@ -154,7 +150,6 @@ class SessionManager(
 
         launch {
             val deviceInfo = deviceInfoProvider.getDeviceInfo()
-            logger.info { "4" }
             sendSession(_sessions.value.copy(device = deviceInfo))
         }
 
@@ -170,7 +165,6 @@ class SessionManager(
                     storeTokenJob = launch {
                         val deviceInfo = DeviceInfo(currentSession.device.instanceId, it, currentSession.device.languageTag)
                         store.saveDeviceInfo(currentSession.authState.uId, deviceInfo)
-                        logger.info { "5" }
                         sendSession(_sessions.value.copy(device = deviceInfo))
                     }
                 }

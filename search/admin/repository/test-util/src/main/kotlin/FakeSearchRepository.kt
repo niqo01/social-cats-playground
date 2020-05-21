@@ -25,13 +25,13 @@ val aDocument3 = Document(
 val aSearchResultNoInput = SearchResult(3, listOf(aDocument1, aDocument2, aDocument3))
 val aSearchResult = SearchResult(2, listOf(aDocument1, aDocument2))
 
-class FakeSearchRepository() : SearchRepository {
+class FakeSearchRepository : SearchRepository {
 
-    val updatedUsers = HashMap<String, IndexUser>()
+    val indexedUsers = HashMap<String, IndexUser>()
     val deletedUsers = HashSet<String>()
 
     override suspend fun indexUser(indexUser: IndexUser) {
-        updatedUsers[indexUser.id] = indexUser
+        indexedUsers[indexUser.id] = indexUser
     }
 
     override suspend fun searchUsers(input: String): SearchResult {

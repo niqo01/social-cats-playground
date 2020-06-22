@@ -37,13 +37,11 @@ android {
             keyAlias = "androiddebugkey"
             keyPassword = "android"
         }
-        if (file("upload.keystore").exists()) {
-            create("upload") {
-                storeFile = rootProject.file("upload.keystore")
-                storePassword = System.getenv("UPLOAD_STORE_PASSWORD")
-                keyAlias = "playground"
-                keyPassword = System.getenv("UPLOAD_KEY_PASSWORD")
-            }
+        create("upload") {
+            storeFile = file("upload.jks")
+            storePassword = System.getenv("socialcats.upload.password")
+            keyAlias = "upload"
+            keyPassword = System.getenv("socialcats.upload.key.password")
         }
     }
 
@@ -56,7 +54,7 @@ android {
         }
 
         getByName("release") {
-            signingConfig = if (file("upload.keystore").exists()) {
+            signingConfig = if (file("upload.jks").exists()) {
                 signingConfigs.getByName("upload")
             } else {
                 signingConfigs.getByName("debug")

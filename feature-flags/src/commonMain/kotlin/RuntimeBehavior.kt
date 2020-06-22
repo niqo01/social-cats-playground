@@ -24,7 +24,7 @@ object RuntimeBehavior {
                 .filter { it is RemoteFeatureFlagProvider }.toList()
 
         remoteProviders
-                .forEach { (it as RemoteFeatureFlagProvider).fetch(forceRefresh) }
+            .forEach { (it as RemoteFeatureFlagProvider).fetch(forceRefresh) }
     }
 
     suspend fun activateFeatureFlags() {

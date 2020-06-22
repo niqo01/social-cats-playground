@@ -47,7 +47,9 @@ class NewSubscriptionUiBinder(
 
     override fun bind(model: Model, oldModel: Model?) {
         Timber.i("Payment UI binder bind: $model")
-        prices = model.prices
+        if (model.prices != null) {
+            prices = model.prices!!
+        }
 
         if (model.requireConfirmation != null) {
             onRequirePaymentConfirmation(

@@ -55,6 +55,8 @@ Dummy social network playground use to investigate:
 - try Dexter lib for handling permission  https://github.com/Karumi/Dexter-
 - Try App launcher
 - Image Http Caching
+- Try dynamic navigation https://developer.android.com/guide/navigation/navigation-dynamic
+- Try inapp review: https://android-developers.googleblog.com/2020/08/in-app-review-api.html?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+blogspot%2FhsDu+%28Android+Developers+Blog%29
 
 Extras:
 - Jetpack compose test?

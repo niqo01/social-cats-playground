@@ -41,7 +41,7 @@ object Config {
 
     object Android {
 
-        const val navigationVersion = "2.2.2" // Update gradle.properties as well
+        const val navigationVersion = "2.3.0" // Update gradle.properties as well
 
         object SdkVersions {
             const val compile = 29
@@ -113,7 +113,7 @@ object Config {
             }
 
             object Coroutine {
-                private const val version = "1.3.7"
+                private const val version = "1.3.8"
 
                 const val common = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$version"
                 const val jdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$version"
@@ -136,7 +136,7 @@ object Config {
         object AndroidX {
             private const val pagingVersion = "2.1.2"
             private const val fragmentVersion = "1.2.5"
-            private const val workVersion = "2.3.4"
+            private const val workVersion = "2.4.0"
             private const val lifecycle = "2.2.0"
 
             const val appCompat = "androidx.appcompat:appcompat:1.1.0"
@@ -158,6 +158,8 @@ object Config {
             const val navigationFragmentKtx =
                 "androidx.navigation:navigation-fragment-ktx:${Android.navigationVersion}"
             const val navigationUiKtx = "androidx.navigation:navigation-ui-ktx:${Android.navigationVersion}"
+            const val navigationDynamicFeature =
+                "androidx.navigation:navigation-dynamic-features-fragment:${Android.navigationVersion}"
             const val workRuntimeKtx = "androidx.work:work-runtime-ktx:$workVersion"
             const val workTesting = "androidx.work:work-testing:$workVersion"
         }
@@ -168,19 +170,19 @@ object Config {
 
         object Firebase {
 
-            const val admin = "com.google.firebase:firebase-admin:6.13.0"
+            const val admin = "com.google.firebase:firebase-admin:6.15.0"
 
             const val common = "com.google.firebase:firebase-common-ktx:19.3.0"
-            const val auth = "com.google.firebase:firebase-auth-ktx:19.3.1"
-            const val firestore = "com.google.firebase:firebase-firestore-ktx:21.4.3"
-            const val analytics = "com.google.firebase:firebase-analytics-ktx:17.4.3"
-            const val crashlytics = "com.google.firebase:firebase-crashlytics:17.0.1"
-            const val performance = "com.google.firebase:firebase-perf:19.0.7"
-            const val remoteConfig = "com.google.firebase:firebase-config-ktx:19.1.4"
-            const val messaging = "com.google.firebase:firebase-messaging:20.2.0"
-            const val inAppMessaging = "com.google.firebase:firebase-inappmessaging-display-ktx:19.0.7"
+            const val auth = "com.google.firebase:firebase-auth-ktx:19.3.2"
+            const val firestore = "com.google.firebase:firebase-firestore-ktx:21.5.0"
+            const val analytics = "com.google.firebase:firebase-analytics-ktx:17.4.4"
+            const val crashlytics = "com.google.firebase:firebase-crashlytics:17.1.1"
+            const val performance = "com.google.firebase:firebase-perf:19.0.8"
+            const val remoteConfig = "com.google.firebase:firebase-config-ktx:19.2.0"
+            const val messaging = "com.google.firebase:firebase-messaging:20.2.4"
+            const val inAppMessaging = "com.google.firebase:firebase-inappmessaging-display-ktx:19.1.0"
 
-            const val uiAuth = "com.firebaseui:firebase-ui-auth:6.2.1"
+            const val uiAuth = "com.firebaseui:firebase-ui-auth:6.3.0"
             const val uiFirestore = "com.firebaseui:firebase-ui-firestore:6.1.0"
         }
 
@@ -210,13 +212,13 @@ object Config {
         }
 
         object Aws {
-            const val sdkBom = "software.amazon.awssdk:bom:2.13.35"
+            const val sdkBom = "software.amazon.awssdk:bom:2.13.64"
             const val apacheClient = "software.amazon.awssdk:apache-client"
             const val sdkAuth = "software.amazon.awssdk:auth"
         }
 
         object OkHttp {
-            private const val version = "4.7.2"
+            private const val version = "4.8.0"
             const val client = "com.squareup.okhttp3:okhttp:$version"
             const val logging = "com.squareup.okhttp3:logging-interceptor:$version"
         }
@@ -229,7 +231,7 @@ object Config {
         }
 
         object KotlinLogging {
-            private const val version = "1.7.10"
+            private const val version = "1.8.3"
             const val common = "io.github.microutils:kotlin-logging-common:$version"
             const val jdk = "io.github.microutils:kotlin-logging:$version"
             const val js = "io.github.microutils:kotlin-logging-js:$version"
@@ -242,28 +244,30 @@ object Config {
         }
 
         // Misc
-        const val statelyIsolate = "co.touchlab:stately-isolate:1.0.3-a4"
-        const val statelyIsoCollections = "co.touchlab:stately-iso-collections:1.0.3-a4"
+        const val statelyIsolate = "co.touchlab:stately-isolate:1.0.2-a4"
+        const val statelyIsoCollections = "co.touchlab:stately-iso-collections:1.0.2-a4"
 
         const val processPhoenix = "com.jakewharton:process-phoenix:2.0.0"
         const val material = "com.google.android.material:material:1.1.0"
         const val timber = "com.jakewharton.timber:timber:4.7.1"
         const val coil = "io.coil-kt:coil-base:0.11.0"
 
-        const val okIo = "com.squareup.okio:okio:2.6.0"
+        const val okIo = "com.squareup.okio:okio:2.7.0"
         const val shimmer = "com.facebook.shimmer:shimmer:0.5.0"
-
 
         const val logBackClassic = "ch.qos.logback:logback-classic:1.2.3"
         const val log4jToSlf4j = "org.apache.logging.log4j:log4j-to-slf4j:2.13.3"
-        const val slf4jSimple= "org.slf4j:slf4j-simple:1.7.25"
+        const val slf4jSimple = "org.slf4j:slf4j-simple:1.7.25"
         const val slf4jTimber = "com.arcao:slf4j-timber:3.1@aar"
         const val elasticSearchHighLevelClient =
-            "org.elasticsearch.client:elasticsearch-rest-high-level-client:7.7.1"
+            "org.elasticsearch.client:elasticsearch-rest-high-level-client:7.8.1"
 
         const val byteUnits = "com.jakewharton.byteunits:byteunits:0.9.1"
 
         const val playCore = "com.google.android.play:core-ktx:1.7.0"
+        const val playBilling = "com.android.billingclient:billing-ktx:3.0.0"
+
+        const val turbine = "app.cash.turbine:turbine:0.1.1"
 
         object Moshi {
             private const val version = "1.9.3"
@@ -278,21 +282,24 @@ object Config {
         const val guavaAndroid = "com.google.guava:guava:29.0-android"
 
         object Koin {
-            private const val version = "3.0.0-alpha-9"
+            private const val version = "3.0.0-1.4.0-rc"
 
             const val ktor = "org.koin:koin-ktor:$version"
             const val core = "org.koin:koin-core:$version"
             const val android = "org.koin:koin-android:$version"
             const val androidxViewModel = "org.koin:koin-androidx-viewmodel:$version"
-            const val test= "org.koin:koin-test:$version"
+            const val test = "org.koin:koin-test:$version"
         }
 
         object Stripe {
-            const val java = "com.stripe:stripe-java:19.23.0"
-            const val android = "com.stripe:stripe-android:14.5.0"
+            const val java = "com.stripe:stripe-java:19.38.0"
+            const val android = "com.stripe:stripe-android:15.0.2"
         }
 
-        const val cloudTask = "com.google.cloud:google-cloud-tasks:1.29.1"
-        const val cloudLoggingLogback = "com.google.cloud:google-cloud-logging-logback:0.117.0-alpha"
+        object GoogleCloud {
+            const val tasks = "com.google.cloud:google-cloud-tasks:1.30.0"
+            const val loggingLogback = "com.google.cloud:google-cloud-logging-logback:0.118.1-alpha"
+            const val pubSub = "com.google.cloud:google-cloud-pubsub:1.107.0"
+        }
     }
 }

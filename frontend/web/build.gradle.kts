@@ -8,7 +8,7 @@ group = "com.nicolasmilliard.testjs"
 version = "1.0-SNAPSHOT"
 
 kotlin {
-    target {
+    js {
         useCommonJs()
         browser()
     }

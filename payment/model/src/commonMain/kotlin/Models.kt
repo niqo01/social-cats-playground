@@ -18,6 +18,11 @@ data class SubscriptionDetailResult(
 )
 
 @Serializable
+data class CreateCheckoutSessionResult(
+    val checkoutUrl: String
+)
+
+@Serializable
 data class CreateSubscriptionRequest(
     val paymentMethodId: String,
     val priceId: String
@@ -49,8 +54,13 @@ data class Subscription(
 @Serializable
 data class Invoice(
     val id: String,
-    val paymentStatus: PaymentStatus,
-    val paymentClientSecret: String
+    val paymentIntent: PaymentIntent?
+)
+
+@Serializable
+data class PaymentIntent(
+    val status: PaymentStatus,
+    val clientSecret: String
 )
 
 enum class PaymentStatus {

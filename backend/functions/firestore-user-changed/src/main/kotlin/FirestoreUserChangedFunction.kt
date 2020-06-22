@@ -19,7 +19,7 @@ class FirestoreUserChangedFunction(
 
     private val moshi = graph.moshi
     private val searchUseCase = graph.searchUseCase
-    private val payments = graph.payments
+    private val payments = graph.stripePayments
 
     override fun accept(json: String, context: Context) = runBlocking {
         try {

@@ -7,6 +7,7 @@ import com.nicolasmilliard.socialcats.payment.PaymentLoader
 import com.nicolasmilliard.socialcats.payment.PaymentStatus
 import com.nicolasmilliard.socialcats.payment.Price
 import com.nicolasmilliard.socialcats.payment.StripeCard
+import com.nicolasmilliard.socialcats.payment.SubscriptionStatus
 import com.nicolasmilliard.socialcats.payment.presenter.NewSubscriptionPresenter.Event
 import com.nicolasmilliard.socialcats.payment.presenter.NewSubscriptionPresenter.Model
 import com.nicolasmilliard.socialcats.session.SessionAuthState
@@ -143,11 +144,12 @@ class NewSubscriptionPresenter(
             paymentLoader.createSubscription(token, selectedPaymentMethodId, priceId).collect {
                 when (it) {
                     is PaymentLoader.Status.Success -> {
-                        val invoice = it.data.subscription.invoice
-                        if (invoice == null) {
+                        val sub = it.data.subscription
+                        val paymentIntent = sub.invoice?.paymentIntent
+                        if (sub.status == SubscriptionStatus.ACTIVE || paymentIntent == null) {
                             launcher!!.finished()
                         } else {
-                            when (invoice.paymentStatus) {
+                            when (paymentIntent.status) {
                                 PaymentStatus.SUCCEEDED -> {
                                     launcher!!.finished()
                                 }
@@ -155,7 +157,7 @@ class NewSubscriptionPresenter(
                                     _models.value = _models.value.copy(
                                         requireConfirmation = RequireConfirmation(
                                             selectedPaymentMethodId,
-                                            invoice.paymentClientSecret
+                                            paymentIntent.clientSecret
                                         )
                                     )
                                 }
@@ -205,7 +207,7 @@ class NewSubscriptionPresenter(
         val authToken: String? = null,
         val noConnection: Boolean = false,
         val hasConnectivity: Boolean = false,
-        val prices: List<Price> = emptyList(),
+        val prices: List<Price>? = null,
         val selectedPaymentMethodId: String? = null,
         val requireConfirmation: RequireConfirmation? = null,
         val stripeErrorCode: String? = null

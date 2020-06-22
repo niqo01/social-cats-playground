@@ -18,27 +18,35 @@ class TestAppComponent {
     fun getTestModules(config: ApplicationConfig): List<Module> {
 
         val mods = getModules(config).toMutableList()
-        mods.add(module(override = true) {
-            single<UserStoreAdmin> {
-                userStore
+        mods.add(
+            module(override = true) {
+                single<UserStoreAdmin> {
+                    userStore
+                }
             }
-        })
-        mods.add(module(override = true) {
-            single<PaymentProcessor> {
-                paymentProcessor
+        )
+        mods.add(
+            module(override = true) {
+                single<PaymentProcessor> {
+                    paymentProcessor
+                }
             }
-        })
-        mods.add(module(override = true) {
+        )
+        mods.add(
+            module(override = true) {
 
-            single<SearchRepository> {
-                searchRepository
+                single<SearchRepository> {
+                    searchRepository
+                }
             }
-        })
-        mods.add(module(override = true) {
-            single<FirebaseTokenVerifier> {
-                FakeFirebaseAuth()
+        )
+        mods.add(
+            module(override = true) {
+                single<FirebaseTokenVerifier> {
+                    FakeFirebaseAuth()
+                }
             }
-        })
+        )
 
         return mods
     }

@@ -15,9 +15,9 @@ class CloudMessaging {
     val offerMessage: (Message) -> Unit get() = { _messages.offer(it) }
 
     suspend fun start() = coroutineScope {
-            messages.collect {
-                logger.info { "CloudMessaging message received: $it" }
-            }
+        messages.collect {
+            logger.info { "CloudMessaging message received: $it" }
+        }
     }
 
     fun onDeletedMessages() {

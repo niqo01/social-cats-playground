@@ -9,7 +9,7 @@ import com.google.firebase.cloud.FirestoreClient
 import com.nicolasmilliard.socialcats.data.AwsInterceptorModule
 import com.nicolasmilliard.socialcats.data.ElasticServiceInterceptorModule
 import com.nicolasmilliard.socialcats.payment.PaymentProcessor
-import com.nicolasmilliard.socialcats.payment.Payments
+import com.nicolasmilliard.socialcats.payment.StripePayments
 import com.nicolasmilliard.socialcats.payment.StripeProcessor
 import com.nicolasmilliard.socialcats.search.SearchUseCase
 import com.nicolasmilliard.socialcats.search.repository.ElasticSearchRepository
@@ -28,7 +28,7 @@ data class Graph(
     val searchUseCase: SearchUseCase,
     val esClient: RestHighLevelClient,
     val moshi: Moshi,
-    val payments: Lazy<Payments>
+    val stripePayments: Lazy<StripePayments>
 )
 
 class AppComponent(
@@ -60,7 +60,7 @@ class AppComponent(
         val publicKey = System.getenv("STRIPE_PUBLIC_KEY")
         val privateKey = System.getenv("STRIPE_PRIVATE_KEY")
         val paymentProcessor = module.providePaymentProcessor(publicKey, privateKey)
-        val payments = lazy { Payments(paymentProcessor, store.value) }
+        val payments = lazy { StripePayments(paymentProcessor, store.value) }
         return Graph(searchUseCase, esClient, moshi, payments)
     }
 }

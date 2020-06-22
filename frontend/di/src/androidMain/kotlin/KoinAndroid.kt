@@ -19,7 +19,6 @@ import com.nicolasmilliard.socialcats.session.DeviceInfoProvider
 import com.nicolasmilliard.socialcats.store.RealUserStore
 import com.nicolasmilliard.socialcats.store.UserStore
 import com.nicolasmilliard.socialcats.ui.AndroidNetworkManager
-import java.io.File
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -27,8 +26,10 @@ import okhttp3.logging.HttpLoggingInterceptor.Level.BASIC
 import okhttp3.logging.HttpLoggingInterceptor.Level.BODY
 import okhttp3.logging.HttpLoggingInterceptor.Logger
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import timber.log.Timber
+import java.io.File
 
 actual val platformModule: Module = module {
     single {
@@ -77,6 +78,7 @@ actual val platformModule: Module = module {
 
     single {
         lazy {
+            val appName: String = get(named("appName"))
             val context: Context = get()
             val cacheDir = context.cacheDir / "http"
 
@@ -85,8 +87,9 @@ actual val platformModule: Module = module {
                 .addNetworkInterceptor(
                     HttpLoggingInterceptor(object : Logger {
                         override fun log(message: String) = Timber.d(message)
-                    }).apply { level = if (BuildConfig.DEBUG) BODY else BASIC })
-                .addNetworkInterceptor(UserAgentInterceptor())
+                    }).apply { level = if (BuildConfig.DEBUG) BODY else BASIC }
+                )
+                .addNetworkInterceptor(UserAgentInterceptor(appName))
                 .build()
         }
     }

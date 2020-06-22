@@ -1,5 +1,6 @@
 package com.nicolasmilliard.socialcats.search.presenter
 
+import app.cash.turbine.test
 import com.nicolasmilliard.socialcats.ConnectivityChecker
 import com.nicolasmilliard.socialcats.FakeNetworkManager
 import com.nicolasmilliard.socialcats.auth.Auth
@@ -20,7 +21,6 @@ import com.nicolasmilliard.socialcats.store.FakeStore
 import com.nicolasmilliard.socialcats.store.aDeviceInfo
 import com.nicolasmilliard.socialcats.store.aStoreUser
 import com.nicolasmilliard.socialcats.test.runTest
-import com.nicolasmilliard.socialcats.test.test
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -33,9 +33,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import mu.KotlinLogging
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
 private val logger = KotlinLogging.logger {}
 
+@ExperimentalTime
 class SearchPresenterTest {
 
     private lateinit var fakeAuthProvider: FakeAuthProvider
@@ -96,7 +99,7 @@ class SearchPresenterTest {
         fakeAuthProvider.offerUser(0, null)
         networkManager.offer(true)
 
-        searchPresenter.models.test(500) {
+        searchPresenter.models.test(500.milliseconds) {
             do {
                 val item = expectItem()
                 assertTrue(authorizedStates.remove(item), "Item not expected: $item")

@@ -7,11 +7,12 @@ import com.nicolasmilliard.socialcats.api.ApiError
 import com.nicolasmilliard.socialcats.api.ApiErrors
 import com.nicolasmilliard.socialcats.api.ERROR_CATEGORY_TECHNICAL
 import com.nicolasmilliard.socialcats.api.ERROR_CODE_INTERNAL_SERVER_ERROR
-import com.nicolasmilliard.socialcats.payment.Payments
+import com.nicolasmilliard.socialcats.payment.StripePayments
 import com.nicolasmilliard.socialcats.search.SearchUseCase
 import com.nicolasmilliard.socialcats.searchapi.routes.dummySearch2
 import com.nicolasmilliard.socialcats.searchapi.routes.home
 import com.nicolasmilliard.socialcats.searchapi.routes.paymentCancelSubscription
+import com.nicolasmilliard.socialcats.searchapi.routes.paymentCreateCheckoutSession
 import com.nicolasmilliard.socialcats.searchapi.routes.paymentCreateSubscription
 import com.nicolasmilliard.socialcats.searchapi.routes.paymentSubscriptionDetail
 import com.nicolasmilliard.socialcats.searchapi.routes.search
@@ -119,14 +120,15 @@ fun Application.module(modules: List<Module> = getModules(environment.config)) {
     }
 
     val searchUseCase: SearchUseCase by inject()
-    val payments: Payments by inject()
+    val stripePayments: StripePayments by inject()
 
     routing {
         home()
         search(searchUseCase)
-        paymentSubscriptionDetail(payments)
-        paymentCreateSubscription(payments)
-        paymentCancelSubscription(payments)
+        paymentCreateCheckoutSession(stripePayments)
+        paymentSubscriptionDetail(stripePayments)
+        paymentCreateSubscription(stripePayments)
+        paymentCancelSubscription(stripePayments)
         dummySearch2(searchUseCase)
     }
 }

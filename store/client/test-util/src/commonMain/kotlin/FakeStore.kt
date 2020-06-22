@@ -40,5 +40,5 @@ class FakeStore : UserStore {
     }
 }
 
-val aStoreUser = User("id", "name", 1L, "photo")
+val aStoreUser = User("id", "name", 1L, "photo", false)
 val aDeviceInfo = DeviceInfo("id", "token", "fr")

@@ -12,7 +12,7 @@ class RuntimeFeatureFlagProvider(priority: Int, appContext: Context) : FeatureFl
     override val priority = priority
 
     override fun isFeatureEnabled(feature: Feature): Boolean =
-            preferences.getBoolean(feature.key, feature.defaultValue)
+        preferences.getBoolean(feature.key, feature.defaultValue)
 
     override fun hasFeature(feature: Feature): Boolean = true
 

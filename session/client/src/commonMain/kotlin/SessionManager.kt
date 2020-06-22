@@ -11,7 +11,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
 
@@ -95,27 +94,26 @@ class SessionManager(
                     val stateChangedFromAuthenticatedUser = savedSession.authState is SessionAuthState.Authenticated.User &&
                         currentSession.authState !is SessionAuthState.Authenticated.User
 
-                    logger.info { "stateChangedToAuthenticatedUser: $stateChangedToAuthenticatedUser, " +
-                        "authUserChanged: $authUserChanged, " +
-                        "stateChangedFromAuthenticatedUser $stateChangedFromAuthenticatedUser" }
+                    logger.info {
+                        "stateChangedToAuthenticatedUser: $stateChangedToAuthenticatedUser, " +
+                            "authUserChanged: $authUserChanged, " +
+                            "stateChangedFromAuthenticatedUser $stateChangedFromAuthenticatedUser"
+                    }
 
                     if (stateChangedToAuthenticatedUser || authUserChanged) {
                         logger.info { "Auth user changed or authenticated, loading store user" }
                         val uId = (currentSession.authState as SessionAuthState.Authenticated).uId
                         userJob?.cancel()
                         userJob = launch {
-                            var currentUser = store.user(uId, true)
-
-                            if (currentUser == null) {
-                                currentUser = store.user(uId).first()
-                            }
-                            sendSession(
-                                _sessions.value.copy(
-                                    authState = (_sessions.value.authState as SessionAuthState.Authenticated.User).copy(
-                                        user = currentUser
+                            // TODO is this too connectivity intense?
+                            store.user(uId).collect {
+                                sendSession(
+                                    _sessions.value.copy(
+                                        authState = (_sessions.value.authState as SessionAuthState.Authenticated.User)
+                                            .copy(user = it)
                                     )
                                 )
-                            )
+                            }
                         }
                     } else if (stateChangedFromAuthenticatedUser) {
                         userJob?.cancel()
@@ -127,8 +125,10 @@ class SessionManager(
                     val stateChangedToFromAuthenticated = savedSession.authState is SessionAuthState.Authenticated &&
                         currentSession.authState !is SessionAuthState.Authenticated
 
-                    logger.info { "stateChangedToAuthenticated: $stateChangedToAuthenticated. " +
-                        "stateChangedToFromAuthenticated: $stateChangedToFromAuthenticated " }
+                    logger.info {
+                        "stateChangedToAuthenticated: $stateChangedToAuthenticated. " +
+                            "stateChangedToFromAuthenticated: $stateChangedToFromAuthenticated "
+                    }
 
                     if (stateChangedToAuthenticated) {
                         logger.info { "Authentication detected, checking store device info" }

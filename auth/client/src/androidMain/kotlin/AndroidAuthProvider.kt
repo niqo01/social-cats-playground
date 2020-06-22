@@ -78,7 +78,7 @@ class AndroidAuthProvider(private val firebaseAuth: FirebaseAuth) : AuthProvider
         launch {
             val currentUser = firebaseAuth.currentUser
             if (currentUser != null) {
-                val token = firebaseAuth.currentUser?.getIdToken(false)?.await().token
+                val token = firebaseAuth.currentUser?.getIdToken(false)?.await()!!.token
                 offer(NewToken(token?.toAuthToken(), currentUser.toAuthUser()))
             }
         }

@@ -6,7 +6,7 @@ import com.google.firebase.cloud.FirestoreClient
 import com.nicolasmilliard.socialcats.data.AwsInterceptorModule
 import com.nicolasmilliard.socialcats.data.ElasticServiceInterceptorModule
 import com.nicolasmilliard.socialcats.payment.PaymentProcessor
-import com.nicolasmilliard.socialcats.payment.Payments
+import com.nicolasmilliard.socialcats.payment.StripePayments
 import com.nicolasmilliard.socialcats.payment.StripeProcessor
 import com.nicolasmilliard.socialcats.search.SearchUseCase
 import com.nicolasmilliard.socialcats.search.repository.ElasticSearchRepository
@@ -93,7 +93,8 @@ val searchModule = module {
                     hacb.addInterceptorLast(
                         interceptor
                     )
-                })
+                }
+        )
     }
 
     single<SearchRepository> {
@@ -122,7 +123,7 @@ val paymentModule = module {
         StripeProcessor(stripePKey, stripeSKey)
     }
     single {
-        Payments(get(), get())
+        StripePayments(get(), get())
     }
 }
 

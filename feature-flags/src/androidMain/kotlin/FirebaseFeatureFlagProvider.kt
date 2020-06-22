@@ -4,7 +4,8 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import kotlinx.coroutines.tasks.await
 
-class FirebaseFeatureFlagProvider(priority: Int, isDevModeEnabled: Boolean) : FeatureFlagProvider,
+class FirebaseFeatureFlagProvider(priority: Int, isDevModeEnabled: Boolean) :
+    FeatureFlagProvider,
     RemoteFeatureFlagProvider {
     private val remoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
 

@@ -18,9 +18,10 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                api(project(":api:social-cats"))
+                api(project(":search:client"))
                 api(Config.Libs.Kotlin.common)
                 api(Config.Libs.Kotlin.Coroutine.common)
-                api(project(":api:social-cats"))
             }
         }
         val jvmMain by getting {

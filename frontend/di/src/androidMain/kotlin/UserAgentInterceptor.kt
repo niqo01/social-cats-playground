@@ -11,9 +11,9 @@ import okhttp3.Response
  * User agents in mobile apps: https://www.scientiamobile.com/correctly-form-user-agents-for-mobile-apps
  * Test user agent: https://faisalman.github.io/ua-parser-js/
  */
-class UserAgentInterceptor : Interceptor {
+class UserAgentInterceptor(versionName: String) : Interceptor {
     private val userAgent =
-        "socialcats/${BuildConfig.VERSION_NAME} ${System.getProperty("http.agent")}"
+        "socialcats/${versionName} ${System.getProperty("http.agent")}"
 
     override fun intercept(chain: Interceptor.Chain): Response = chain
         .request()

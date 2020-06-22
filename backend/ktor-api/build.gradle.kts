@@ -59,7 +59,7 @@ dependencies {
     implementation(Config.Libs.logBackClassic)
     // Elastic search High level client uses log4j
     implementation(Config.Libs.log4jToSlf4j)
-    implementation(Config.Libs.cloudLoggingLogback)
+    implementation(Config.Libs.GoogleCloud.loggingLogback)
     implementation(Config.Libs.Firebase.admin)
 
     evaluationDependsOn(":search:admin:repository:test-util")

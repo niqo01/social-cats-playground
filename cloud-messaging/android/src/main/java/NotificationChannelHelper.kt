@@ -16,8 +16,10 @@ class NotificationChannelHelper(context: Context) : ContextWrapper(context) {
 
     fun initChannels() {
         if (SDK_INT < O) return
-        val chan1 = NotificationChannel(Channels.GENERAL,
-            getString(R.string.notification_channel_title_general), NotificationManager.IMPORTANCE_DEFAULT)
+        val chan1 = NotificationChannel(
+            Channels.GENERAL,
+            getString(R.string.notification_channel_title_general), NotificationManager.IMPORTANCE_DEFAULT
+        )
         manager.createNotificationChannel(chan1)
     }
 }

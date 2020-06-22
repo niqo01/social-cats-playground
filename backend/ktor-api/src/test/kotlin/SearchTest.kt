@@ -38,9 +38,11 @@ class SearchTest : AutoCloseKoinTest() {
             (environment.config as MapApplicationConfig).setConfig()
             module(fakes.getTestModules(environment.config))
         }) {
-            with(handleRequest(HttpMethod.Get, "/v1/search") {
-                addHeader("Authorization", "Bearer $TEST_VALID_TOKEN")
-            }) {
+            with(
+                handleRequest(HttpMethod.Get, "/v1/search") {
+                    addHeader("Authorization", "Bearer $TEST_VALID_TOKEN")
+                }
+            ) {
                 assertThat(response.status()).isEqualTo(HttpStatusCode.OK)
 
                 assertThat(response.content).isNotEmpty()
@@ -57,9 +59,11 @@ class SearchTest : AutoCloseKoinTest() {
             (environment.config as MapApplicationConfig).setConfig()
             module(fakes.getTestModules(environment.config))
         }) {
-            with(handleRequest(HttpMethod.Get, "/v1/search") {
-                addHeader("Authorization", "Bearer invalid")
-            }) {
+            with(
+                handleRequest(HttpMethod.Get, "/v1/search") {
+                    addHeader("Authorization", "Bearer invalid")
+                }
+            ) {
                 assertThat(response.status()).isEqualTo(HttpStatusCode.Unauthorized)
             }
         }

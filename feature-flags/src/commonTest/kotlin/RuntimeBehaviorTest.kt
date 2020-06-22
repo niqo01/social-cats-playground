@@ -65,7 +65,8 @@ class RuntimeBehaviorTest {
         override fun hasFeature(feature: Feature): Boolean = feature == feature_defaultoff
 
         override suspend fun fetch(forceRefresh: Boolean) {
-            featureFlagsFetched = true }
+            featureFlagsFetched = true
+        }
 
         override suspend fun activate() {
             featureFlagsActivated = true

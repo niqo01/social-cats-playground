@@ -4,7 +4,6 @@ import firebase.auth.FirebaseAuth
 import firebaseui.auth.AuthUIError
 import firebaseui.auth.Callbacks
 import firebaseui.auth.firebaseAuthComponent
-import kotlin.js.Promise
 import kotlinx.html.id
 import kotlinx.html.js.onClickFunction
 import mu.KotlinLogging
@@ -21,6 +20,7 @@ import react.dom.section
 import react.dom.span
 import react.setState
 import views.topBar
+import kotlin.js.Promise
 
 private val logger = KotlinLogging.logger {}
 
@@ -39,23 +39,27 @@ class HomeComponent(props: HomeProps) : RComponent<HomeProps, HomeState>() {
 
     lateinit var authObserver: () -> Unit
     override fun componentDidMount() {
-        authObserver = firebaseAuth.onAuthStateChanged({ user ->
-            if (user == null) {
-                logger.info { "Auth state: null" }
-            } else {
-                logger.info { "Auth state: $user" }
-            }
-            if (user != null) {
-                setState {
-                    isSignedIn = true
-                    isAuthUiVisible = false
+        authObserver = firebaseAuth.onAuthStateChanged(
+            { user ->
+                if (user == null) {
+                    logger.info { "Auth state: null" }
+                } else {
+                    logger.info { "Auth state: $user" }
                 }
-            } else {
-                setState { isSignedIn = false }
-            }
-        }, { error ->
-            logger.error { "onAuthStateChanged Error: ${error.code}, ${error.message}" }
-        }, {})
+                if (user != null) {
+                    setState {
+                        isSignedIn = true
+                        isAuthUiVisible = false
+                    }
+                } else {
+                    setState { isSignedIn = false }
+                }
+            },
+            { error ->
+                logger.error { "onAuthStateChanged Error: ${error.code}, ${error.message}" }
+            },
+            {}
+        )
     }
 
     override fun componentWillUnmount() {

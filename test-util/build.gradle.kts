@@ -23,6 +23,7 @@ kotlin {
                 api(Config.Libs.Kotlin.common)
                 api(Config.Libs.Kotlin.Coroutine.common)
                 implementation(Config.Libs.KotlinLogging.common)
+                api(Config.Libs.turbine)
             }
         }
 

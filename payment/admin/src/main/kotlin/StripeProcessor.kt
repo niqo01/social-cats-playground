@@ -2,6 +2,7 @@ package com.nicolasmilliard.socialcats.payment
 
 import com.stripe.model.Customer
 import com.stripe.model.PaymentMethod
+import com.stripe.model.checkout.Session
 import com.stripe.net.RequestOptions
 import com.stripe.param.CustomerCreateParams
 import com.stripe.param.CustomerUpdateParams
@@ -9,19 +10,49 @@ import com.stripe.param.PaymentMethodAttachParams
 import com.stripe.param.SubscriptionCancelParams
 import com.stripe.param.SubscriptionCreateParams
 import com.stripe.param.SubscriptionListParams
+import com.stripe.param.checkout.SessionCreateParams
+import mu.KotlinLogging
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-import mu.KotlinLogging
 
 private val log = KotlinLogging.logger {}
 
 typealias StripeSubscription = com.stripe.model.Subscription
+typealias StripePaymentIntent = com.stripe.model.PaymentIntent
 
 class StripeProcessor(
     private val stripePublishableKey: String,
     private val stripeSecretKey: String,
-    override val currency: String = US_CURRENCY
+    override val currency: String = US_CURRENCY,
+    private val urls: Urls = Urls()
 ) : PaymentProcessor {
+
+    override suspend fun createCheckoutSession(customerId: String, productId: String, currency: String, amount: Long) = suspendCoroutine<String> {
+        val options = createRequestOption().build()
+
+        val params = SessionCreateParams.builder()
+            .setCustomer(customerId)
+            .addLineItem(
+                SessionCreateParams.LineItem.builder()
+                    .setQuantity(1)
+                    .setPriceData(
+                        SessionCreateParams.LineItem.PriceData.builder()
+                            .setCurrency(currency)
+                            .setProduct(productId)
+                            .setUnitAmount(amount)
+                            .setRecurring(
+                                SessionCreateParams.LineItem.PriceData.Recurring.builder()
+                                    .setInterval(SessionCreateParams.LineItem.PriceData.Recurring.Interval.MONTH).build()
+                            ).build()
+                    )
+                    .build()
+            )
+            .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
+            .setCancelUrl(urls.paymentCancel)
+            .setSuccessUrl(urls.paymentSuccess)
+        val session: Session = Session.create(params.build(), options)
+        it.resume(urls.buildClientCheckoutUrl(stripePublishableKey, session.id))
+    }
 
     override suspend fun createCustomer(uId: String, email: String?, phoneNumber: String?) = suspendCoroutine<String> {
         val options = createRequestOption().build()
@@ -59,11 +90,10 @@ class StripeProcessor(
         val subs = createSubscription(customer, priceId, options)
         log.debug { "subscription: $subs" }
         val invoiceId = subs.latestInvoiceObject.id
-        val intent = subs.latestInvoiceObject.paymentIntentObject
         return Subscription(
             subs.id,
             subs.status.toSubscriptionStatus(),
-            Invoice(invoiceId, intent.status.toPaymentStatus(), intent.clientSecret)
+            Invoice(invoiceId, subs.latestInvoiceObject.paymentIntentObject.toPaymentIntent())
         )
     }
 
@@ -128,4 +158,11 @@ class StripeProcessor(
         "unpaid" -> SubscriptionStatus.UNPAID
         else -> throw IllegalStateException("Unsupported subscription status: $this")
     }
+
+    private fun StripePaymentIntent?.toPaymentIntent(): PaymentIntent? =
+        if (this == null) {
+            null
+        } else {
+            PaymentIntent(this.status.toPaymentStatus(), this.clientSecret)
+        }
 }

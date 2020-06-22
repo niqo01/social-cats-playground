@@ -1,4 +1,4 @@
-package com.nicolasmilliard.socialcats.ui.util
+package com.nicolasmilliard.android.util
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver

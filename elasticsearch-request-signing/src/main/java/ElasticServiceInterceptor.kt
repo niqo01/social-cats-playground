@@ -1,10 +1,10 @@
 package com.nicolasmilliard.socialcats.data
 
-import java.nio.charset.StandardCharsets
-import java.util.Base64
 import org.apache.http.HttpRequest
 import org.apache.http.HttpRequestInterceptor
 import org.apache.http.protocol.HttpContext
+import java.nio.charset.StandardCharsets
+import java.util.Base64
 
 class ElasticServiceInterceptor(id: String, apiKey: String) : HttpRequestInterceptor {
 

@@ -43,7 +43,7 @@ dependencies {
 
     implementation(Config.Libs.KotlinLogging.jdk)
     implementation(Config.Libs.logBackClassic)
-    implementation(Config.Libs.cloudLoggingLogback)
+    implementation(Config.Libs.GoogleCloud.loggingLogback)
 
     implementation(Config.Libs.Moshi.core) {
         exclude(module = "kotlin-reflect")

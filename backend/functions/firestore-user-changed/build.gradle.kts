@@ -35,7 +35,7 @@ dependencies {
 
     implementation(Config.Libs.KotlinLogging.jdk)
     implementation(Config.Libs.logBackClassic)
-    implementation(Config.Libs.cloudLoggingLogback)
+    implementation(Config.Libs.GoogleCloud.loggingLogback)
     // Elastic search High level client uses log4j
     implementation(Config.Libs.log4jToSlf4j)
 

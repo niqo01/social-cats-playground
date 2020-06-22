@@ -27,13 +27,13 @@ open class DebugApp : App() {
         initializeFeatureFlag()
         LeakCanary.config.copy(dumpHeap = isFeatureEnabled(TestSetting.LEAK_CANARY))
         if (isFeatureEnabled(TestSetting.STRICT_MODE)) {
-//            StrictMode.setThreadPolicy(
-//                ThreadPolicy.Builder()
-//                    .detectAll()
-//                    .penaltyLog()
-//                    .penaltyDeath()
-//                    .build()
-//            )
+            StrictMode.setThreadPolicy(
+                StrictMode.ThreadPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .penaltyDeath()
+                    .build()
+            )
             val builder = VmPolicy.Builder()
                 .detectActivityLeaks()
                 .detectFileUriExposure()

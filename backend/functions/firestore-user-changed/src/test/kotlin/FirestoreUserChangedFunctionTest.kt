@@ -3,7 +3,7 @@ package com.nicolasmilliard.socialcats
 import com.google.cloud.functions.Context
 import com.google.common.truth.Truth.assertThat
 import com.nicolasmilliard.socialcats.payment.FakePaymentProcessor
-import com.nicolasmilliard.socialcats.payment.Payments
+import com.nicolasmilliard.socialcats.payment.StripePayments
 import com.nicolasmilliard.socialcats.search.SearchUseCase
 import com.nicolasmilliard.socialcats.search.repository.FakeSearchRepository
 import com.nicolasmilliard.socialcats.store.FakeUserStoreAdmin
@@ -30,7 +30,7 @@ internal class FirestoreUserChangedFunctionTest {
                 searchUseCase,
                 RestHighLevelClient(RestClient.builder(HttpHost.create("http://test.com"))),
                 moshi,
-                lazy { Payments(fakePaymentProcessor, fakeUserStoreAdmin) }
+                lazy { StripePayments(fakePaymentProcessor, fakeUserStoreAdmin) }
             )
         }
     }

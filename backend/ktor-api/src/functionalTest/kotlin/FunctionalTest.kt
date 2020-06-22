@@ -1,12 +1,12 @@
 package com.nicolasmilliard.socialcats.searchapi
 
 import com.google.common.truth.Truth.assertThat
-import java.nio.charset.StandardCharsets.UTF_8
-import java.util.zip.GZIPInputStream
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.junit.Test
+import java.nio.charset.StandardCharsets.UTF_8
+import java.util.zip.GZIPInputStream
 
 class FunctionalTest {
 

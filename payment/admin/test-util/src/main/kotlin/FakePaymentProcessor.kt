@@ -19,6 +19,15 @@ class FakePaymentProcessor(override val currency: String = US_CURRENCY) : Paymen
         return customerId
     }
 
+    override suspend fun createCheckoutSession(
+        customerId: String,
+        productId: String,
+        currency: String,
+        amount: Long
+    ): String {
+        return "sessionId"
+    }
+
     override suspend fun createSubscription(
         customerId: String,
         paymentMethodId: String,

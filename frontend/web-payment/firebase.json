@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "site": "social-cats-payment",
+    "public": "dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

@@ -38,8 +38,10 @@ class MainPresenter(
                 auth.authStates
                     .collect {
                         if (it is AuthState.UnAuthenticated &&
-                            (silentSignInJob == null ||
-                                silentSignInJob?.isActive == false)
+                            (
+                                silentSignInJob == null ||
+                                    silentSignInJob?.isActive == false
+                                )
                         ) {
                             silentSignInJob = launch {
                                 try {

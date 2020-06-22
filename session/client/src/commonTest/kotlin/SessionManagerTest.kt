@@ -1,5 +1,6 @@
 package com.nicolasmilliard.socialcats.session
 
+import app.cash.turbine.test
 import com.nicolasmilliard.socialcats.auth.Auth
 import com.nicolasmilliard.socialcats.auth.FakeAuthProvider
 import com.nicolasmilliard.socialcats.auth.anAuthUser
@@ -8,7 +9,6 @@ import com.nicolasmilliard.socialcats.store.FakeStore
 import com.nicolasmilliard.socialcats.store.aDeviceInfo
 import com.nicolasmilliard.socialcats.store.aStoreUser
 import com.nicolasmilliard.socialcats.test.runTest
-import com.nicolasmilliard.socialcats.test.test
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test

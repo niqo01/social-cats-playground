@@ -1,0 +1,13 @@
+<configuration>
+    <appender name="CLOUD" class="com.google.cloud.logging.logback.LoggingAppender">
+        <encoder>
+            <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="trace">
+        <appender-ref ref="CLOUD" />
+    </root>
+    <logger name="org.eclipse.jetty" level="INFO" />
+    <logger name="io.netty" level="INFO" />
+    <logger name="io.grpc" level="INFO" />
+</configuration>

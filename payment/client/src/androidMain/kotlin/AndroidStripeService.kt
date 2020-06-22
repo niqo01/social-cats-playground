@@ -59,7 +59,7 @@ class AndroidStripeService(
             override fun onSuccess(result: PaymentIntentResult) {
                 val paymentIntent = result.intent
                 val status = paymentIntent.status
-                it.resume(status!!.code!!.toPaymentStatus())
+                it.resume(status!!.code.toPaymentStatus())
             }
         }
 

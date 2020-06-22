@@ -2,9 +2,11 @@ package com.nicolasmilliard.socialcats.searchapi
 
 import com.google.common.truth.Truth.assertThat
 import com.nicolasmilliard.socialcats.payment.CancelSubscriptionResult
+import com.nicolasmilliard.socialcats.payment.CreateCheckoutSessionResult
 import com.nicolasmilliard.socialcats.payment.CreateSubscriptionRequest
 import com.nicolasmilliard.socialcats.payment.CreateSubscriptionResult
 import com.nicolasmilliard.socialcats.payment.Invoice
+import com.nicolasmilliard.socialcats.payment.PaymentIntent
 import com.nicolasmilliard.socialcats.payment.PaymentStatus
 import com.nicolasmilliard.socialcats.payment.Subscription
 import com.nicolasmilliard.socialcats.payment.SubscriptionDetailResult
@@ -28,14 +30,38 @@ class PaymentTest : AutoCloseKoinTest() {
             (environment.config as MapApplicationConfig).setConfig()
             module(fakes.getTestModules(environment.config))
         }) {
-            with(handleRequest(HttpMethod.Get, "/v1/payments/subscriptionDetail") {
-                addHeader("Authorization", "Bearer $TEST_VALID_TOKEN")
-                addHeader("Content-type", "application/json")
-            }) {
+            with(
+                handleRequest(HttpMethod.Get, "/v1/payments/subscriptionDetail") {
+                    addHeader("Authorization", "Bearer $TEST_VALID_TOKEN")
+                    addHeader("Content-type", "application/json")
+                }
+            ) {
                 assertThat(response.status()).isEqualTo(HttpStatusCode.OK)
                 assertThat(response.content).isNotEmpty()
                 val result = json.parse(SubscriptionDetailResult.serializer(), response.content!!)
                 assertThat(result.prices).hasSize(2)
+            }
+        }
+    }
+
+    @Test
+    fun testCreateCheckoutSessionAuthenticated() {
+        val fakes = TestAppComponent()
+        fakes.userStore.users["uid"] = "customerId"
+        withTestApplication({
+            (environment.config as MapApplicationConfig).setConfig()
+            module(fakes.getTestModules(environment.config))
+        }) {
+            with(
+                handleRequest(HttpMethod.Post, "/v1/payments/createCheckoutSession") {
+                    addHeader("Authorization", "Bearer $TEST_VALID_TOKEN")
+                    addHeader("Content-type", "application/json")
+                }
+            ) {
+                assertThat(response.status()).isEqualTo(HttpStatusCode.OK)
+                assertThat(response.content).isNotEmpty()
+                val result = json.parse(CreateCheckoutSessionResult.serializer(), response.content!!)
+                assertThat(result.checkoutUrl).isNotEmpty()
             }
         }
     }
@@ -48,27 +74,29 @@ class PaymentTest : AutoCloseKoinTest() {
             Subscription(
                 "id",
                 SubscriptionStatus.ACTIVE,
-                Invoice("id", PaymentStatus.SUCCEEDED, "dsa")
+                Invoice("id", PaymentIntent(PaymentStatus.SUCCEEDED, "dsa"))
             )
         )
         withTestApplication({
             (environment.config as MapApplicationConfig).setConfig()
             module(fakes.getTestModules(environment.config))
         }) {
-            with(handleRequest(HttpMethod.Post, "/v1/payments/createSubscription") {
-                addHeader("Authorization", "Bearer $TEST_VALID_TOKEN")
-                addHeader("Content-type", "application/json")
-                setBody(
-                    json.stringify(
-                        CreateSubscriptionRequest.serializer(),
-                        CreateSubscriptionRequest("paymentId", "priceId")
+            with(
+                handleRequest(HttpMethod.Post, "/v1/payments/createSubscription") {
+                    addHeader("Authorization", "Bearer $TEST_VALID_TOKEN")
+                    addHeader("Content-type", "application/json")
+                    setBody(
+                        json.stringify(
+                            CreateSubscriptionRequest.serializer(),
+                            CreateSubscriptionRequest("paymentId", "priceId")
+                        )
                     )
-                )
-            }) {
+                }
+            ) {
                 assertThat(response.status()).isEqualTo(HttpStatusCode.OK)
                 assertThat(response.content).isNotEmpty()
                 val result = json.parse(CreateSubscriptionResult.serializer(), response.content!!)
-                assertThat(result.subscription.invoice!!.paymentStatus).isEqualTo(PaymentStatus.SUCCEEDED)
+                assertThat(result.subscription.invoice!!.paymentIntent!!.status).isEqualTo(PaymentStatus.SUCCEEDED)
                 assertThat(fakes.userStore.membershipStatusChanged).containsEntry("uid", true)
             }
         }
@@ -83,10 +111,12 @@ class PaymentTest : AutoCloseKoinTest() {
             (environment.config as MapApplicationConfig).setConfig()
             module(fakes.getTestModules(environment.config))
         }) {
-            with(handleRequest(HttpMethod.Post, "/v1/payments/cancelSubscription") {
-                addHeader("Authorization", "Bearer $TEST_VALID_TOKEN")
-                addHeader("Content-type", "application/json")
-            }) {
+            with(
+                handleRequest(HttpMethod.Post, "/v1/payments/cancelSubscription") {
+                    addHeader("Authorization", "Bearer $TEST_VALID_TOKEN")
+                    addHeader("Content-type", "application/json")
+                }
+            ) {
                 assertThat(response.status()).isEqualTo(HttpStatusCode.OK)
                 assertThat(response.content).isNotEmpty()
                 val result = json.parse(CancelSubscriptionResult.serializer(), response.content!!)

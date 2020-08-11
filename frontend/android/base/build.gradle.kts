@@ -23,7 +23,7 @@ dependencies {
     api(Config.Libs.Kotlin.jdk8)
     api(Config.Libs.Kotlin.Coroutine.android)
 
-    implementation(Config.Libs.playCore)
+    implementation(Config.Libs.Play.core)
 
     implementation(Config.Libs.AndroidX.appCompat)
     implementation(Config.Libs.AndroidX.activityKtx)

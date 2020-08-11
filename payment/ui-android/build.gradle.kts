@@ -20,6 +20,7 @@ dependencies {
     implementation(Config.Libs.AndroidX.lifecycleKtx)
     implementation(Config.Libs.AndroidX.coreKtx)
     implementation(Config.Libs.AndroidX.constraintLayout)
+    implementation(Config.Libs.AndroidX.browser)
 
     implementation(Config.Libs.material)
     implementation(Config.Libs.coil)

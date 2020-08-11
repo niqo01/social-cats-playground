@@ -17,7 +17,7 @@ dependencies {
     implementation(Config.Libs.AndroidX.coreKtx)
     implementation(Config.Libs.AndroidX.constraintLayout)
     implementation(Config.Libs.AndroidX.recyclerView)
-    implementation(Config.Libs.PlayServices.ossLicenses)
+    implementation(Config.Libs.Play.ossLicenses)
 
     implementation(Config.Libs.material)
 }

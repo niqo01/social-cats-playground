@@ -23,7 +23,7 @@ kotlin {
             dependencies {
                 implementation(Config.Libs.Retrofit.client)
                 implementation(Config.Libs.Retrofit.converterKotlinxSerialization)
-                implementation(Config.Libs.playBilling)
+                implementation(Config.Libs.Play.billing)
                 api(Config.Libs.OkHttp.client)
                 api(Config.Libs.Kotlin.jdk8)
                 api(Config.Libs.Kotlin.Coroutine.jdk8)

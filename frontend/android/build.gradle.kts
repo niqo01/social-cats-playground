@@ -86,7 +86,7 @@ dependencies {
 
     debugImplementation(project(":test-settings"))
     debugImplementation(project(":cloud-messaging:client"))
-    debugImplementation(Config.Libs.playCore)
+    debugImplementation(Config.Libs.Play.core)
     debugImplementation(Config.Libs.LeakCanary.android)
     debugImplementation(Config.Libs.Koin.core)
 

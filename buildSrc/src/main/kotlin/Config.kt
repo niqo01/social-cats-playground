@@ -162,10 +162,13 @@ object Config {
                 "androidx.navigation:navigation-dynamic-features-fragment:${Android.navigationVersion}"
             const val workRuntimeKtx = "androidx.work:work-runtime-ktx:$workVersion"
             const val workTesting = "androidx.work:work-testing:$workVersion"
+            const val browser = "androidx.browser:browser:1.2.0"
         }
 
-        object PlayServices {
+        object Play {
             const val ossLicenses = "com.google.android.gms:play-services-oss-licenses:17.0.0"
+            const val core = "com.google.android.play:core-ktx:1.8.1"
+            const val billing = "com.android.billingclient:billing-ktx:3.0.0"
         }
 
         object Firebase {
@@ -212,13 +215,13 @@ object Config {
         }
 
         object Aws {
-            const val sdkBom = "software.amazon.awssdk:bom:2.13.64"
+            const val sdkBom = "software.amazon.awssdk:bom:2.13.72"
             const val apacheClient = "software.amazon.awssdk:apache-client"
             const val sdkAuth = "software.amazon.awssdk:auth"
         }
 
         object OkHttp {
-            private const val version = "4.8.0"
+            private const val version = "4.8.1"
             const val client = "com.squareup.okhttp3:okhttp:$version"
             const val logging = "com.squareup.okhttp3:logging-interceptor:$version"
         }
@@ -264,9 +267,6 @@ object Config {
 
         const val byteUnits = "com.jakewharton.byteunits:byteunits:0.9.1"
 
-        const val playCore = "com.google.android.play:core-ktx:1.7.0"
-        const val playBilling = "com.android.billingclient:billing-ktx:3.0.0"
-
         const val turbine = "app.cash.turbine:turbine:0.1.1"
 
         object Moshi {
@@ -292,13 +292,13 @@ object Config {
         }
 
         object Stripe {
-            const val java = "com.stripe:stripe-java:19.38.0"
+            const val java = "com.stripe:stripe-java:19.40.0"
             const val android = "com.stripe:stripe-android:15.0.2"
         }
 
         object GoogleCloud {
             const val tasks = "com.google.cloud:google-cloud-tasks:1.30.0"
-            const val loggingLogback = "com.google.cloud:google-cloud-logging-logback:0.118.1-alpha"
+            const val loggingLogback = "com.google.cloud:google-cloud-logging-logback:0.118.2-alpha"
             const val pubSub = "com.google.cloud:google-cloud-pubsub:1.107.0"
         }
     }

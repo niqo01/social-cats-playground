@@ -8,8 +8,8 @@ import com.nicolasmilliard.socialcats.payment.PaymentStatus
 import com.nicolasmilliard.socialcats.payment.Price
 import com.nicolasmilliard.socialcats.payment.StripeCard
 import com.nicolasmilliard.socialcats.payment.SubscriptionStatus
-import com.nicolasmilliard.socialcats.payment.presenter.NewSubscriptionPresenter.Event
-import com.nicolasmilliard.socialcats.payment.presenter.NewSubscriptionPresenter.Model
+import com.nicolasmilliard.socialcats.payment.presenter.CheckoutSubscriptionPresenter.Event
+import com.nicolasmilliard.socialcats.payment.presenter.CheckoutSubscriptionPresenter.Model
 import com.nicolasmilliard.socialcats.session.SessionAuthState
 import com.nicolasmilliard.socialcats.session.SessionManager
 import kotlinx.coroutines.channels.Channel
@@ -75,18 +75,14 @@ class CheckoutSubscriptionPresenter(
                             loadSubscriptionDetails(_models.value.authToken!!)
                         }
                         is Event.PayClick -> {
-                            val card = it.card
                             val priceId = it.priceId
-                            createPaymentMethod(card, priceId)
+                            createCheckoutSession(priceId)
                         }
                         is Event.ClearRequireConfirmation -> {
                             _models.value = _models.value.copy(requireConfirmation = null)
                         }
                         is Event.ClearStripeError -> {
                             _models.value = _models.value.copy(stripeErrorCode = null)
-                        }
-                        is Event.OnPaymentResult -> {
-                            onPaymentResult(it.requestCode, it.data)
                         }
                     }
                 }
@@ -111,85 +107,18 @@ class CheckoutSubscriptionPresenter(
         }
     }
 
-    private suspend fun createPaymentMethod(card: StripeCard, priceId: String) = coroutineScope {
-        launch {
-            _models.value = _models.value.copy(isLoading = true)
-            paymentLoader.createPaymentMethod(card).collect {
-                when (it) {
-                    is PaymentLoader.Status.Success -> {
-                        when (it.data) {
-                            is NewPaymentMethodResult.Success -> {
-                                val methodId = (it.data as NewPaymentMethodResult.Success).methodId
-                                _models.value = _models.value.copy(selectedPaymentMethodId = methodId)
-                                createSubscription(methodId, priceId)
-                            }
-                            is NewPaymentMethodResult.Failure -> {
-                                _models.value = _models.value.copy(
-                                    isLoading = false,
-                                    stripeErrorCode = (it.data as NewPaymentMethodResult.Failure).code
-                                )
-                            }
-                        }
-                    }
-                    is PaymentLoader.Status.Failure -> {
-                        logger.error(it.exception) { "Error while loading subscriptions details" }
-                        _models.value = _models.value.copy(isLoading = false, noConnection = true)
-                    }
-                }
-            }
-        }
-    }
-
-    private suspend fun createSubscription(selectedPaymentMethodId: String, priceId: String) = coroutineScope {
+    private suspend fun createCheckoutSession(priceId: String) = coroutineScope {
         launch {
             _models.value = _models.value.copy(isLoading = true)
             val token = _models.value.authToken!!
-            paymentLoader.createSubscription(token, selectedPaymentMethodId, priceId).collect {
+            paymentLoader.createCheckoutSession(token, priceId).collect {
                 when (it) {
                     is PaymentLoader.Status.Success -> {
-                        val sub = it.data.subscription
-                        val paymentIntent = sub.invoice?.paymentIntent
-                        if (sub.status == SubscriptionStatus.ACTIVE || paymentIntent == null) {
-                            launcher!!.finished()
-                        } else {
-                            when (paymentIntent.status) {
-                                PaymentStatus.SUCCEEDED -> {
-                                    launcher!!.finished()
-                                }
-                                PaymentStatus.REQUIRES_ACTION -> {
-                                    _models.value = _models.value.copy(
-                                        requireConfirmation = RequireConfirmation(
-                                            selectedPaymentMethodId,
-                                            paymentIntent.clientSecret
-                                        )
-                                    )
-                                }
-                                PaymentStatus.REQUIRES_PAYMENT_METHOD -> {
-                                }
-                                else -> {
-                                }
-                            }
-                        }
+                        val url = it.data.checkoutUrl
+                        launcher!!.startCheckout(url)
                     }
                     is PaymentLoader.Status.Failure -> {
-                        logger.error(it.exception) { "Error while loading subscriptions details" }
-                        _models.value = _models.value.copy(isLoading = false, noConnection = true)
-                    }
-                }
-            }
-        }
-    }
-
-    private suspend fun onPaymentResult(requestCode: Int, data: Any?) = coroutineScope {
-        _models.value = _models.value.copy(isLoading = true)
-        launch {
-            paymentLoader.onPaymentResult(requestCode, data).collect {
-                when (it) {
-                    is PaymentLoader.Status.Success -> {
-                        launcher!!.finished()
-                    }
-                    is PaymentLoader.Status.Failure -> {
-                        logger.error(it.exception) { "Error while loading subscriptions details" }
+                        logger.error(it.exception) { "Error while creating checkout session" }
                         _models.value = _models.value.copy(isLoading = false, noConnection = true)
                     }
                 }
@@ -199,10 +128,9 @@ class CheckoutSubscriptionPresenter(
 
     sealed class Event {
         object Retry : Event()
-        data class PayClick(val priceId: String, val card: StripeCard) : Event()
+        data class PayClick(val priceId: String) : Event()
         object ClearRequireConfirmation : Event()
         object ClearStripeError : Event()
-        data class OnPaymentResult(val requestCode: Int, val data: Any?) : Event()
     }
 
     data class Model(
@@ -222,6 +150,6 @@ class CheckoutSubscriptionPresenter(
     )
 
     interface Launcher {
-        fun finished(): Boolean
+        fun startCheckout(url: String): Boolean
     }
 }

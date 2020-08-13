@@ -15,7 +15,7 @@
 
     <fragment
         android:id="@+id/newSubscriptionFragment"
-        android:name="com.nicolasmilliard.socialcats.payment.ui.new.NewSubscriptionFragment"
+        android:name="com.nicolasmilliard.socialcats.payment.ui.checkout.NewSubscriptionFragment"
         android:label="NewSubscriptionFragment">
 
     </fragment>

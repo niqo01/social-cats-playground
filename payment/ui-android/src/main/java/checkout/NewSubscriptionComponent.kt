@@ -1,4 +1,4 @@
-package checkout
+package com.nicolasmilliard.socialcats.payment.ui.checkout
 
 import com.nicolasmilliard.socialcats.payment.AndroidStripeService
 import com.nicolasmilliard.socialcats.payment.PaymentLoader

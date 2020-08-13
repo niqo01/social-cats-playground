@@ -1,4 +1,4 @@
-package checkout
+package com.nicolasmilliard.socialcats.payment.ui.checkout
 
 import android.view.ViewStub
 import android.view.inputmethod.InputMethodManager
@@ -9,16 +9,17 @@ import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_INDEFI
 import com.google.android.material.snackbar.Snackbar
 import com.nicolasmilliard.presentation.UiBinder
 import com.nicolasmilliard.socialcats.payment.Price
-import com.nicolasmilliard.socialcats.payment.presenter.NewSubscriptionPresenter.Event
-import com.nicolasmilliard.socialcats.payment.presenter.NewSubscriptionPresenter.Model
+import com.nicolasmilliard.socialcats.payment.presenter.CheckoutSubscriptionPresenter.Event
+import com.nicolasmilliard.socialcats.payment.presenter.CheckoutSubscriptionPresenter.Model
 import com.nicolasmilliard.socialcats.payment.ui.R
+import com.nicolasmilliard.socialcats.payment.ui.databinding.CheckoutBinding
 import com.nicolasmilliard.socialcats.payment.ui.databinding.NewSubscriptionBinding
 import com.nicolasmilliard.socialcats.ui.CheckConnectivityHandler
 import com.nicolasmilliard.socialcats.ui.NoConnectionLayout
 import timber.log.Timber
 
 class NewSubscriptionUiBinder(
-    private val binding: NewSubscriptionBinding,
+    private val binding: CheckoutBinding,
     private val events: (Event) -> Unit,
     private val onCheckConnectivityClick: CheckConnectivityHandler,
     private val onRequirePaymentConfirmation: ConfirmPaymentHandler
@@ -34,14 +35,7 @@ class NewSubscriptionUiBinder(
     init {
 
         binding.payButton.setOnClickListener {
-            val paymentMethodCard = binding.cardInput.paymentMethodCard
-            if (paymentMethodCard != null) {
-                val inputMethodManager = context.getSystemService<InputMethodManager>()!!
-                inputMethodManager.hideSoftInputFromWindow(binding.cardInput.windowToken, HIDE_NOT_ALWAYS)
-                events(Event.PayClick(prices[0].id, paymentMethodCard))
-            } else {
-                // TODO
-            }
+            events(Event.PayClick(prices[0].id))
         }
     }
 

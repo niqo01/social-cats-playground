@@ -22,4 +22,7 @@ actual interface PaymentService {
 
     @POST("v1/payments/cancelSubscription")
     actual suspend fun cancelSubscription(@Header("Authorization") authToken: String): CancelSubscriptionResult
+
+    @POST("v1/payments/createCheckoutSession")
+    actual suspend fun createCheckoutSession(@Header("Authorization") authToken: String): CreateCheckoutSessionResult
 }

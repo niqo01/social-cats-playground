@@ -32,6 +32,7 @@ class StripeProcessor(
 
         val params = SessionCreateParams.builder()
             .setCustomer(customerId)
+            .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
             .addLineItem(
                 SessionCreateParams.LineItem.builder()
                     .setQuantity(1)

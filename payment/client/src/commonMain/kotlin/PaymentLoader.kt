@@ -41,6 +41,13 @@ class PaymentLoader(
         }
     }
 
+    fun createCheckoutSession(
+        authToken: String,
+        priceId: String
+    ) = execute(authToken) {
+        service.createCheckoutSession(it)
+    }
+
     fun onPaymentResult(
         requestCode: Int,
         data: Any?

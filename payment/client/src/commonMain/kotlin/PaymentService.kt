@@ -4,6 +4,7 @@ expect interface PaymentService {
     suspend fun getSubscriptionDetail(authToken: String, currency: String?): SubscriptionDetailResult
     suspend fun createSubscription(authToken: String, request: CreateSubscriptionRequest): CreateSubscriptionResult
     suspend fun cancelSubscription(authToken: String): CancelSubscriptionResult
+    suspend fun createCheckoutSession(authToken: String): CreateCheckoutSessionResult
 }
 
 interface StripeService {

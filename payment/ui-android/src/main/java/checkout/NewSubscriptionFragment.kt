@@ -1,10 +1,14 @@
-package checkout
+package com.nicolasmilliard.socialcats.payment.ui.checkout
 
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.browser.customtabs.CustomTabsIntent.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -12,10 +16,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.nicolasmilliard.presentation.bindTo
 import com.nicolasmilliard.socialcats.payment.AndroidStripeService
-import com.nicolasmilliard.socialcats.payment.presenter.NewSubscriptionPresenter
+import com.nicolasmilliard.socialcats.payment.presenter.CheckoutSubscriptionPresenter
 import com.nicolasmilliard.socialcats.payment.presenter.NewSubscriptionPresenter.Event
 import com.nicolasmilliard.socialcats.payment.ui.PaymentViewModel
-import com.nicolasmilliard.socialcats.payment.ui.databinding.NewSubscriptionBinding
+import com.nicolasmilliard.socialcats.payment.ui.databinding.CheckoutBinding
 import com.nicolasmilliard.socialcats.ui.CHECK_CONNECTIVITY_SETTINGS_CODE
 import com.nicolasmilliard.socialcats.ui.CheckConnectivityHandler
 import kotlinx.coroutines.launch
@@ -37,12 +41,12 @@ class NewSubscriptionFragment : Fragment() {
         injectFeature()
 
         val presenter = newSubscriptionViewModel.presenter
-        presenter.launcher = Launcher(findNavController())
+        presenter.launcher = Launcher(requireContext())
 
         val onCheckConnectivityClick = CheckConnectivityHandler(requireActivity(), CHECK_CONNECTIVITY_SETTINGS_CODE)
         val onRequirePaymentConfirmation = ConfirmPaymentHandler(stripeService, this)
 
-        val binding = NewSubscriptionBinding.inflate(inflater, container, false)
+        val binding = CheckoutBinding.inflate(inflater, container, false)
         viewLifecycleOwner.lifecycleScope.launch {
             val binder =
                 NewSubscriptionUiBinder(binding, presenter.events, onCheckConnectivityClick, onRequirePaymentConfirmation)
@@ -56,13 +60,15 @@ class NewSubscriptionFragment : Fragment() {
         // Handle the result of stripe.confirmSetupIntent
         if (requestCode == CHECK_CONNECTIVITY_SETTINGS_CODE) {
             Timber.i("Check connectivity result: $resultCode")
-        } else {
-            val presenter = newSubscriptionViewModel.presenter
-            presenter.events(Event.OnPaymentResult(requestCode, data))
         }
     }
 
-    class Launcher(val navController: NavController) : NewSubscriptionPresenter.Launcher {
-        override fun finished() = navController.popBackStack()
+    class Launcher(private val context: Context) : CheckoutSubscriptionPresenter.Launcher {
+        override fun startCheckout(url: String): Boolean {
+            val builder = Builder()
+            val customTabsIntent: CustomTabsIntent = builder.build()
+            customTabsIntent.launchUrl(context, Uri.parse(url))
+            return true
+        }
     }
 }

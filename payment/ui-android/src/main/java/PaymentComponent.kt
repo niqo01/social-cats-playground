@@ -6,8 +6,8 @@ import com.nicolasmilliard.socialcats.payment.PaymentLoader
 import com.nicolasmilliard.socialcats.payment.PaymentServiceModule
 import com.nicolasmilliard.socialcats.payment.StripeService
 import com.nicolasmilliard.socialcats.payment.presenter.ManageSubscriptionPresenter
-import com.nicolasmilliard.socialcats.payment.presenter.NewSubscriptionPresenter
-import com.nicolasmilliard.socialcats.payment.ui.new.NewSubscriptionViewModel
+import com.nicolasmilliard.socialcats.payment.presenter.CheckoutSubscriptionPresenter
+import com.nicolasmilliard.socialcats.payment.ui.checkout.NewSubscriptionViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
@@ -49,12 +49,25 @@ class PaymentComponent {
             viewModel
         }
 
+//        factory {
+//            NewSubscriptionPresenter(get(), get(), get())
+//        }
+//
+//        viewModel {
+//            val presenter: NewSubscriptionPresenter = get()
+//            val viewModel = NewSubscriptionViewModel(presenter)
+//            viewModel.viewModelScope.launch {
+//                presenter.start()
+//            }
+//            viewModel
+//        }
+//
         factory {
-            NewSubscriptionPresenter(get(), get(), get())
+            CheckoutSubscriptionPresenter(get(), get(), get())
         }
 
         viewModel {
-            val presenter: NewSubscriptionPresenter = get()
+            val presenter: CheckoutSubscriptionPresenter = get()
             val viewModel = NewSubscriptionViewModel(presenter)
             viewModel.viewModelScope.launch {
                 presenter.start()

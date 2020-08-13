@@ -1,4 +1,4 @@
-package checkout
+package com.nicolasmilliard.socialcats.payment.ui.checkout
 
 import androidx.fragment.app.Fragment
 import com.nicolasmilliard.socialcats.payment.AndroidStripeService

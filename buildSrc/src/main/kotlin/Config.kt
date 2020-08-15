@@ -1,7 +1,7 @@
 import org.gradle.api.JavaVersion
 
 object Config {
-    const val kotlinVersion = "1.3.72" // update gradle.properties as well
+    const val kotlinVersion = "1.4.0" // update gradle.properties as well
 
     const val group = "com.nicolasmilliard.socialcats"
 
@@ -173,13 +173,13 @@ object Config {
 
         object Firebase {
 
-            const val admin = "com.google.firebase:firebase-admin:6.15.0"
+            const val admin = "com.google.firebase:firebase-admin:6.16.0"
 
-            const val common = "com.google.firebase:firebase-common-ktx:19.3.0"
+            const val common = "com.google.firebase:firebase-common-ktx:19.3.1"
             const val auth = "com.google.firebase:firebase-auth-ktx:19.3.2"
             const val firestore = "com.google.firebase:firebase-firestore-ktx:21.5.0"
-            const val analytics = "com.google.firebase:firebase-analytics-ktx:17.4.4"
-            const val crashlytics = "com.google.firebase:firebase-crashlytics:17.1.1"
+            const val analytics = "com.google.firebase:firebase-analytics-ktx:17.5.0"
+            const val crashlytics = "com.google.firebase:firebase-crashlytics:17.2.1"
             const val performance = "com.google.firebase:firebase-perf:19.0.8"
             const val remoteConfig = "com.google.firebase:firebase-config-ktx:19.2.0"
             const val messaging = "com.google.firebase:firebase-messaging:20.2.4"
@@ -215,7 +215,7 @@ object Config {
         }
 
         object Aws {
-            const val sdkBom = "software.amazon.awssdk:bom:2.13.72"
+            const val sdkBom = "software.amazon.awssdk:bom:2.13.76"
             const val apacheClient = "software.amazon.awssdk:apache-client"
             const val sdkAuth = "software.amazon.awssdk:auth"
         }
@@ -297,7 +297,7 @@ object Config {
         }
 
         object GoogleCloud {
-            const val tasks = "com.google.cloud:google-cloud-tasks:1.30.0"
+            const val tasks = "com.google.cloud:google-cloud-tasks:1.30.1"
             const val loggingLogback = "com.google.cloud:google-cloud-logging-logback:0.118.2-alpha"
             const val pubSub = "com.google.cloud:google-cloud-pubsub:1.107.0"
         }

@@ -39,7 +39,7 @@ dependencies {
 
     implementation(project(":store:admin"))
 
-    implementation(Config.Libs.Kotlin.jdk8)
+//    implementation(Config.Libs.Kotlin.jdk8)
 
     implementation(Config.Libs.KotlinLogging.jdk)
     implementation(Config.Libs.logBackClassic)
@@ -51,7 +51,6 @@ dependencies {
     }
     implementation(Config.Libs.Moshi.adapters)
     kapt(Config.Libs.Moshi.codegen)
-
 
     compileOnly(Config.Libs.GoogleFunction.functionFrameworkApi)
 

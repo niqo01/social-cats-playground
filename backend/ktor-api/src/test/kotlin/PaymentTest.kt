@@ -38,9 +38,10 @@ class PaymentTest : AutoCloseKoinTest() {
             ) {
                 assertThat(response.status()).isEqualTo(HttpStatusCode.OK)
                 assertThat(response.content).isNotEmpty()
-                val result = json.parse(SubscriptionDetailResult.serializer(), response.content!!)
+                val result = json.decodeFromString(SubscriptionDetailResult.serializer(), response.content!!)
                 assertThat(result.prices).hasSize(2)
             }
+            return@withTestApplication true
         }
     }
 
@@ -60,9 +61,10 @@ class PaymentTest : AutoCloseKoinTest() {
             ) {
                 assertThat(response.status()).isEqualTo(HttpStatusCode.OK)
                 assertThat(response.content).isNotEmpty()
-                val result = json.parse(CreateCheckoutSessionResult.serializer(), response.content!!)
+                val result = json.decodeFromString(CreateCheckoutSessionResult.serializer(), response.content!!)
                 assertThat(result.checkoutUrl).isNotEmpty()
             }
+            return@withTestApplication true
         }
     }
 
@@ -86,7 +88,7 @@ class PaymentTest : AutoCloseKoinTest() {
                     addHeader("Authorization", "Bearer $TEST_VALID_TOKEN")
                     addHeader("Content-type", "application/json")
                     setBody(
-                        json.stringify(
+                        json.encodeToString(
                             CreateSubscriptionRequest.serializer(),
                             CreateSubscriptionRequest("paymentId", "priceId")
                         )
@@ -95,10 +97,11 @@ class PaymentTest : AutoCloseKoinTest() {
             ) {
                 assertThat(response.status()).isEqualTo(HttpStatusCode.OK)
                 assertThat(response.content).isNotEmpty()
-                val result = json.parse(CreateSubscriptionResult.serializer(), response.content!!)
+                val result = json.decodeFromString(CreateSubscriptionResult.serializer(), response.content!!)
                 assertThat(result.subscription.invoice!!.paymentIntent!!.status).isEqualTo(PaymentStatus.SUCCEEDED)
                 assertThat(fakes.userStore.membershipStatusChanged).containsEntry("uid", true)
             }
+            return@withTestApplication true
         }
     }
 
@@ -119,9 +122,10 @@ class PaymentTest : AutoCloseKoinTest() {
             ) {
                 assertThat(response.status()).isEqualTo(HttpStatusCode.OK)
                 assertThat(response.content).isNotEmpty()
-                val result = json.parse(CancelSubscriptionResult.serializer(), response.content!!)
+                val result = json.decodeFromString(CancelSubscriptionResult.serializer(), response.content!!)
                 assertThat(result.subsriptionStatus).isEqualTo(SubscriptionStatus.CANCELED)
             }
+            return@withTestApplication true
         }
     }
 }

@@ -47,6 +47,8 @@ import org.slf4j.event.Level
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
+private val counter = atomic(0)
+
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(modules: List<Module> = getModules(environment.config)) {
@@ -98,7 +100,6 @@ fun Application.module(modules: List<Module> = getModules(environment.config)) {
             call.request.header(HttpHeaders.XRequestId)
         }
 
-        val counter = atomic(0)
         generate { "generated-call-id-${counter.getAndIncrement()}" }
 
         // Once a callId is generated, this optional function is called to verify if the retrieved or generated callId String is valid.

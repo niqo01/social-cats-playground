@@ -2,8 +2,8 @@ package com.nicolasmilliard.socialcats.session
 
 import com.google.firebase.iid.FirebaseInstanceId
 import com.nicolasmilliard.socialcats.store.DeviceInfo
-import java.util.Locale
 import kotlinx.coroutines.tasks.await
+import java.util.Locale
 
 class AndroidInstanceIdProvider : DeviceInfoProvider {
 

@@ -2,7 +2,6 @@ package com.nicolasmilliard.socialcats.api
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -19,18 +18,15 @@ fun buildRetrofit(client: Lazy<OkHttpClient>): Retrofit {
             }
         })
         .addConverterFactory(
-            Json(
-                JsonConfiguration.Stable.copy(
-                    encodeDefaults = true,
-                    ignoreUnknownKeys = true,
-                    isLenient = true,
-                    serializeSpecialFloatingPointValues = true,
-                    allowStructuredMapKeys = true,
-                    unquotedPrint = false,
-                    prettyPrint = false,
-                    useArrayPolymorphism = true
-                )
-            ).asConverterFactory(contentType)
+            Json {
+                encodeDefaults = true
+                ignoreUnknownKeys = true
+                isLenient = true
+//                serializeSpecialFloatingPointValues = true
+                allowStructuredMapKeys = true
+                prettyPrint = false
+                useArrayPolymorphism = true
+            }.asConverterFactory(contentType)
         )
         .build()
 }

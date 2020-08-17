@@ -1,8 +1,5 @@
 package com.nicolasmilliard.socialcats.search.repository
 
-import java.lang.Exception
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import mu.KotlinLogging
 import org.elasticsearch.action.ActionListener
@@ -17,6 +14,9 @@ import org.elasticsearch.client.RestHighLevelClient
 import org.elasticsearch.index.VersionType
 import org.elasticsearch.index.query.QueryBuilders
 import org.elasticsearch.search.builder.SearchSourceBuilder
+import java.lang.Exception
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 private val log = KotlinLogging.logger {}
 
@@ -75,15 +75,18 @@ class ElasticSearchRepository(
         indexRequest: IndexRequest,
         options: RequestOptions
     ) = suspendCancellableCoroutine<IndexResponse> {
-        val cancellable = esClient.indexAsync(indexRequest, options, object : ActionListener<IndexResponse> {
-            override fun onFailure(e: Exception) {
-                it.resumeWithException(e)
-            }
+        val cancellable = esClient.indexAsync(
+            indexRequest, options,
+            object : ActionListener<IndexResponse> {
+                override fun onFailure(e: Exception) {
+                    it.resumeWithException(e)
+                }
 
-            override fun onResponse(response: IndexResponse) {
-                it.resume(response)
+                override fun onResponse(response: IndexResponse) {
+                    it.resume(response)
+                }
             }
-        })
+        )
         it.invokeOnCancellation {
             cancellable.cancel()
         }
@@ -93,15 +96,18 @@ class ElasticSearchRepository(
         deleteRequest: DeleteRequest,
         options: RequestOptions
     ) = suspendCancellableCoroutine<DeleteResponse> {
-        val cancellable = esClient.deleteAsync(deleteRequest, options, object : ActionListener<DeleteResponse> {
-            override fun onFailure(e: Exception) {
-                it.resumeWithException(e)
-            }
+        val cancellable = esClient.deleteAsync(
+            deleteRequest, options,
+            object : ActionListener<DeleteResponse> {
+                override fun onFailure(e: Exception) {
+                    it.resumeWithException(e)
+                }
 
-            override fun onResponse(response: DeleteResponse) {
-                it.resume(response)
+                override fun onResponse(response: DeleteResponse) {
+                    it.resume(response)
+                }
             }
-        })
+        )
         it.invokeOnCancellation {
             cancellable.cancel()
         }
@@ -111,15 +117,18 @@ class ElasticSearchRepository(
         searchRequest: SearchRequest,
         options: RequestOptions
     ) = suspendCancellableCoroutine<SearchResponse> {
-        val cancellable = esClient.searchAsync(searchRequest, options, object : ActionListener<SearchResponse> {
-            override fun onFailure(e: Exception) {
-                it.resumeWithException(e)
-            }
+        val cancellable = esClient.searchAsync(
+            searchRequest, options,
+            object : ActionListener<SearchResponse> {
+                override fun onFailure(e: Exception) {
+                    it.resumeWithException(e)
+                }
 
-            override fun onResponse(response: SearchResponse) {
-                it.resume(response)
+                override fun onResponse(response: SearchResponse) {
+                    it.resume(response)
+                }
             }
-        })
+        )
         it.invokeOnCancellation {
             cancellable.cancel()
         }

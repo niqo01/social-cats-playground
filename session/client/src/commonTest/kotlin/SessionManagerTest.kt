@@ -9,11 +9,6 @@ import com.nicolasmilliard.socialcats.store.FakeStore
 import com.nicolasmilliard.socialcats.store.aDeviceInfo
 import com.nicolasmilliard.socialcats.store.aStoreUser
 import com.nicolasmilliard.socialcats.test.runTest
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +17,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import mu.KotlinLogging
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 private val logger = KotlinLogging.logger {}
 

@@ -46,9 +46,10 @@ class SearchTest : AutoCloseKoinTest() {
                 assertThat(response.status()).isEqualTo(HttpStatusCode.OK)
 
                 assertThat(response.content).isNotEmpty()
-                val result = json.parse(SearchUsersResult.serializer(), response.content!!)
+                val result = json.decodeFromString(SearchUsersResult.serializer(), response.content!!)
                 assertThat(result).isEqualTo(aSearchUserResult)
             }
+            return@withTestApplication true
         }
     }
 

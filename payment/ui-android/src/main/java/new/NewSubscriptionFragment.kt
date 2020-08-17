@@ -26,7 +26,7 @@ import timber.log.Timber
 class NewSubscriptionFragment : Fragment() {
 
     private val paymentModel: PaymentViewModel
-        by navGraphViewModels(com.nicolasmilliard.socialcats.base.R.id.payment_nav_graph)
+    by navGraphViewModels(com.nicolasmilliard.socialcats.base.R.id.payment_nav_graph)
 
     private fun injectFeature() = paymentModel
 

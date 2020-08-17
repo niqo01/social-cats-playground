@@ -8,16 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.browser.customtabs.CustomTabsIntent.*
+import androidx.browser.customtabs.CustomTabsIntent.Builder
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.nicolasmilliard.presentation.bindTo
 import com.nicolasmilliard.socialcats.payment.AndroidStripeService
 import com.nicolasmilliard.socialcats.payment.presenter.CheckoutSubscriptionPresenter
-import com.nicolasmilliard.socialcats.payment.presenter.NewSubscriptionPresenter.Event
 import com.nicolasmilliard.socialcats.payment.ui.PaymentViewModel
 import com.nicolasmilliard.socialcats.payment.ui.databinding.CheckoutBinding
 import com.nicolasmilliard.socialcats.ui.CHECK_CONNECTIVITY_SETTINGS_CODE
@@ -30,7 +27,7 @@ import timber.log.Timber
 class NewSubscriptionFragment : Fragment() {
 
     private val paymentModel: PaymentViewModel
-        by navGraphViewModels(com.nicolasmilliard.socialcats.base.R.id.payment_nav_graph)
+    by navGraphViewModels(com.nicolasmilliard.socialcats.base.R.id.payment_nav_graph)
 
     private fun injectFeature() = paymentModel
 

@@ -13,7 +13,7 @@ import okhttp3.Response
  */
 class UserAgentInterceptor(versionName: String) : Interceptor {
     private val userAgent =
-        "socialcats/${versionName} ${System.getProperty("http.agent")}"
+        "socialcats/$versionName ${System.getProperty("http.agent")}"
 
     override fun intercept(chain: Interceptor.Chain): Response = chain
         .request()

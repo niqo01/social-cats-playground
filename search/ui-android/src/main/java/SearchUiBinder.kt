@@ -50,9 +50,12 @@ class SearchUiBinder(
     private val resources = binding.root.resources
 
     private val resultsAdapter =
-        UserResultAdapter(context.layoutInflater, imageLoader, object : UserResultAdapter.Callback {
-            override fun onUserClicked(user: User) = onUserClick(user)
-        })
+        UserResultAdapter(
+            context.layoutInflater, imageLoader,
+            object : UserResultAdapter.Callback {
+                override fun onUserClicked(user: User) = onUserClick(user)
+            }
+        )
 
     private var snackbar: Snackbar? = null
 

@@ -19,7 +19,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class ManageSubscriptionFragment : Fragment() {
 
     private val paymentModel: PaymentViewModel
-        by navGraphViewModels(com.nicolasmilliard.socialcats.base.R.id.payment_nav_graph)
+    by navGraphViewModels(com.nicolasmilliard.socialcats.base.R.id.payment_nav_graph)
     private fun injectFeature() = paymentModel
 
     private val viewModel: ManageSubscriptionViewModel by viewModel()

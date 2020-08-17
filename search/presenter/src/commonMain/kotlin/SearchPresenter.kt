@@ -163,7 +163,8 @@ class SearchPresenter(
                         } else {
                             _models.value.copy(
                                 loadingState = Success(
-                                    result.data.totalHits, Model.QueryResults(
+                                    result.data.totalHits,
+                                    Model.QueryResults(
                                         query,
                                         result.data.users
                                     )

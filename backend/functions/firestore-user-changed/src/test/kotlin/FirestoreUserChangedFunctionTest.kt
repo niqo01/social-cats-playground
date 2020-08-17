@@ -37,13 +37,14 @@ internal class FirestoreUserChangedFunctionTest {
 
     @Test
     fun `on user name updated`() {
-        val json = """
+        val json =
+            """
             {
               "oldValue": {"createTime": "2002-10-02T10:00:00-05:00", "updateTime": "2002-10-02T10:00:00-05:00", "name": "name/id", "fields": {"name": {"stringValue": "OldName"}}},
               "value": {"createTime": "2002-10-02T10:00:00-05:00", "updateTime": "2002-10-02T10:00:00-05:00", "name": "name/id", "fields": {"name": {"stringValue": "NewName"}}},
               "updateMask": {"fieldPaths":["name"]}
             }
-        """.trimIndent()
+            """.trimIndent()
 
         val context = FakeContext()
         val testComponent = TestComponent()
@@ -54,13 +55,14 @@ internal class FirestoreUserChangedFunctionTest {
 
     @Test
     fun `on unsupported field update`() {
-        val json = """
+        val json =
+            """
             {
               "oldValue": {"createTime": "2002-10-02T10:00:00-05:00", "updateTime": "2002-10-02T10:00:00-05:00", "name": "name/id", "fields": {"toto": {"stringValue": "OldName"}}},
               "value": {"createTime": "2002-10-02T10:00:00-05:00", "updateTime": "2002-10-02T10:00:00-05:00", "name": "name/id", "fields": {"toto": {"stringValue": "NewName"}}},
               "updateMask": {"fieldPaths":["toto"]}
             }
-        """.trimIndent()
+            """.trimIndent()
 
         val context = FakeContext()
         val testComponent = TestComponent()
@@ -71,13 +73,14 @@ internal class FirestoreUserChangedFunctionTest {
 
     @Test
     fun `on new user created`() {
-        val json = """
+        val json =
+            """
             {
               "oldValue": {"createTime": null, "updateTime": null, "name": null, "fields": null},
               "value": {"createTime": "2002-10-02T10:00:00-05:00", "updateTime": "2002-10-02T10:00:00-05:00", "name": "name/id", "fields": {"name": {"stringValue": "NewName"}, "email": {"stringValue": "f@f.c"}}},
               "updateMask": null
             }
-        """.trimIndent()
+            """.trimIndent()
 
         val context = FakeContext()
         val testComponent = TestComponent()
@@ -90,13 +93,14 @@ internal class FirestoreUserChangedFunctionTest {
 
     @Test
     fun `on user deleted`() {
-        val json = """
+        val json =
+            """
             {
               "oldValue": {"createTime": "2002-10-02T10:00:00-05:00", "updateTime": "2002-10-02T10:00:00-05:00", "name": "name/id", "fields": {"name": {"stringValue": "OldName"}}},
               "value": {"createTime": null, "updateTime": null, "name": null, "fields": null},
               "updateMask": null
             }
-        """.trimIndent()
+            """.trimIndent()
 
         val context = FakeContext()
         val testComponent = TestComponent()
@@ -107,7 +111,8 @@ internal class FirestoreUserChangedFunctionTest {
 
     @Test
     fun `test Delete Empty Json`() {
-        val json = """
+        val json =
+            """
 {
 	"oldValue": {
 		"createTime": "2020-05-14T16:56:18.588207Z",

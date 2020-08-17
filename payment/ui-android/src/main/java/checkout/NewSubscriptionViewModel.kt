@@ -2,7 +2,6 @@ package com.nicolasmilliard.socialcats.payment.ui.checkout
 
 import androidx.lifecycle.ViewModel
 import com.nicolasmilliard.socialcats.payment.presenter.CheckoutSubscriptionPresenter
-import com.nicolasmilliard.socialcats.payment.presenter.NewSubscriptionPresenter
 import timber.log.Timber
 
 class NewSubscriptionViewModel(val presenter: CheckoutSubscriptionPresenter) : ViewModel() {

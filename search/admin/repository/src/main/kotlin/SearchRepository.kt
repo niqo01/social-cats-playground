@@ -24,7 +24,8 @@ object SearchConstants {
                     EMAIL_VERIFIED,
                     PHONE_NUMBER,
                     PHONE_NUMBER,
-                    PHOTO_URL)
+                    PHOTO_URL
+                )
             }
         }
     }

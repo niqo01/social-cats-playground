@@ -1,10 +1,9 @@
 package com.nicolasmilliard.socialcats.searchapi
 
 import io.ktor.config.MapApplicationConfig
-import io.ktor.serialization.DefaultJsonConfiguration
 import kotlinx.serialization.json.Json
 
-val json = Json(DefaultJsonConfiguration)
+val json = Json.Default
 
 fun MapApplicationConfig.setConfig() {
     put("env.isProduction", "false")

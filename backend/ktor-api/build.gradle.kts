@@ -6,6 +6,7 @@ plugins {
     id("com.github.johnrengelman.shadow")
     id("com.google.cloud.tools.appengine")
 }
+apply(plugin = "kotlinx-atomicfu")
 
 java {
     sourceCompatibility = Config.GoogleCloud.AppEngine.sourceCompatibility
@@ -17,8 +18,7 @@ tasks.withType<KotlinCompile> {
         jvmTarget = Config.GoogleCloud.AppEngine.kotlinJvmTarget
         freeCompilerArgs += listOf(
             "-Xuse-experimental=io.ktor.util.KtorExperimentalAPI",
-            "-Xuse-experimental=io.ktor.locations.KtorExperimentalLocationsAPI",
-            "-Xuse-experimental=kotlinx.serialization.UnstableDefault"
+            "-Xuse-experimental=io.ktor.locations.KtorExperimentalLocationsAPI"
         )
     }
 }
@@ -49,13 +49,13 @@ dependencies {
     evaluationDependsOn(":payment:model")
     implementation(project(":payment:model"))
     implementation(project(":api:social-cats"))
-    implementation(Config.Libs.Kotlin.jdk8)
+//    implementation(Config.Libs.Kotlin.jdk8)
     implementation(Config.Libs.Ktor.ktorServerNetty)
     implementation(Config.Libs.Ktor.ktorSerialization)
     implementation(Config.Libs.Ktor.ktorAuth)
     implementation(Config.Libs.Ktor.ktorLocation)
     implementation(Config.Libs.Koin.ktor)
-    implementation(Config.Libs.Kotlin.Serialization.jdk)
+    implementation(Config.Libs.Kotlin.Serialization.core)
     implementation(Config.Libs.logBackClassic)
     // Elastic search High level client uses log4j
     implementation(Config.Libs.log4jToSlf4j)

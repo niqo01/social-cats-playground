@@ -90,7 +90,8 @@ class AppModule {
                     hacb.addInterceptorLast(
                         interceptor
                     )
-                })
+                }
+        )
     }
 
     fun provideSearchRepository(esClient: RestHighLevelClient) =

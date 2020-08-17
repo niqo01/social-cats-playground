@@ -5,8 +5,8 @@ import com.nicolasmilliard.socialcats.payment.AndroidStripeService
 import com.nicolasmilliard.socialcats.payment.PaymentLoader
 import com.nicolasmilliard.socialcats.payment.PaymentServiceModule
 import com.nicolasmilliard.socialcats.payment.StripeService
-import com.nicolasmilliard.socialcats.payment.presenter.ManageSubscriptionPresenter
 import com.nicolasmilliard.socialcats.payment.presenter.CheckoutSubscriptionPresenter
+import com.nicolasmilliard.socialcats.payment.presenter.ManageSubscriptionPresenter
 import com.nicolasmilliard.socialcats.payment.ui.checkout.NewSubscriptionViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.dsl.viewModel

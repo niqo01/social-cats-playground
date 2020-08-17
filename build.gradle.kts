@@ -13,6 +13,7 @@ buildscript {
         classpath(Plugins.OldWay.crashlytics)
         classpath(Plugins.OldWay.android)
         classpath(Plugins.OldWay.appDistribution)
+        classpath(Plugins.OldWay.atomicFu)
     }
 }
 

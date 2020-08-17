@@ -27,33 +27,34 @@ class StripeProcessor(
     private val urls: Urls = Urls()
 ) : PaymentProcessor {
 
-    override suspend fun createCheckoutSession(customerId: String, productId: String, currency: String, amount: Long) = suspendCoroutine<String> {
-        val options = createRequestOption().build()
+    override suspend fun createCheckoutSession(customerId: String, productId: String, currency: String, amount: Long) =
+        suspendCoroutine<String> {
+            val options = createRequestOption().build()
 
-        val params = SessionCreateParams.builder()
-            .setCustomer(customerId)
-            .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-            .addLineItem(
-                SessionCreateParams.LineItem.builder()
-                    .setQuantity(1)
-                    .setPriceData(
-                        SessionCreateParams.LineItem.PriceData.builder()
-                            .setCurrency(currency)
-                            .setProduct(productId)
-                            .setUnitAmount(amount)
-                            .setRecurring(
-                                SessionCreateParams.LineItem.PriceData.Recurring.builder()
-                                    .setInterval(SessionCreateParams.LineItem.PriceData.Recurring.Interval.MONTH).build()
-                            ).build()
-                    )
-                    .build()
-            )
-            .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
-            .setCancelUrl(urls.paymentCancel)
-            .setSuccessUrl(urls.paymentSuccess)
-        val session: Session = Session.create(params.build(), options)
-        it.resume(urls.buildClientCheckoutUrl(stripePublishableKey, session.id))
-    }
+            val params = SessionCreateParams.builder()
+                .setCustomer(customerId)
+                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+                .addLineItem(
+                    SessionCreateParams.LineItem.builder()
+                        .setQuantity(1)
+                        .setPriceData(
+                            SessionCreateParams.LineItem.PriceData.builder()
+                                .setCurrency(currency)
+                                .setProduct(productId)
+                                .setUnitAmount(amount)
+                                .setRecurring(
+                                    SessionCreateParams.LineItem.PriceData.Recurring.builder()
+                                        .setInterval(SessionCreateParams.LineItem.PriceData.Recurring.Interval.MONTH).build()
+                                ).build()
+                        )
+                        .build()
+                )
+                .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
+                .setCancelUrl(urls.paymentCancel)
+                .setSuccessUrl(urls.paymentSuccess)
+            val session: Session = Session.create(params.build(), options)
+            it.resume(urls.buildClientCheckoutUrl(stripePublishableKey, session.id))
+        }
 
     override suspend fun createCustomer(uId: String, email: String?, phoneNumber: String?) = suspendCoroutine<String> {
         val options = createRequestOption().build()

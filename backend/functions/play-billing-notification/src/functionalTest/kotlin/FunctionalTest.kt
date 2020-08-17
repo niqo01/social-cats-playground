@@ -33,7 +33,8 @@ class FunctionalTest {
 
         val function = AuthUserCreatedFunction()
 
-        val json = """
+        val json =
+            """
             {
                 "displayName": "Nicolas Testing Fun",
                 "metadata": {
@@ -50,7 +51,7 @@ class FunctionalTest {
                 }],
                 "uid": "siybyGbgIeSfOCwM0FE1l4d8Abk2"
             }
-        """.trimIndent()
+            """.trimIndent()
 
         function.accept(json, context)
     }

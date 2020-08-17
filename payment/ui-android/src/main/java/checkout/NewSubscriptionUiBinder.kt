@@ -1,9 +1,6 @@
 package com.nicolasmilliard.socialcats.payment.ui.checkout
 
 import android.view.ViewStub
-import android.view.inputmethod.InputMethodManager
-import android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS
-import androidx.core.content.getSystemService
 import androidx.core.view.isInvisible
 import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_INDEFINITE
 import com.google.android.material.snackbar.Snackbar
@@ -13,7 +10,6 @@ import com.nicolasmilliard.socialcats.payment.presenter.CheckoutSubscriptionPres
 import com.nicolasmilliard.socialcats.payment.presenter.CheckoutSubscriptionPresenter.Model
 import com.nicolasmilliard.socialcats.payment.ui.R
 import com.nicolasmilliard.socialcats.payment.ui.databinding.CheckoutBinding
-import com.nicolasmilliard.socialcats.payment.ui.databinding.NewSubscriptionBinding
 import com.nicolasmilliard.socialcats.ui.CheckConnectivityHandler
 import com.nicolasmilliard.socialcats.ui.NoConnectionLayout
 import timber.log.Timber

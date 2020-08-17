@@ -2,12 +2,8 @@ package com.nicolasmilliard.socialcats.payment.presenter
 
 import com.nicolasmilliard.presentation.Presenter
 import com.nicolasmilliard.socialcats.ConnectivityChecker
-import com.nicolasmilliard.socialcats.payment.NewPaymentMethodResult
 import com.nicolasmilliard.socialcats.payment.PaymentLoader
-import com.nicolasmilliard.socialcats.payment.PaymentStatus
 import com.nicolasmilliard.socialcats.payment.Price
-import com.nicolasmilliard.socialcats.payment.StripeCard
-import com.nicolasmilliard.socialcats.payment.SubscriptionStatus
 import com.nicolasmilliard.socialcats.payment.presenter.CheckoutSubscriptionPresenter.Event
 import com.nicolasmilliard.socialcats.payment.presenter.CheckoutSubscriptionPresenter.Model
 import com.nicolasmilliard.socialcats.session.SessionAuthState
@@ -38,7 +34,7 @@ class CheckoutSubscriptionPresenter(
 
     var launcher: Launcher? = null
 
-    override suspend fun start(): Unit {
+    override suspend fun start() {
         coroutineScope {
             launch {
                 sessionManager.sessions

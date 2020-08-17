@@ -28,7 +28,8 @@ internal class FirestoreEventFunctionTest {
     @Test
     fun `on user created event`() {
 
-        val json = """
+        val json =
+            """
             {
                 "displayName": "Nicolas Milliard",
                 "metadata": {
@@ -45,7 +46,7 @@ internal class FirestoreEventFunctionTest {
                 }],
                 "uid": "siybyGbgIeSfOCwM0FE1l4d8Abk2"
             }
-        """.trimIndent()
+            """.trimIndent()
 
         val context = FakeContext()
         val testComponent = TestComponent()
@@ -56,7 +57,8 @@ internal class FirestoreEventFunctionTest {
 
     @Test
     fun `on anonymous user event`() {
-        val json = """
+        val json =
+            """
             {
                 "uid": "uid",
                 "disabled": false,
@@ -68,7 +70,7 @@ internal class FirestoreEventFunctionTest {
                 "metadata": {"createdAt": "2002-10-02T10:00:00-05:00", "lastSignedInAt": "2002-10-02T10:00:00-05:00"},
                 "providerData": null
             }
-        """.trimIndent()
+            """.trimIndent()
 
         val context = FakeContext()
         val testComponent = TestComponent()

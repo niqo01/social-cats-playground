@@ -6,7 +6,8 @@ fun main() {
 
     val function = PlayBillingNotification()
 
-    val json = """
+    val json =
+        """
             {
                 "displayName": "Nicolas Testing Fun",
                 "metadata": {

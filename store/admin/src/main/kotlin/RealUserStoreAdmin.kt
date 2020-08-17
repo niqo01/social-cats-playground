@@ -3,10 +3,10 @@ package com.nicolasmilliard.socialcats.store
 import com.google.cloud.firestore.FieldValue
 import com.google.cloud.firestore.Firestore
 import com.nicolasmilliard.socialcats.store.DbConstants.Collections.Users
-import kotlin.time.ExperimentalTime
-import kotlin.time.seconds
 import kotlinx.coroutines.withTimeout
 import mu.KotlinLogging
+import kotlin.time.ExperimentalTime
+import kotlin.time.seconds
 
 private val logger = KotlinLogging.logger {}
 

@@ -18,10 +18,12 @@ open class App : SplitCompatApplication(), Configuration.Provider {
         super.onCreate()
 
         initKoin {
-            modules(module {
-                single<Context> { this@App }
-                single(named("appName")){ "SocialCats-${BuildConfig.BUILD_TYPE}" }
-            })
+            modules(
+                module {
+                    single<Context> { this@App }
+                    single(named("appName")) { "SocialCats-${BuildConfig.BUILD_TYPE}" }
+                }
+            )
         }
 
         Timber.plant(BugReporterTree(bugReporter))

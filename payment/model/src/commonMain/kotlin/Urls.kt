@@ -6,7 +6,7 @@ class Urls(private val domain: String = URL_DOMAIN) {
 
     val paymentCancel = "$domain/cancel"
 
-    val paymentSuccess ="$domain/success?session_id={CHECKOUT_SESSION_ID}"
+    val paymentSuccess = "$domain/success?session_id={CHECKOUT_SESSION_ID}"
 
     fun buildClientCheckoutUrl(stripePublicKey: String, sessionId: String): String {
         val encodedKey = urlEncode(stripePublicKey)

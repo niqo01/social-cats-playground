@@ -159,7 +159,7 @@ object Config {
 
         object Firebase {
 
-            const val admin = "com.google.firebase:firebase-admin:6.16.0"
+            const val admin = "com.google.firebase:firebase-admin:7.0.0"
 
             const val common = "com.google.firebase:firebase-common-ktx:19.3.1"
             const val auth = "com.google.firebase:firebase-auth-ktx:19.3.2"
@@ -201,7 +201,7 @@ object Config {
         }
 
         object Aws {
-            const val sdkBom = "software.amazon.awssdk:bom:2.14.1"
+            const val sdkBom = "software.amazon.awssdk:bom:2.14.3"
             const val apacheClient = "software.amazon.awssdk:apache-client"
             const val sdkAuth = "software.amazon.awssdk:auth"
         }
@@ -237,7 +237,7 @@ object Config {
         const val statelyIsoCollections = "co.touchlab:stately-iso-collections:1.0.2-a4"
 
         const val processPhoenix = "com.jakewharton:process-phoenix:2.0.0"
-        const val material = "com.google.android.material:material:1.1.0"
+        const val material = "com.google.android.material:material:1.2.0"
         const val timber = "com.jakewharton.timber:timber:4.7.1"
         const val coil = "io.coil-kt:coil-base:0.11.0"
 
@@ -278,7 +278,7 @@ object Config {
         }
 
         object Stripe {
-            const val java = "com.stripe:stripe-java:19.44.0"
+            const val java = "com.stripe:stripe-java:19.45.0"
             const val android = "com.stripe:stripe-android:15.1.0"
         }
 

@@ -1,5 +1,6 @@
 package com.nicolasmilliard.socialcats.searchapi
 
+import com.google.firebase.auth.AuthErrorCode
 import com.google.firebase.auth.FirebaseAuthException
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
@@ -61,8 +62,16 @@ class FirebaseAuthProvider internal constructor(
             try {
                 val firebaseToken = firebaseAuth.verifyIdToken(tokenStr)
                 call.validateFunc(firebaseToken)
+            } catch (e: FirebaseAuthException) {
+                if (e.authErrorCode == AuthErrorCode.REVOKED_ID_TOKEN) {
+                    call.application.log.info("Verifying token failed: ID token has been revoked", e)
+                    throw e
+                } else {
+                    call.application.log.warn("Verifying token failed: ID token is invalid", e)
+                    throw e
+                }
             } catch (e: Throwable) {
-                call.application.log.warn("Verifying token failed", e)
+                call.application.log.error("Verifying token failed", e)
                 throw e
             }
         }

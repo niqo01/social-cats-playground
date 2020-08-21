@@ -25,7 +25,7 @@ object Plugins {
         const val firebasePerformance = "com.google.firebase:perf-plugin:1.3.1"
         const val navigation =
             "androidx.navigation:navigation-safe-args-gradle-plugin:${Config.Android.navigationVersion}"
-        const val atomicFu = "org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.14.3"
+        const val atomicFu = "org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.14.4"
     }
 }
 

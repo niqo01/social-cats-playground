@@ -1,0 +1,152 @@
+AWSTemplateFormatVersion: '2010-09-09-OC'
+Description: default template generated for organization with master account 690127176154
+
+Organization:
+  MasterAccount:
+    Type: OC::ORG::MasterAccount
+    Properties:
+      AccountName: social-cats
+      AccountId: '690127176154'
+      RootEmail: niqo01@gmail.com
+      Tags:
+        budget-alarm-threshold: 200
+
+  OrganizationRoot:
+    Type: OC::ORG::OrganizationRoot
+    Properties:
+      DefaultOrganizationAccessRoleName: OrganizationAccountAccessRole
+      ServiceControlPolicies:
+        - !Ref DenyChangeOfOrgRoleSCP
+        - !Ref RestrictUnusedRegionsSCP
+
+  ProductionOU:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: production
+      Accounts:
+        - !Ref Production1Account
+
+  DevelopmentOU:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: development
+      Accounts:
+        - !Ref DevelopmentAccount
+
+  SharedOU:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: shared
+      Accounts:
+        - !Ref SharedUsersAccount
+        - !Ref SharedServicesAccount
+        - !Ref SharedComplianceAccount
+
+  SharedUsersAccount:
+    Type: OC::ORG::Account
+    Properties:
+      RootEmail: users-2@socialcats.awsapps.com
+      Alias: org-socialcats-users
+      AccountName: Shared Users Account
+      PasswordPolicy: !Ref PasswordPolicy
+      Tags:
+        budget-alarm-threshold: '100'
+        account-owner-email: olaf@email.com
+
+  SharedServicesAccount:
+    Type: OC::ORG::Account
+    Properties:
+      Alias: org-socialcats-services
+      AccountName: Shared Services Account
+      RootEmail: shared-services-2@socialcats.awsapps.com
+      Tags:
+        budget-alarm-threshold: '22'
+        account-owner-email: olaf@email.com
+
+  SharedComplianceAccount:
+    Type: OC::ORG::Account
+    Properties:
+      Alias: org-socialcats-compliance
+      AccountName: Shared Compliance Account
+      RootEmail: shared-compliance-2@socialcats.awsapps.com
+      Tags:
+        budget-alarm-threshold: '200'
+        account-owner-email: olaf@email.com
+
+  DevelopmentAccount:
+    Type: OC::ORG::Account
+    Properties:
+      Alias: org-socialcats-dev
+      AccountName: Development Account
+      RootEmail: dev-account-1@socialcats.awsapps.com
+      Tags:
+        budget-alarm-threshold: '200'
+        account-owner-email: olaf@email.com
+        subdomain: development1
+
+  Production1Account:
+    Type: OC::ORG::Account
+    Properties:
+      AccountName: Production 1 Account
+      RootEmail: production1@socialcats.awsapps.com
+      Alias: org-socialcats-production1
+      Tags:
+        budget-alarm-threshold: '100'
+        account-owner-email: olaf@email.com
+        subdomain: production1
+
+  DenyChangeOfOrgRoleSCP:
+    Type: OC::ORG::ServiceControlPolicy
+    Properties:
+      PolicyName: DenyChangeOfOrgRole
+      Description: Deny changing the IAM role used for organization access
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: DenyChangeOfOrgRole
+            Effect: Deny
+            Action:
+              - 'iam:Attach*'
+              - 'iam:Create*'
+              - 'iam:Delete*'
+              - 'iam:Detach*'
+              - 'iam:PutRole*'
+              - 'iam:Update*'
+            Resource:
+              - 'arn:aws:iam::*:role/OrganizationAccountAccessRole'
+
+  RestrictUnusedRegionsSCP:
+    Type: OC::ORG::ServiceControlPolicy
+    Properties:
+      PolicyName: RestrictUnusedRegions
+      Description: Restrict Unused regions
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: DenyUnsupportedRegions
+            Effect: Deny
+            NotAction:
+              - 'cloudfront:*'
+              - 'iam:*'
+              - 'route53:*'
+              - 'support:*'
+              - 'budgets:*'
+            Resource: '*'
+            Condition:
+              StringNotEquals:
+                'aws:RequestedRegion':
+                  - eu-west-1
+                  - us-east-1
+                  - eu-central-1
+
+  PasswordPolicy:
+    Type: OC::ORG::PasswordPolicy
+    Properties:
+      MaxPasswordAge: 30
+      MinimumPasswordLength: 12
+      RequireLowercaseCharacters: true
+      RequireNumbers: true
+      RequireSymbols: true
+      RequireUppercaseCharacters: true
+      PasswordReusePrevention: 5
+      AllowUsersToChangePassword: true

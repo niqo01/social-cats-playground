@@ -3,8 +3,9 @@
 - Android DataStore
 - Android Dropbox Store
 - AWS DynamoDB & Square tempest
-- AWS GraphQL
+- AWS API Gateway V2
 - AWS Cognito
+- AWS Serverless Image Handler 
 - Scope viewModel to navGraph when possible
 - Serverless framework
 

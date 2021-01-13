@@ -1,6 +1,10 @@
 package com.nicolasmilliard.socialcatsaws.profile
 
-import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -13,33 +17,66 @@ import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.viewinterop.viewModel
+import androidx.compose.ui.unit.dp
+import com.nicolasmilliard.sharp.sharp
+import com.nicolasmilliard.socialcatsaws.imageupload.sharpDefaults
+import com.nicolasmilliard.socialcatsaws.profile.ProfilePresenter.Event
+import com.nicolasmilliard.socialcatsaws.profile.ProfilePresenter.Model
 import com.nicolasmilliard.socialcatsaws.ui.SocialCatsAwsTheme
+import com.nicolasmilliard.socialcatsaws.util.toText
+import dev.chrisbanes.accompanist.coil.CoilImage
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun Profile(userId: String, presenter: ProfilePresenter = viewModel(), onUp: () -> Unit = { }) {
+fun Profile(
+  models: StateFlow<Model>,
+  events: (Event) -> Unit
+) {
   Scaffold(
-    topBar = { AppBar(presenter, onUp) }
+    topBar = { AppBar(models) { events(Event.OnNavUp) } }
   ) { innerPadding ->
-    val model: ProfilePresenter.Model by presenter.models.collectAsState()
-    ScrollableColumn(contentPadding = innerPadding) {
-      Text(text = "Test ${model.isLoading}, ${model.userId}")
+    val model: Model by models.collectAsState()
+    rememberScrollState(0f)
+    LazyColumn(contentPadding = innerPadding) {
+      // use `item` for separate elements like headers
+      // and `items` for lists of identical elements
+      item {
+        if (model.userPhoto != null) {
+          CoilImage(
+            data = sharp(sharpDefaults(), { key = model.userPhoto!! }),
+            contentDescription = "Test",
+            modifier = Modifier
+              .preferredSize(32.dp)
+              .clip(CircleShape),
+          )
+        }
+
+        Text(text = "Test ${model.isLoading}, ${model.userId}")
+        if (model.showUpload) {
+          Button(onClick = { events(Event.OnUpload) }) {
+            Text(text = "Upload")
+          }
+        }
+      }
     }
   }
 }
 
 @Composable
-private fun AppBar(presenter: ProfilePresenter, onUp: () -> Unit) {
+private fun AppBar(models: StateFlow<Model>, onUp: () -> Unit) {
   TopAppBar(
     navigationIcon = {
       IconButton(onClick = onUp) {
-        Icon(Icons.Rounded.ArrowBack)
+        Icon(imageVector = Icons.Rounded.ArrowBack, contentDescription = null)
       }
     },
     title = {
-      val model: ProfilePresenter.Model by presenter.models.collectAsState()
-      Text(text = "${model.name}")
+      val model: Model by models.collectAsState()
+      Text(text = "${model.name?.toText()}")
     },
     backgroundColor = MaterialTheme.colors.primarySurface
   )
@@ -49,6 +86,6 @@ private fun AppBar(presenter: ProfilePresenter, onUp: () -> Unit) {
 @Composable
 fun DefaultPreview() {
   SocialCatsAwsTheme {
-    Profile("1")
+    Profile(MutableStateFlow(Model())) {}
   }
 }

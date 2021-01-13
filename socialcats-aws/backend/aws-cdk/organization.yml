@@ -1,0 +1,156 @@
+AWSTemplateFormatVersion: '2010-09-09-OC'
+Description: default template generated for organization with master account 690127176154
+
+Organization:
+  MasterAccount:
+    Type: OC::ORG::MasterAccount
+    Properties:
+      AccountName: admin-account
+      AccountId: '690127176154'
+      RootEmail: niqo01@gmail.com
+      Tags:
+        budget-alarm-threshold: '200'
+
+  OrganizationRoot:
+    Type: OC::ORG::OrganizationRoot
+    Properties:
+      DefaultOrganizationAccessRoleName: OrganizationAccountAccessRole
+      ServiceControlPolicies:
+        - !Ref DenyChangeOfOrgRoleSCP
+        - !Ref RestrictUnusedRegionsSCP
+
+  ProductionOU:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: production
+      OrganizationalUnits: !Ref SocialCatsProdOU
+
+  DevelopmentOU:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: development
+      OrganizationalUnits: !Ref SocialCatsDevOU
+
+  SharedOU:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: shared
+      Accounts:
+        - !Ref SharedUsersAccount
+        - !Ref SharedServicesAccount
+        - !Ref SharedComplianceAccount
+
+  SocialCatsProdOU:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: social-cats-production
+      Accounts: !Ref SocialCatsProductionAccount
+
+  SocialCatsDevOU:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: social-cats-development
+      Accounts: !Ref SocialCatsDevelopmentAccount
+
+  SharedUsersAccount:
+    Type: OC::ORG::Account
+    Properties:
+      AccountName: Shared Users Account
+      AccountId: '176508947282'
+      RootEmail: niqo01+socialcats-shared@gmail.com
+      Alias: org-socialcats-users
+      Tags:
+        budget-alarm-threshold: '100'
+        account-owner-email: niqo01+socialcats@gmail.com
+
+  SharedServicesAccount:
+    Type: OC::ORG::Account
+    Properties:
+      AccountName: Shared Services Account
+      AccountId: '864671296317'
+      RootEmail: niqo01+socialcats-services@gmail.com
+      Alias: org-socialcats-services
+      Tags:
+        budget-alarm-threshold: '22'
+        account-owner-email: niqo01+socialcats@gmail.com
+
+  SharedComplianceAccount:
+    Type: OC::ORG::Account
+    Properties:
+      AccountName: Shared Compliance Account
+      AccountId: '816158983615'
+      RootEmail: niqo01+socialcats-compliance@gmail.com
+      Alias: org-socialcats-compliance
+      Tags:
+        budget-alarm-threshold: '200'
+        account-owner-email: niqo01+socialcats@gmail.com
+
+  SocialCatsDevelopmentAccount:
+    Type: OC::ORG::Account
+    Properties:
+      AccountName: Social Cats Development Account
+      AccountId: '538543957507'
+      RootEmail: niqo01+socialcats-dev@gmail.com
+      Alias: org-socialcats-dev
+      Tags:
+        subdomain: development1
+        budget-alarm-threshold: '200'
+        account-owner-email: niqo01+socialcats@gmail.com
+
+  SocialCatsProductionAccount:
+    Type: OC::ORG::Account
+    Properties:
+      AccountName: SocialCats Production Account
+      AccountId: '669518591550'
+      RootEmail: niqo01+socialcats-prod@gmail.com
+      Alias: org-socialcats-production1
+      Tags:
+        subdomain: production1
+        budget-alarm-threshold: '100'
+        account-owner-email: niqo01+socialcats@gmail.com
+
+  DenyChangeOfOrgRoleSCP:
+    Type: OC::ORG::ServiceControlPolicy
+    Properties:
+      PolicyName: DenyChangeOfOrgRole
+      Description: Deny changing the IAM role used for organization access
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: DenyChangeOfOrgRole
+            Effect: Deny
+            Action:
+              - 'iam:Attach*'
+              - 'iam:Create*'
+              - 'iam:Delete*'
+              - 'iam:Detach*'
+              - 'iam:PutRole*'
+              - 'iam:Update*'
+            Resource:
+              - 'arn:aws:iam::*:role/OrganizationAccountAccessRole'
+        
+  RestrictUnusedRegionsSCP:
+    Type: OC::ORG::ServiceControlPolicy
+    Properties:
+      PolicyName: RestrictUnusedRegions
+      Description: Restrict Unused regions
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: DenyUnsupportedRegions
+            Effect: Deny
+            NotAction:
+              - 'cloudfront:*'
+              - 'iam:*'
+              - 'route53:*'
+              - 'support:*'
+              - 'budgets:*'
+            Resource: '*'
+            Condition:
+              StringNotEquals:
+                'aws:RequestedRegion':
+                  - eu-west-1
+                  - us-east-1
+                  - eu-central-1
+        
+

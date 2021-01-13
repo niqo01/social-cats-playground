@@ -1,4 +1,3 @@
-
 <!--
   ~ Copyright 2019 Google, Inc.
   ~
@@ -16,8 +15,9 @@
   -->
 
 <resources>
-  <style name="Theme.SocialCatsAws.Immerse" parent="Theme.SocialCatsAws.NoActionBar">
-    <item name="android:statusBarColor">@android:color/transparent</item>
-    <item name="android:navigationBarColor">@android:color/transparent</item>
-  </style>
+
+    <style name="Theme.SocialCatsAws.Immerse" parent="Theme.SocialCatsAws.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
 </resources>

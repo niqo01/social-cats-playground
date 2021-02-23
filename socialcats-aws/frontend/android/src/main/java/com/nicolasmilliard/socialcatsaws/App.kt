@@ -7,7 +7,8 @@ import androidx.work.Configuration
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.util.CoilUtils
-import com.nicolasmilliard.socialcatsaws.imageupload.BackendImageUrl
+import com.nicolasmilliard.pushnotification.RegTokenService
+import com.nicolasmilliard.socialcatsaws.api.BackendImageUrl
 import com.nicolasmilliard.socialcatsaws.imageupload.SharpInterceptor
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
@@ -35,10 +36,15 @@ class App : Application(), Configuration.Provider, ImageLoaderFactory {
   @Inject
   lateinit var mainScope: CoroutineScope
 
+  @Inject
+  lateinit var regTokenService: RegTokenService
+
   override fun onCreate() {
     super.onCreate()
     Timber.plant(DebugTree())
     appInitializer.initializeComponent(AmplifyInitializer::class.java)
+
+    regTokenService.init()
   }
 
   override fun getWorkManagerConfiguration() =

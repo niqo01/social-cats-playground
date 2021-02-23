@@ -3,8 +3,9 @@ package com.nicolasmilliard.socialcatsaws
 import android.content.Context
 import androidx.startup.AppInitializer
 import androidx.work.WorkManager
-import com.nicolasmilliard.socialcatsaws.imageupload.BackendApiUrl
-import com.nicolasmilliard.socialcatsaws.imageupload.BackendImageUrl
+import com.nicolasmilliard.activityresult.AppVersionCode
+import com.nicolasmilliard.socialcatsaws.api.BackendApiUrl
+import com.nicolasmilliard.socialcatsaws.api.BackendImageUrl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -54,4 +55,8 @@ object AppModule {
   @BackendImageUrl
   @Provides
   fun provideBackendImageUrl(@ApplicationContext context: Context) = context.getString(R.string.backend_image_url)
+
+  @AppVersionCode
+  @Provides
+  fun provideAppVersionCode() = BuildConfig.VERSION_CODE
 }

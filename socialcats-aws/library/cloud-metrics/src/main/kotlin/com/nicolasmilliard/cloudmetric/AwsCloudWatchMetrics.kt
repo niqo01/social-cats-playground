@@ -6,7 +6,11 @@ import software.amazon.cloudwatchlogs.emf.model.DimensionSet
 private typealias CloudWatchUnit = software.amazon.cloudwatchlogs.emf.model.Unit
 
 internal class CloudWatchMetrics(namespace: String) : CloudMetrics {
-  private val logger = MetricsLogger()
+  private val logger: MetricsLogger = MetricsLogger()
+
+  init {
+    logger.setNamespace(namespace)
+  }
 
   override fun putDimension(d1: String, v1: String) {
     logger.putDimensions(DimensionSet.of(d1, v1))

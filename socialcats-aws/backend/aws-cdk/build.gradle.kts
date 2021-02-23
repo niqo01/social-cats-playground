@@ -1,21 +1,13 @@
-
-
 plugins {
   kotlin("jvm")
   `application`
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-  kotlinOptions {
-    jvmTarget = "11"
-    useIR = true
-  }
 }
 
 val functionJars by configurations.creating {
 }
 
 dependencies {
+  implementation(project(":feature:profile:backend:repository:dynamodb-impl:schema"))
   implementation(kotlin("stdlib"))
 
   implementation("software.amazon.awscdk:dynamodb:_")
@@ -24,6 +16,7 @@ dependencies {
   implementation("software.amazon.awscdk:apigatewayv2-integrations:_")
   implementation("software.amazon.awscdk:apigatewayv2-authorizers:_")
   implementation("software.amazon.awscdk:lambda:_")
+  implementation("software.amazon.awscdk:lambda-destinations:_")
   implementation("software.amazon.awscdk:core:_")
   implementation("software.amazon.awscdk:logs:_")
   implementation("software.amazon.awscdk:cognito:_")
@@ -31,10 +24,12 @@ dependencies {
   implementation("software.amazon.awscdk:ec2:_")
   implementation("software.amazon.awscdk:glue:_")
   implementation("software.amazon.awscdk:waf:_")
+  implementation("software.amazon.awscdk:sqs:_")
 
   implementation("software.amazon.awsconstructs:core:_")
   implementation("software.amazon.awsconstructs:lambdas3:_")
   implementation("software.amazon.awsconstructs:lambdadynamodb:_")
+  implementation("software.amazon.awsconstructs:dynamodbstreamlambda:_")
 
   testImplementation("org.junit.jupiter:junit-jupiter-api:_")
   testImplementation("org.junit.jupiter:junit-jupiter-engine:_")
@@ -43,6 +38,8 @@ dependencies {
   functionJars(project(":feature:auth:backend:functions:cognito-confirmation-dynamo", configuration = "shadow"))
   functionJars(project(":feature:image-processing:backend:functions:image-upload-url", configuration = "shadow"))
   functionJars(project(":feature:image-processing:backend:functions:image-upload-dynamo", configuration = "shadow"))
+  functionJars(project(":feature:push-notifications:backend:functions:create-device-dynamo", configuration = "shadow"))
+  functionJars(project(":feature:profile:backend:functions:dynamodb-stream", configuration = "shadow"))
 }
 
 tasks.register<Copy>("copyFunctionJars") {

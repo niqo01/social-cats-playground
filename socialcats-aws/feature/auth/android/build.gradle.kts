@@ -1,5 +1,3 @@
-
-
 plugins {
   id("com.android.library")
   id("org.jetbrains.kotlin.android")
@@ -8,21 +6,8 @@ plugins {
 }
 
 android {
-  compileSdkVersion(30)
-
-  defaultConfig {
-    minSdkVersion(findProperty("minSdkVersion") as String)
-    targetSdkVersion(findProperty("targetSdkVersion") as String)
-  }
-  compileOptions {
-    // Using java 11 fails the build with Concurrent modification exception
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_11
-  }
-  kotlinOptions {
-    jvmTarget = "11"
-    freeCompilerArgs = listOf("-Xexplicit-api=strict")
-    useIR = true
+  composeOptions {
+    kotlinCompilerExtensionVersion = "1.0.0-beta01"
   }
 }
 

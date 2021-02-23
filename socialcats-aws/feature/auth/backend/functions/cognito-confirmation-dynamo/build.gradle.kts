@@ -2,22 +2,14 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
   kotlin("jvm")
+  kotlin("kapt")
   kotlin("plugin.serialization")
   id("com.github.johnrengelman.shadow")
+  id("com.squareup.anvil")
 }
 
 group = "com.nicolasmilliard.socialcatsaws.backend.functions"
 version = "1.0-SNAPSHOT"
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-  sourceCompatibility = "11"
-  targetCompatibility = "11"
-
-  kotlinOptions {
-    jvmTarget = "11"
-    useIR = true
-  }
-}
 
 tasks.withType<ShadowJar> {
   mergeServiceFiles()
@@ -52,15 +44,21 @@ artifacts {
 dependencies {
 
   implementation(project(":feature:profile:backend:use-cases"))
+  implementation(project(":feature:profile:backend:repository:dynamodb-wiring"))
 
   implementation(kotlin("stdlib"))
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
 
-  implementation(platform("software.amazon.awssdk:bom:2.16.3"))
+  implementation("com.google.dagger:dagger:_")
+  kapt("com.google.dagger:dagger-compiler:_")
+
+  implementation(platform("software.amazon.awssdk:bom:_"))
   implementation("software.amazon.awssdk:lambda")
 
   implementation("com.amazonaws:aws-lambda-java-core:_")
   implementation("com.amazonaws:aws-lambda-java-events:_")
+
+  implementation("software.amazon.awssdk:url-connection-client")
 
   implementation("org.apache.logging.log4j:log4j-api:_")
   implementation("org.apache.logging.log4j:log4j-core:_")

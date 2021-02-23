@@ -3,14 +3,21 @@ package com.nicolasmilliard.socialcatsaws.backend.util
 import software.amazon.awscdk.core.Construct
 import software.amazon.awscdk.core.Duration
 import software.amazon.awscdk.core.RemovalPolicy
+import software.amazon.awscdk.core.Stack
+import software.amazon.awscdk.services.iam.AccountPrincipal
+import software.amazon.awscdk.services.iam.AnyPrincipal
 import software.amazon.awscdk.services.iam.Effect
 import software.amazon.awscdk.services.iam.PolicyStatement
 import software.amazon.awscdk.services.lambda.Code
 import software.amazon.awscdk.services.lambda.FunctionProps
+import software.amazon.awscdk.services.lambda.IDestination
 import software.amazon.awscdk.services.lambda.ILayerVersion
 import software.amazon.awscdk.services.lambda.LayerVersion
 import software.amazon.awscdk.services.lambda.Runtime
 import software.amazon.awscdk.services.lambda.VersionOptions
+import software.amazon.awscdk.services.sqs.IQueue
+import software.amazon.awscdk.services.sqs.Queue
+import software.amazon.awscdk.services.sqs.QueueEncryption
 
 fun getLambdaInsightPolicy(): PolicyStatement {
   return PolicyStatement.Builder.create().effect(Effect.ALLOW).actions(
@@ -37,7 +44,9 @@ fun buildLambdaProps(
   description: String,
   version: String,
   layerId: String,
-  env: Map<String, String> = emptyMap()
+  env: Map<String, String> = emptyMap(),
+  onSuccess: IDestination? = null,
+  onFailure: IDestination? = null
 ): FunctionProps {
   val layerVersion =
     getCloudWatchLambdaInsightLayerVersion(construct, region, layerId)
@@ -56,5 +65,48 @@ fun buildLambdaProps(
         .removalPolicy(RemovalPolicy.DESTROY)
         .build()
     )
+    .onSuccess(onSuccess)
+    .onFailure(onFailure)
     .build()
+}
+
+fun buildDeadLetterQueue(construct: Construct, id: String): IQueue {
+
+  val queue = Queue.Builder.create(construct, id)
+    .encryption(QueueEncryption.KMS_MANAGED)
+    .retentionPeriod(Duration.days(14))
+    .build()
+
+  queue.addToResourcePolicy(
+    PolicyStatement.Builder.create()
+      .sid("QueueOwnerOnlyAccess")
+      .resources(listOf(queue.queueArn))
+      .actions(
+        listOf(
+          "sqs:DeleteMessage",
+          "sqs:ReceiveMessage",
+          "sqs:SendMessage",
+          "sqs:GetQueueAttributes",
+          "sqs:RemovePermission",
+          "sqs:AddPermission",
+          "sqs:SetQueueAttributes"
+        )
+      )
+      .principals(listOf(AccountPrincipal(Stack.of(construct).account)))
+      .effect(Effect.ALLOW)
+      .build()
+  )
+
+  queue.addToResourcePolicy(
+    PolicyStatement.Builder.create()
+      .sid("HttpsOnly")
+      .resources(listOf(queue.queueArn))
+      .actions(listOf("SQS:*"))
+      .principals(listOf(AnyPrincipal()))
+      .effect(Effect.DENY)
+      .conditions(mapOf("Bool" to mapOf("aws:SecureTransport" to false)))
+      .build()
+  )
+
+  return queue
 }

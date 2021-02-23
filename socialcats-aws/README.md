@@ -2,7 +2,6 @@
 
 - Android DataStore
 - Android Dropbox Store
-- AWS SQS
 - AWS Firehose
 - AWS ElasticSearch
 - AWS AppConfig extension https://aws.amazon.com/blogs/mt/introducing-aws-appconfig-lambda-extension-deploying-application-configuration-serverless/
@@ -10,27 +9,28 @@
 - OpenAPI
 - Push notification
 - Secure Image Api
-- Use HttpAPI for images instead of RestApi
 - Rethink navigation
-- Square Dagger 2 thingy
 - lambda dlq
-- logs and alert Aws cloudwatch embeded metrics
+- logs and alert Aws cloudwatch embedded metrics
+- Use Json log output
+- Dedup Function retry
 
 
 # IN Progress
-- AWS API Gateway V2
-- Set AWS dynamoDB table name lambda from environment variable
-- AWS Glue
 
+- AWS Glue
+- AWS SQS
 
 # Done
 
 - Refresh version
 - Jetpack compose & Navigation
 - Dagger hilt
+- Dagger 2 & Anvi
 - AWS Organization & org-formation
 - AWS Serverless Image Handler
 - AWS Cognito
+- AWS API Gateway V2
 
 Open issues:
 - CustomTabsManagerActivity was created with a null state https://github.com/aws-amplify/amplify-android/issues/1101
@@ -40,5 +40,6 @@ Open issues:
 - Is source and target needed for Kotlin-jvm
 - CDK HttpAPI access logging https://github.com/aws/aws-cdk/issues/11100
 - MDC With thread pool library like DynamoDB
+- Use HttpAPI for images instead of RestApi
 
 

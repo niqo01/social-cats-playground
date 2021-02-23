@@ -33,12 +33,12 @@ public class GetUploadUrlWorker @AssistedInject constructor(
       return Result.failure()
     }
     return try {
-      val token = auth.getAccessToken(userId)
-      if (token == null) {
-        Timber.w("ImageUploadWorker no token available")
+      val state = auth.getSignInStateForUser(userId)
+      if (state == null) {
+        Timber.w("ImageUploadWorker current user not signed in")
         return Result.failure()
       }
-      when (val uploadUrl = uploadImageService.getUploadUrl(token)) {
+      when (val uploadUrl = uploadImageService.getUploadUrl(state.accessToken)) {
         is GetUploadUrl.MaxStoredImagesReached -> {
           Timber.i("ImageUploadWorker Max stored images reached")
           Result.failure(workDataOf("cause" to FAILURE_MAX_STORED_IMAGES_REACHED))

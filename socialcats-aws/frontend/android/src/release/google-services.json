@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "472870016271",
+    "project_id": "social-cats-aws",
+    "storage_bucket": "social-cats-aws.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:472870016271:android:30fe4fce4a47a9c2bf9a7a",
+        "android_client_info": {
+          "package_name": "com.nicolasmilliard.socialcatsaws"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "472870016271-65egh2t90q32j3pm7sl7p6271i1jl3ts.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nicolasmilliard.socialcatsaws",
+            "certificate_hash": "ae9379347e63874b7b6ad724f7fa00f515bd9c24"
+          }
+        },
+        {
+          "client_id": "472870016271-eiq8oeivo23nqtkbfq0v1kqmvvegauk9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAK2UkwgERrjgSmlxoBsDjAPKJkQtwZmJk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "472870016271-eiq8oeivo23nqtkbfq0v1kqmvvegauk9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

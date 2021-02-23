@@ -39,12 +39,12 @@ class Auth constructor(
   val identityPool: CfnIdentityPool
 
   init {
-    userPool = createCognito(isProd)
+    userPool = createCognito()
     androidClient = createAndroidClient(isProd, userPool)
     identityPool = createIdentityPool(userPool, androidClient)
   }
 
-  private fun createCognito(isProd: Boolean): UserPool {
+  private fun createCognito(): UserPool {
     val pool = UserPool.Builder.create(this, "userPool")
       .userPoolName("socialcats-userpool")
       .selfSignUpEnabled(true)

@@ -3,19 +3,73 @@ plugins {
   id("org.jetbrains.kotlin.android")
   id("org.jetbrains.kotlin.kapt")
   id("dagger.hilt.android.plugin")
+  id("com.google.gms.google-services")
 }
 
-apply(from = "android.gradle")
-apply(plugin = "app.cash.exhaustive")
+android {
+  defaultConfig {
+    applicationId = findStringProperty("applicationId")
+  }
+
+  signingConfigs {
+    getByName("debug") {
+      storeFile = file("debug.keystore")
+      storePassword = "android"
+      keyAlias = "androiddebugkey"
+      keyPassword = "android"
+    }
+    create("upload") {
+      storeFile = file("upload.jks")
+      storePassword = System.getenv("socialcats.upload.password")
+      keyAlias = "upload"
+      keyPassword = System.getenv("socialcats.upload.key.password")
+    }
+  }
+
+  buildTypes {
+    getByName("debug") {
+      minifyEnabled(false)
+      applicationIdSuffix = ".debug"
+      signingConfig = signingConfigs.getByName("debug")
+    }
+
+    getByName("release") {
+      signingConfig = if (file("upload.jks").exists()) {
+        signingConfigs.getByName("upload")
+      } else {
+        signingConfigs.getByName("debug")
+      }
+      minifyEnabled(true)
+      proguardFiles("shrinker-rules.pro")
+    }
+  }
+  compileOptions {
+    isCoreLibraryDesugaringEnabled = true
+  }
+
+  buildFeatures {
+    compose = true
+  }
+  composeOptions {
+    kotlinCompilerExtensionVersion = Config.Android.composeVersion
+  }
+}
+
+hilt {
+  enableExperimentalClasspathAggregation = true
+}
 
 dependencies {
-  implementation(project(":feature:auth:android"))
-  implementation(project(":feature:image-processing:android"))
+  implementation(project(":themes:android-ui"))
+  implementation(project(":feature:api-common"))
+  implementation(project(":feature:push-notifications:android-client"))
+  implementation(project(":feature:home:android-ui"))
+  implementation(project(":feature:profile:android-ui"))
 
   coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:_")
 
-  implementation(Kotlin.stdlib)
-  implementation(KotlinX.coroutines)
+  implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:_")
+  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:_")
 
   implementation("com.jakewharton.timber:timber:_")
   implementation(AndroidX.core.ktx)
@@ -25,9 +79,9 @@ dependencies {
   implementation(AndroidX.compose.material)
   implementation("androidx.compose.material:material-icons-extended:_")
   implementation("androidx.compose.ui:ui-tooling:_")
-  implementation("androidx.navigation:navigation-compose:1.0.0-alpha07")
+  implementation("androidx.navigation:navigation-compose:_")
   implementation("androidx.navigation:navigation-runtime-ktx:_")
-  implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha01")
+  implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha02")
   implementation("androidx.activity:activity-compose:_")
 
   implementation("com.google.dagger:hilt-android:_")
@@ -42,9 +96,6 @@ dependencies {
   implementation("com.squareup.okhttp3:logging-interceptor:_")
 
   implementation("androidx.startup:startup-runtime:_")
-
-  implementation("dev.chrisbanes.accompanist:accompanist-coil:_")
-  implementation("io.coil-kt:coil:_")
 
   testImplementation("junit:junit:_")
 

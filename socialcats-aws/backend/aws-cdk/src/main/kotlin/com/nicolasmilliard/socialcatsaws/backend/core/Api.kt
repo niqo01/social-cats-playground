@@ -66,7 +66,7 @@ class Api constructor(
     //     .autoDeploy(true)
     //     .
     //     .build()
-    val defaultStage = CfnStage.Builder.create(this, "DefaultStage")
+    CfnStage.Builder.create(this, "DefaultStage")
       .apiId(api.httpApiId)
       .stageName("\$default")
       .autoDeploy(true)

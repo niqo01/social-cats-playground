@@ -5,17 +5,6 @@ plugins {
 group = "com.nicolasmilliard.socialcatsaws.profile.image"
 version = "1.0-SNAPSHOT"
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-  sourceCompatibility = "11"
-  targetCompatibility = "11"
-
-  kotlinOptions {
-    jvmTarget = "11"
-    useIR = true
-    freeCompilerArgs = listOf("-Xexplicit-api=strict")
-  }
-}
-
 dependencies {
   api(project(":feature:profile:backend:use-cases"))
   api(project(":library:cloud-metrics"))

@@ -6,14 +6,10 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
+import com.nicolasmilliard.socialcatsaws.api.bearer
 import com.nicolasmilliard.socialcatsaws.auth.Auth
-import com.nicolasmilliard.socialcatsaws.auth.AuthState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.runningReduce
 import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -24,20 +20,14 @@ import java.io.File
 
 public class ImageUploadService internal constructor(
   private val workManger: WorkManager,
-  private val apiImage: ImageUploadApiService,
+  private val apiImage: ImageUploadApi,
   private val json: Json,
   auth: Auth,
   mainScope: CoroutineScope
 ) {
   init {
     mainScope.launch {
-      auth.authStates
-        .map { it is AuthState.SignedIn }
-        .runningReduce { accumulator, value -> accumulator && !value }
-        .drop(1)
-        .filter { v ->
-          v
-        }
+      auth.signOutEvents
         .collect {
           Timber.i("Canceling Image worked if any.")
           workManger.cancelAllWorkByTag(GetUploadUrlWorker.TAG)

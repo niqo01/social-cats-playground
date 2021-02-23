@@ -1,5 +1,6 @@
 package com.nicolasmilliard.socialcatsaws
 
+import com.nicolasmilliard.activityresult.ActivityResultFlow
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

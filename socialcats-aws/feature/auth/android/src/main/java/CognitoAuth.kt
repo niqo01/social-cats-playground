@@ -31,7 +31,7 @@ internal class CognitoAuth(
   private val hub: HubCategory
 ) : AuthProvider {
 
-  private val _authStates = MutableStateFlow<AuthState>(AuthState.Unknown)
+  private val _authStates = MutableStateFlow<AuthState>(AuthState.Initializing)
   override val authStates: StateFlow<AuthState> get() = _authStates
 
   private var subToken: SubscriptionToken? = null

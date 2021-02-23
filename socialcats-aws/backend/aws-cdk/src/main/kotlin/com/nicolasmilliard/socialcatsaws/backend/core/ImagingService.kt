@@ -47,7 +47,7 @@ class ImagingService(
           region = region,
           handler = "com.nicolasmilliard.socialcatsaws.imageprocessing.backend.functions.GetImageUploadUrl",
           description = "Function for generating pre-signed S3 url for upload.",
-          version = "1.0.20-SNAPSHOT",
+          version = "1.0.25-SNAPSHOT",
           layerId = "LambdaToS3LayerId",
           env = mapOf(
             "DDB_TABLE_NAME" to table.tableName,

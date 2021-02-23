@@ -2,6 +2,7 @@ package com.nicolasmilliard.socialcatsaws.imageupload
 
 import androidx.work.WorkManager
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.nicolasmilliard.socialcatsaws.api.BackendApiUrl
 import com.nicolasmilliard.socialcatsaws.auth.Auth
 import dagger.Lazy
 import dagger.Module
@@ -14,7 +15,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.create
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
@@ -36,7 +36,7 @@ public object ImageModule {
       .callFactory { request -> client.get().newCall(request) }
       .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
       .build()
-    val serviceApi: ImageUploadApiService = retrofit.create()
+    val serviceApi: ImageUploadApi = retrofit.create()
     return ImageUploadService(workManager, serviceApi, json, auth, mainScope)
   }
 
@@ -45,11 +45,3 @@ public object ImageModule {
     return ImageUploadNav()
   }
 }
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-public annotation class BackendApiUrl
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-public annotation class BackendImageUrl

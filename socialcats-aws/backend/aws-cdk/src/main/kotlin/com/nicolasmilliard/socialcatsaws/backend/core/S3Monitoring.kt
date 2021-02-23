@@ -64,7 +64,7 @@ class S3Monitoring constructor(
       .subnet(defaultVpc.selectSubnets().subnets[0])
       .build()
 
-    val classifier = CfnClassifier.Builder.create(this, "S3ServerLogsClassifier")
+    CfnClassifier.Builder.create(this, "S3ServerLogsClassifier")
       .grokClassifier(
         CfnClassifier.GrokClassifierProperty.builder()
           .name("S3ServerAccessLogClassifier")

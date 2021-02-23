@@ -3,8 +3,9 @@ package com.nicolasmilliard.repository.imageobjectstore
 import com.nicolasmilliard.socialcatsaws.backend.repository.objectstore.ObjectStore
 import com.nicolasmilliard.socialcatsaws.backend.repository.objectstore.PreSignedUrl
 import java.util.UUID
+import javax.inject.Inject
 
-public class ImageObjectStore(private val objectStore: ObjectStore) {
+public class ImageObjectStore @Inject constructor(private val objectStore: ObjectStore) {
 
   public fun createPreSignedUrl(imageKey: ImageStoreKey): PreSignedImageUrl {
     val metadata = mapOf("user-id" to imageKey.userId)

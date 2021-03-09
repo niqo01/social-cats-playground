@@ -7,7 +7,6 @@ plugins {
   id("com.squareup.anvil")
 }
 
-group = "com.nicolasmilliard.socialcatsaws.imageprocessing.backend.functions"
 version = "1.0-SNAPSHOT"
 
 tasks.withType<ShadowJar> {
@@ -61,6 +60,11 @@ dependencies {
 
   implementation("software.amazon.awssdk:url-connection-client")
 
+  implementation(platform("com.amazonaws:aws-xray-recorder-sdk-bom:_"))
+  implementation("com.amazonaws:aws-xray-recorder-sdk-core")
+  implementation("com.amazonaws:aws-xray-recorder-sdk-aws-sdk-core")
+  implementation("com.amazonaws:aws-xray-recorder-sdk-aws-sdk-v2")
+
   implementation("org.apache.logging.log4j:log4j-api:_")
   implementation("org.apache.logging.log4j:log4j-core:_")
   implementation("io.github.microutils:kotlin-logging-jvm:_")
@@ -69,4 +73,8 @@ dependencies {
   runtimeOnly("com.amazonaws:aws-lambda-java-log4j2:_")
   testImplementation("org.junit.jupiter:junit-jupiter-api:_")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:_")
+}
+
+kapt {
+  correctErrorTypes = true
 }

@@ -1,5 +1,6 @@
 package com.nicolasmilliard.socialcatsaws.pushnotifications.backend.functions
 
+import com.amazonaws.xray.interceptors.TracingInterceptor
 import com.nicolasmilliard.cloudmetric.CloudMetricModule
 import com.nicolasmilliard.cloudmetric.CloudMetrics
 import com.nicolasmilliard.di.scope.AppScope
@@ -49,7 +50,9 @@ object AppModule {
       .httpClient(httpClient)
       .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
       .region(Region.of(region))
-      .overrideConfiguration(ClientOverrideConfiguration.builder().build())
+      .overrideConfiguration(ClientOverrideConfiguration.builder()
+        .addExecutionInterceptor(TracingInterceptor())
+        .build())
       .endpointOverride(URI("https://dynamodb.$region.amazonaws.com"))
       .build()
   }

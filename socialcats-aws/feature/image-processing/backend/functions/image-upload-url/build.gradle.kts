@@ -8,7 +8,6 @@ plugins {
   id("com.squareup.anvil")
 }
 
-group = "com.nicolasmilliard.socialcatsaws.imageprocessing.backend.functions"
 version = "1.0-SNAPSHOT"
 
 tasks.withType<ShadowJar> {
@@ -63,6 +62,11 @@ dependencies {
   implementation("com.amazonaws:aws-lambda-java-events:_")
 
   implementation("software.amazon.awssdk:url-connection-client")
+
+  implementation(platform("com.amazonaws:aws-xray-recorder-sdk-bom:_"))
+  implementation("com.amazonaws:aws-xray-recorder-sdk-core")
+  implementation("com.amazonaws:aws-xray-recorder-sdk-aws-sdk-core")
+  implementation("com.amazonaws:aws-xray-recorder-sdk-aws-sdk-v2")
 
   implementation("org.apache.logging.log4j:log4j-api:_")
   implementation("org.apache.logging.log4j:log4j-core:_")

@@ -1,5 +1,6 @@
 package com.nicolasmilliard.socialcatsaws.imageprocessing.backend.functions
 
+import com.amazonaws.xray.interceptors.TracingInterceptor
 import com.nicolasmilliard.cloudmetric.CloudMetricModule
 import com.nicolasmilliard.cloudmetric.CloudMetrics
 import com.nicolasmilliard.di.scope.AppScope
@@ -34,8 +35,8 @@ object AppModule {
 
   @Singleton
   @Provides
-  fun provideRegion(): String {
-    return System.getenv(SdkSystemSetting.AWS_REGION.environmentVariable())
+  fun provideRegion(): Region {
+    return Region.of(System.getenv(SdkSystemSetting.AWS_REGION.environmentVariable()))
   }
 
   @Singleton
@@ -46,24 +47,27 @@ object AppModule {
 
   @Singleton
   @Provides
-  fun provideS3Client(region: String, httpClient: SdkHttpClient): S3Client {
+  fun provideS3Client(region: Region, httpClient: SdkHttpClient): S3Client {
     return S3Client.builder()
       .httpClient(httpClient)
       .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
-      .region(Region.of(region))
-      .overrideConfiguration(ClientOverrideConfiguration.builder().build())
+      .region(region)
+      .overrideConfiguration(ClientOverrideConfiguration.builder()
+        .addExecutionInterceptor(TracingInterceptor())
+        .build())
       .endpointOverride(URI("https://s3.$region.amazonaws.com"))
       .build()
   }
 
   @Singleton
   @Provides
-  fun provideDynamoDbClient(region: String, httpClient: SdkHttpClient): DynamoDbClient {
+  fun provideDynamoDbClient(region: Region, httpClient: SdkHttpClient): DynamoDbClient {
     return DynamoDbClient.builder()
       .httpClient(httpClient)
       .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
-      .region(Region.of(region))
-      .overrideConfiguration(ClientOverrideConfiguration.builder().build())
+      .region(region)
+      .overrideConfiguration(ClientOverrideConfiguration.builder()
+        .addExecutionInterceptor(TracingInterceptor()).build())
       .endpointOverride(URI("https://dynamodb.$region.amazonaws.com"))
       .build()
   }

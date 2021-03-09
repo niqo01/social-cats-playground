@@ -60,6 +60,11 @@ dependencies {
 
   implementation("software.amazon.awssdk:url-connection-client")
 
+  implementation(platform("com.amazonaws:aws-xray-recorder-sdk-bom:_"))
+  implementation("com.amazonaws:aws-xray-recorder-sdk-core")
+  implementation("com.amazonaws:aws-xray-recorder-sdk-aws-sdk-core")
+  implementation("com.amazonaws:aws-xray-recorder-sdk-aws-sdk-v2")
+
   implementation("org.apache.logging.log4j:log4j-api:_")
   implementation("org.apache.logging.log4j:log4j-core:_")
   implementation("io.github.microutils:kotlin-logging-jvm:_")

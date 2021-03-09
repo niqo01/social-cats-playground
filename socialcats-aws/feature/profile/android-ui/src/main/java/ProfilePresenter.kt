@@ -44,7 +44,8 @@ public class ProfilePresenter @Inject constructor(
   init {
     viewModelScope.launch {
       auth.authStates.collect {
-        _models.value = _models.value.copy(showUpload = it is AuthState.SignedIn)
+        val authUserId = if (it is AuthState.SignedIn) it.userId else ""
+        _models.value = _models.value.copy(showUpload = it is AuthState.SignedIn, authId = authUserId)
         signedUser = if (it is AuthState.SignedIn) it else null
       }
     }
@@ -111,6 +112,7 @@ public class ProfilePresenter @Inject constructor(
   public data class Model(
     val isLoading: Boolean = true,
     val showUpload: Boolean = false,
+    val authId: String = "",
     val userId: String = "",
     val name: TextResource? = null,
     val userPhoto: String? = null

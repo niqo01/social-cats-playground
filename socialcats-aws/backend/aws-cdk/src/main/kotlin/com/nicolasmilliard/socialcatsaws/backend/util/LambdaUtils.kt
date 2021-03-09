@@ -7,6 +7,8 @@ import software.amazon.awscdk.core.Stack
 import software.amazon.awscdk.services.iam.AccountPrincipal
 import software.amazon.awscdk.services.iam.AnyPrincipal
 import software.amazon.awscdk.services.iam.Effect
+import software.amazon.awscdk.services.iam.IManagedPolicy
+import software.amazon.awscdk.services.iam.ManagedPolicy
 import software.amazon.awscdk.services.iam.PolicyStatement
 import software.amazon.awscdk.services.lambda.Code
 import software.amazon.awscdk.services.lambda.FunctionProps
@@ -19,13 +21,8 @@ import software.amazon.awscdk.services.sqs.IQueue
 import software.amazon.awscdk.services.sqs.Queue
 import software.amazon.awscdk.services.sqs.QueueEncryption
 
-fun getLambdaInsightPolicy(): PolicyStatement {
-  return PolicyStatement.Builder.create().effect(Effect.ALLOW).actions(
-    listOf(
-      "logs:CreateLogStream",
-      "logs:PutLogEvents"
-    )
-  ).resources(listOf("arn:aws:logs:*:*:log-group:/aws/lambda-insights:*")).build()
+fun getLambdaInsightPolicy(): IManagedPolicy {
+  return ManagedPolicy.fromAwsManagedPolicyName("CloudWatchLambdaInsightsExecutionRolePolicy")
 }
 
 private fun getCloudWatchLambdaInsightLayerVersion(construct: Construct, region: String, layerId: String): ILayerVersion {
@@ -46,7 +43,8 @@ fun buildLambdaProps(
   layerId: String,
   env: Map<String, String> = emptyMap(),
   onSuccess: IDestination? = null,
-  onFailure: IDestination? = null
+  onFailure: IDestination? = null,
+  timeout: Duration = Duration.seconds(30)
 ): FunctionProps {
   val layerVersion =
     getCloudWatchLambdaInsightLayerVersion(construct, region, layerId)
@@ -55,7 +53,7 @@ fun buildLambdaProps(
     .handler(handler)
     .description(description)
     .runtime(Runtime.JAVA_11)
-    .timeout(Duration.seconds(30))
+    .timeout(timeout)
     .memorySize(512)
     .layers(listOf(layerVersion))
     .environment(env)
@@ -77,6 +75,12 @@ fun buildDeadLetterQueue(construct: Construct, id: String): IQueue {
     .retentionPeriod(Duration.days(14))
     .build()
 
+  applySecureQueuePolicy(construct, queue)
+
+  return queue
+}
+
+fun applySecureQueuePolicy(construct: Construct, queue: Queue) {
   queue.addToResourcePolicy(
     PolicyStatement.Builder.create()
       .sid("QueueOwnerOnlyAccess")
@@ -107,6 +111,4 @@ fun buildDeadLetterQueue(construct: Construct, id: String): IQueue {
       .conditions(mapOf("Bool" to mapOf("aws:SecureTransport" to false)))
       .build()
   )
-
-  return queue
 }

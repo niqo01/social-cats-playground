@@ -23,13 +23,13 @@ object Config {
             const val major = 0
             const val minor = 0
             const val patch = 1
-            const val build = 0
+            const val build = 2
 
             const val name = "$major.$minor.$patch"
             const val fullName = "$name.$build"
             const val code = major * 1000000 + minor * 10000 + patch * 100 + build
         }
 
-        const val composeVersion = "1.0.0-beta03"
+        const val composeVersion = "1.0.0-beta05"
     }
 }

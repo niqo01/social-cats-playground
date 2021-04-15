@@ -20,15 +20,15 @@ android {
     }
     create("upload") {
       storeFile = file("upload.jks")
-      storePassword = System.getenv("socialcats.upload.password")
+      storePassword = "mnicolas"
       keyAlias = "upload"
-      keyPassword = System.getenv("socialcats.upload.key.password")
+      keyPassword = "mnicolas"
     }
   }
 
   buildTypes {
     getByName("debug") {
-      minifyEnabled(false)
+      // minifyEnabled(false)
       applicationIdSuffix = ".debug"
       signingConfig = signingConfigs.getByName("debug")
     }
@@ -39,7 +39,7 @@ android {
       } else {
         signingConfigs.getByName("debug")
       }
-      minifyEnabled(true)
+      // minifyEnabled(true)
       proguardFiles("shrinker-rules.pro")
     }
   }
@@ -81,14 +81,14 @@ dependencies {
   implementation("androidx.compose.ui:ui-tooling:_")
   implementation("androidx.navigation:navigation-compose:_")
   implementation("androidx.navigation:navigation-runtime-ktx:_")
-  implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha02")
+  implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha04")
   implementation("androidx.activity:activity-compose:_")
 
   implementation("com.google.dagger:hilt-android:_")
   kapt("com.google.dagger:hilt-android-compiler:_")
   implementation("androidx.hilt:hilt-lifecycle-viewmodel:_")
   kapt("androidx.hilt:hilt-compiler:_")
-  implementation("androidx.hilt:hilt-navigation:_")
+  implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha01")
 
   implementation("com.amplifyframework:core:_")
   implementation("androidx.work:work-runtime-ktx:_")

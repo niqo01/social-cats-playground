@@ -31,7 +31,6 @@ subprojects {
     repositories {
         google()
         mavenCentral()
-        maven(url = "https://kotlin.bintray.com/kotlinx/")
         maven(url = "https://jitpack.io")
         maven(url = "https://s3-us-west-2.amazonaws.com/dynamodb-local/release")
     }
@@ -98,9 +97,6 @@ fun Project.setKotlinCompileTarget() {
             if (!this@setKotlinCompileTarget.isApplication()) {
                 freeCompilerArgs += "-Xexplicit-api=strict"
             }
-            freeCompilerArgs += listOf(
-                "-P", "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
-            )
             useIR = true
         }
     }

@@ -8,6 +8,7 @@ import software.amazon.awscdk.core.CfnOutput
 import software.amazon.awscdk.core.CfnOutputProps
 import software.amazon.awscdk.core.Construct
 import software.amazon.awscdk.core.RemovalPolicy
+import software.amazon.awscdk.core.Tags
 import software.amazon.awscdk.services.dynamodb.Attribute
 import software.amazon.awscdk.services.dynamodb.AttributeType
 import software.amazon.awscdk.services.dynamodb.BillingMode
@@ -35,6 +36,8 @@ class UserRepository(
 
   init {
     dynamodbTable = createDynamoTable(isProd)
+
+    Tags.of(dynamodbTable).add("Name", dynamodbTable.tableName)
 
     val dlq = buildDeadLetterQueue(this, "DLQ")
 

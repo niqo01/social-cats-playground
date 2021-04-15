@@ -4,11 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.FragmentActivity
-import androidx.hilt.navigation.HiltViewModelFactory
+import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -21,6 +19,8 @@ import androidx.navigation.compose.rememberNavController
 import com.nicolasmilliard.activityresult.ActivityResultFlow
 import com.nicolasmilliard.activityresult.Event
 import com.nicolasmilliard.socialcatsaws.auth.Auth
+import com.nicolasmilliard.socialcatsaws.billing.BillingRepository
+import com.nicolasmilliard.socialcatsaws.billing.BillingRepository.LaunchBillingFlowResult
 import com.nicolasmilliard.socialcatsaws.home.Home
 import com.nicolasmilliard.socialcatsaws.home.HomePresenter
 import com.nicolasmilliard.socialcatsaws.imageupload.ImageUploadNav
@@ -43,6 +43,9 @@ class MainActivity : FragmentActivity() {
 
   @Inject
   lateinit var activityResultFlow: ActivityResultFlow
+
+  @Inject
+  lateinit var billingRepository: BillingRepository
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -73,13 +76,8 @@ class MainActivity : FragmentActivity() {
 
   fun NavGraphBuilder.home(navController: NavHostController) {
     navigation(startDestination = "nestedHome", route = "home") {
-      composable("nestedHome") { backStackEntry ->
-        val presenter: HomePresenter = viewModel(
-          factory = HiltViewModelFactory(
-            LocalContext.current,
-            backStackEntry
-          )
-        )
+      composable("nestedHome") {
+        val presenter: HomePresenter = hiltNavGraphViewModel()
         presenter.setLauncher(object : HomePresenter.Launcher {
           override fun signIn(): Boolean {
             val scope = lifecycleScope
@@ -104,12 +102,7 @@ class MainActivity : FragmentActivity() {
       "profile/{userId}",
       arguments = listOf(navArgument("userId") { type = NavType.StringType })
     ) { backStackEntry ->
-      val presenter: ProfilePresenter = viewModel(
-        factory = HiltViewModelFactory(
-          LocalContext.current,
-          backStackEntry
-        )
-      )
+      val presenter: ProfilePresenter = hiltNavGraphViewModel()
       presenter.setLauncher(object : ProfilePresenter.Launcher {
         override fun onNavUp(): Boolean {
           navController.navigateUp()
@@ -119,6 +112,10 @@ class MainActivity : FragmentActivity() {
         override fun onUpload(): Boolean {
           imageUploadNav.startPickerFlow(this@MainActivity)
           return true
+        }
+
+        override suspend fun launchBillingFlow(originalJson: String): LaunchBillingFlowResult {
+          return billingRepository.launchBillingFlow(this@MainActivity, originalJson)
         }
       })
 

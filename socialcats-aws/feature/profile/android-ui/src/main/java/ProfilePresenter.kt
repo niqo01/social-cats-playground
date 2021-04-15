@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.nicolasmilliard.activityresult.ActivityResultFlow
 import com.nicolasmilliard.socialcatsaws.auth.Auth
 import com.nicolasmilliard.socialcatsaws.auth.AuthState
+import com.nicolasmilliard.socialcatsaws.billing.BillingRepository
+import com.nicolasmilliard.socialcatsaws.billing.BillingRepository.LaunchBillingFlowResult
 import com.nicolasmilliard.socialcatsaws.imageupload.ImageUploadNav
 import com.nicolasmilliard.socialcatsaws.imageupload.ImageUploadService
 import com.nicolasmilliard.textresource.TextResource
@@ -29,6 +31,7 @@ public class ProfilePresenter @Inject constructor(
   private val activityResultFlow: ActivityResultFlow,
   private val imageUploadNav: ImageUploadNav,
   private val imageUploadService: ImageUploadService,
+  private val billingRepository: BillingRepository,
 ) : ViewModel() {
   private val _models = MutableStateFlow(Model())
   public val models: StateFlow<Model> get() = _models
@@ -59,6 +62,16 @@ public class ProfilePresenter @Inject constructor(
         }
       }
     }
+
+    viewModelScope.launch {
+      when(val result = billingRepository.querySubscriptionsDetails()){
+        BillingRepository.QuerySkuDetailsResult.BillingError -> TODO()
+        BillingRepository.QuerySkuDetailsResult.BillingUnavailable -> TODO()
+        BillingRepository.QuerySkuDetailsResult.BillingUnsupported -> TODO()
+        is BillingRepository.QuerySkuDetailsResult.Success -> _models.value = _models.value.copy(subscriptions = result.skuDetails)
+      }
+    }
+
     viewModelScope.launch {
       _events.consumeEach {
         when (it) {
@@ -68,6 +81,8 @@ public class ProfilePresenter @Inject constructor(
           Event.Retry -> TODO()
           Event.OnUpload -> launcher!!.onUpload()
           is Event.OnImageSelected -> uploadImage(it.imagePath)
+          is Event.OnSubscriptionSelected-> launcher!!.launchBillingFlow(it.subscription.originalJson)
+          Event.OnPremiumCancel -> TODO()
         }
       }
     }
@@ -106,20 +121,25 @@ public class ProfilePresenter @Inject constructor(
     public object OnNavUp : Event()
     public data class OnImageSelected(val imagePath: String) : Event()
     public object OnUpload : Event()
+    public data class OnSubscriptionSelected(val subscription: BillingRepository.Subscription) : Event()
+    public object OnPremiumCancel : Event()
     public object Retry : Event()
   }
 
   public data class Model(
     val isLoading: Boolean = true,
     val showUpload: Boolean = false,
+    val isPremium: Boolean = false,
     val authId: String = "",
     val userId: String = "",
     val name: TextResource? = null,
-    val userPhoto: String? = null
+    val userPhoto: String? = null,
+    val subscriptions: List<BillingRepository.Subscription> = emptyList()
   )
 
   public interface Launcher {
     public fun onNavUp(): Boolean
     public fun onUpload(): Boolean
+    public suspend fun launchBillingFlow(originalJson: String): LaunchBillingFlowResult
   }
 }

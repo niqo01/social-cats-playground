@@ -16,6 +16,7 @@ android {
 
 dependencies {
   api(project(":feature:auth:android"))
+  api(project(":feature:billing:android"))
   api(project(":feature:image-processing:android"))
   api(project(":library:android-activity-result"))
   api(project(":library:android-text-resource"))

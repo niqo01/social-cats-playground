@@ -1,0 +1,13 @@
+[versions]
+kotlin = "1.5.21"
+cdk = "2.0.0-rc.17"
+junit = "5.7.2"
+assertj = "3.20.2"
+
+[libraries]
+kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
+kotlin-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
+aws-cdk = { module = "software.amazon.awscdk:aws-cdk-lib", version.ref = "cdk" }
+junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit"}
+junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit"}
+assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj"}

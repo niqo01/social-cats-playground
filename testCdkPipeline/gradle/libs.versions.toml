@@ -1,0 +1,8 @@
+[versions]
+kotlin = "1.5.21"
+cdk = "2.0.0-rc.17"
+
+[libraries]
+kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
+kotlin-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8"}
+aws-cdk = { module = "software.amazon.awscdk:aws-cdk-lib", version.ref = "cdk" }

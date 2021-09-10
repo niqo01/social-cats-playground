@@ -1,23 +1,24 @@
 package com.nicolasmilliard.testcdkpipeline
 
-import software.amazon.awscdk.*
+import software.amazon.awscdk.Environment
+import software.amazon.awscdk.Stack
+import software.amazon.awscdk.StackProps
+import software.amazon.awscdk.StageProps
 import software.amazon.awscdk.pipelines.*
-import software.amazon.awscdk.services.codepipeline.Artifact
-import software.amazon.awscdk.services.codepipeline.Pipeline
-import software.amazon.awscdk.services.dynamodb.BillingMode
-import software.amazon.awscdk.services.dynamodb.Table
-import software.amazon.awscdk.services.dynamodb.TableProps
+import software.amazon.awscdk.services.codebuild.BuildSpec
 import software.amazon.awscdk.services.iam.Effect
 import software.amazon.awscdk.services.iam.PolicyStatement
 import software.constructs.Construct
+import java.util.*
 
-class PipelineStack(scope: Construct, id: String, props: StackProps) : Stack(scope, id, props) {
+class PipelineStack(scope: Construct, id: String, props: StackProps, lambdaArtifacts: Properties) :
+    Stack(scope, id, props) {
 
     init {
 
         val githubConnection = CodePipelineSource.connection(
             "niqo01/social-cats-playground",
-            "nm/testCdkPipeline",
+            "release/pipeline",
             ConnectionSourceOptions.Builder()
                 .connectionArn("arn:aws:codestar-connections:us-east-1:480917579245:connection/11bca31c-2fcc-44c9-89b8-3a9e9c2f8df7")
                 .triggerOnPush(true)
@@ -30,7 +31,8 @@ class PipelineStack(scope: Construct, id: String, props: StackProps) : Stack(sco
                     .input(githubConnection)
                     .installCommands(
                         listOf(
-                            "npm install -g aws-cdk@2.0.0-rc.17 cdk-assume-role-credential-plugin@1.4.0"
+                            "npm install -g aws-cdk@2.0.0-rc.23 cdk-assume-role-credential-plugin@1.4.0",
+                            "export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain test-domain --domain-owner 480917579245 --query authorizationToken --output text`"
                         )
                     )
                     .commands(
@@ -45,6 +47,27 @@ class PipelineStack(scope: Construct, id: String, props: StackProps) : Stack(sco
                                 .effect(Effect.ALLOW)
                                 .actions(listOf("sts:AssumeRole"))
                                 .resources(listOf("arn:aws:iam::*:role/cdk-readOnlyRole"))
+                                .build(),
+                            PolicyStatement.Builder.create()
+                                .effect(Effect.ALLOW)
+                                .actions(
+                                    listOf(
+                                        "codeartifact:GetAuthorizationToken",
+                                        "codeartifact:GetRepositoryEndpoint",
+                                        "codeartifact:ReadFromRepository"
+                                    )
+                                )
+                                .resources(listOf("*"))
+                                .build(),
+                            PolicyStatement.Builder.create()
+                                .effect(Effect.ALLOW)
+                                .actions(
+                                    listOf(
+                                        "sts:GetServiceBearerToken"
+                                    )
+                                )
+                                .resources(listOf("*"))
+                                .conditions(mapOf("StringEquals" to mapOf("sts:AWSServiceName" to "codeartifact.amazonaws.com")))
                                 .build()
                         )
                     )
@@ -61,19 +84,35 @@ class PipelineStack(scope: Construct, id: String, props: StackProps) : Stack(sco
                         .region("us-east-1")
                         .build()
                 )
-                .build()
+                .build(),
+            "preprod",
+            false,
+            lambdaArtifacts
         )
         val preProdStageDeployment = pipeline.addStage(preProdStage)
 
         // Integration tests
         preProdStageDeployment.addPost(
             CodeBuildStep.Builder.create("IntegrationTestStep")
-                .envFromCfnOutputs(mapOf("TABLE_NAME" to preProdStage.tableName))
+                .envFromCfnOutputs(mapOf("API_URL" to preProdStage.apiUrlOutput))
                 .input(githubConnection)
                 .commands(
                     listOf(
                         "cd testCdkPipeline",
-                        "./gradlew :infra:integration-tests:run"
+                        "./gradlew :infra:integration-tests:test"
+                    )
+                )
+                .partialBuildSpec(
+                    BuildSpec.fromObject(
+                        mapOf(
+                            "reports" to mapOf(
+                                "testReport" to mapOf(
+                                    "files" to "**/*",
+                                    "base-directory" to "testCdkPipeline/infra/integration-tests/build/test-results/test",
+                                    "file-format" to "JUNITXML"
+                                )
+                            )
+                        )
                     )
                 )
                 .build()
@@ -88,7 +127,10 @@ class PipelineStack(scope: Construct, id: String, props: StackProps) : Stack(sco
                             .region("us-east-1")
                             .build()
                     )
-                    .build()
+                    .build(),
+                "prod",
+                true,
+                lambdaArtifacts
             )
         )
 
@@ -99,13 +141,3 @@ class PipelineStack(scope: Construct, id: String, props: StackProps) : Stack(sco
         )
     }
 }
-
-class AppStage(scope: Construct, id: String, props: StageProps) : Stage(scope, id, props) {
-    val tableName: CfnOutput
-
-    init {
-        val dbStack = DbStack(this, "DbStack")
-        tableName = dbStack.tableName
-    }
-}
-

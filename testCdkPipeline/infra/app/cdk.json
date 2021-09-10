@@ -1,5 +1,5 @@
 {
-  "app": "../../gradlew :infra:app:clean :infra:app:run",
+  "app": "../../gradlew :infra:app:clean :infra:app:build :infra:app:run",
   "plugin": ["cdk-assume-role-credential-plugin"],
   "context": {
     "@aws-cdk/aws-apigateway:usagePlanKeyOrderInsensitiveId": true,

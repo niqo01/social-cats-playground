@@ -55,7 +55,7 @@ dependencies {
   implementation("com.google.dagger:dagger:_")
   kapt("com.google.dagger:dagger-compiler:_")
 
-  api(platform("software.amazon.awssdk:bom:_"))
+  implementation(platform("software.amazon.awssdk:bom:_"))
   implementation("software.amazon.awssdk:lambda")
 
   implementation("com.amazonaws:aws-lambda-java-core:_")
@@ -74,6 +74,7 @@ dependencies {
 
   runtimeOnly("org.apache.logging.log4j:log4j-slf4j18-impl:_")
   runtimeOnly("com.amazonaws:aws-lambda-java-log4j2:_")
+
   testImplementation("org.junit.jupiter:junit-jupiter-api:_")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:_")
 }

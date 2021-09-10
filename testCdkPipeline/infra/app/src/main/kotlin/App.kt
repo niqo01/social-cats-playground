@@ -1,23 +1,21 @@
 package com.nicolasmilliard.testcdkpipeline
 
 import software.amazon.awscdk.App
-import software.amazon.awscdk.Environment
-import software.amazon.awscdk.StackProps
+import java.io.File
+import java.io.FileInputStream
+import java.util.*
 
-
-fun main() {
+fun main(args: Array<String>) {
     val app = App()
 
-    PipelineStack(
-        app, "PipelineStack", StackProps.builder()
-            .env(
-                Environment.builder()
-                    .account("480917579245")
-                    .region("us-east-1")
-                    .build()
-            )
-            .build()
-    )
+    val lambdaFile= args[0]
+
+    val lambdaArtifacts = Properties()
+    FileInputStream(File(lambdaFile)).use { lambdaArtifacts.load(it) }
+
+//    app.setupStacks("test", false, lambdaArtifacts)
+    app.setupPipeline(lambdaArtifacts)
 
     app.synth()
 }
+

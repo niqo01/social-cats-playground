@@ -5,10 +5,7 @@ rootProject.name = "test-cdk-pipeline"
 include(":infra:app")
 include(":infra:initial-setup")
 include(":infra:integration-tests")
+include(":infra:lambda-java-tiered-compilation")
 
-pluginManagement {
-    plugins {
-        id("org.jetbrains.kotlin.jvm") version "1.5.21"
-    }
-}
+include(":app:api")
 

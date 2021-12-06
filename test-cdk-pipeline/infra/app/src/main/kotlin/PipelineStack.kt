@@ -25,13 +25,15 @@ class PipelineStack(scope: Construct, id: String, props: StackProps, lambdaArtif
                 .build()
         )
 
+        val cliVersion = "2.0.0"
         val pipeline = CodePipeline.Builder.create(this, "Pipeline")
+            .cliVersion(cliVersion)
             .synth(
                 CodeBuildStep.Builder.create("BuildStep")
                     .input(githubConnection)
                     .installCommands(
                         listOf(
-                            "npm install -g aws-cdk@2.0.0-rc.23 cdk-assume-role-credential-plugin@1.4.0",
+                            "npm install -g aws-cdk@$cliVersion cdk-assume-role-credential-plugin@1.4.0",
                             "export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain test-domain --domain-owner 480917579245 --query authorizationToken --output text`"
                         )
                     )

@@ -1,9 +1,9 @@
 [versions]
-kotlin = "1.6.0"
-awscdk = "2.0.0-rc.23"
-awssdk = "2.17.95"
-awspowertools = "1.8.0"
-log4j = "2.14.1"
+kotlin = "1.6.10"
+awscdk = "2.4.0"
+awssdk = "2.17.106"
+awspowertools = "1.10.1"
+log4j = "2.17.1"
 retrofit = "2.9.0"
 tempest2 = "1.5.2"
 
@@ -11,10 +11,10 @@ tempest2 = "1.5.2"
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
 kotlin-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
-kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version = "1.5.2" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.3.1" }
+kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version = "1.6.0" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.3.2" }
 aws-cdk = { module = "software.amazon.awscdk:aws-cdk-lib", version.ref = "awscdk" }
-assertj-core = { module = "org.assertj:assertj-core", version = "3.21.0" }
+assertj-core = { module = "org.assertj:assertj-core", version = "3.22.0" }
 aws-sdk-bom = { module = "software.amazon.awssdk:bom", version.ref = "awssdk" }
 aws-sdk-dynamodb-client = { module = "software.amazon.awssdk:dynamodb" }
 aws-sdk-dynamodb-enhanced = { module = "software.amazon.awssdk:dynamodb-enhanced" }
@@ -26,7 +26,7 @@ tempest2-testing-junit5 = { module = "app.cash.tempest:tempest2-testing-junit5",
 
 aws-lambda-java-core = { module = "com.amazonaws:aws-lambda-java-core", version = "1.2.1" }
 aws-lambda-java-events = { module = "com.amazonaws:aws-lambda-java-events", version = "3.11.0" }
-aws-lambda-java-log4j2 = { module = "com.amazonaws:aws-lambda-java-log4j2", version = "1.2.0" }
+aws-lambda-java-log4j2 = { module = "com.amazonaws:aws-lambda-java-log4j2", version = "1.5.1" }
 aws-lambda-java-tests = { module = "com.amazonaws:aws-lambda-java-tests", version = "1.1.1" }
 aws-lambda-powertools-tracing = { module = "software.amazon.lambda:powertools-tracing", version.ref = "awspowertools" }
 aws-lambda-powertools-logging = { module = "software.amazon.lambda:powertools-logging", version.ref = "awspowertools" }
@@ -35,7 +35,7 @@ aws-lambda-powertools-metrics = { module = "software.amazon.lambda:powertools-me
 log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
 log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 log4j-slf4j18-impl = { module = "org.apache.logging.log4j:log4j-slf4j18-impl", version.ref = "log4j" }
-kotlin-logging-jvm = { module = "io.github.microutils:kotlin-logging-jvm", version = "2.1.0" }
+kotlin-logging-jvm = { module = "io.github.microutils:kotlin-logging-jvm", version = "2.1.21" }
 
 aws-xray-bom = { module = "com.amazonaws:aws-xray-recorder-sdk-bom", version = "2.10.0" }
 aws-xray-recordercore = { module = "com.amazonaws:aws-xray-recorder-sdk-core" }
@@ -55,7 +55,7 @@ okio = { module = "com.squareup.okio:okio", version = "3.0.0" }
 [plugins]
 kotlinjvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinserialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-shadow = { id = "com.github.johnrengelman.shadow", version = "7.1.0" }
+shadow = { id = "com.github.johnrengelman.shadow", version = "7.1.2" }
 aspecjt = { id = "io.freefair.aspectj.post-compile-weaving", version = "6.3.0" }
-bencheck = { id = "com.github.ben-manes.versions", version = "0.39.0" }
+bencheck = { id = "com.github.ben-manes.versions", version = "0.41.0" }
 taskinfo = { id = "org.barfuin.gradle.taskinfo", version = "1.3.0" }

@@ -25,7 +25,7 @@ class PipelineStack(scope: Construct, id: String, props: StackProps, lambdaArtif
                 .build()
         )
 
-        val cliVersion = "2.0.0"
+        val cliVersion = "2.4.0"
         val pipeline = CodePipeline.Builder.create(this, "Pipeline")
             .cliVersion(cliVersion)
             .synth(
@@ -33,16 +33,16 @@ class PipelineStack(scope: Construct, id: String, props: StackProps, lambdaArtif
                     .input(githubConnection)
                     .installCommands(
                         listOf(
-                            "npm install -g aws-cdk@$cliVersion cdk-assume-role-credential-plugin@1.4.0",
+                            "npm install -g aws-cdk@$cliVersion",
                             "export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain test-domain --domain-owner 480917579245 --query authorizationToken --output text`"
                         )
                     )
                     .commands(
                         listOf(
-                            "cd ./testCdkPipeline/infra/app && npx cdk synth"
+                            "cd \$CODEBUILD_SRC_DIR/test-cdk-pipeline/infra/app && npx cdk synth"
                         )
                     )
-                    .primaryOutputDirectory("./testCdkPipeline/infra/app/cdk.out")
+                    .primaryOutputDirectory("\$CODEBUILD_SRC_DIR/test-cdk-pipeline/infra/app/cdk.out")
                     .rolePolicyStatements(
                         listOf(
                             PolicyStatement.Builder.create()
@@ -92,15 +92,34 @@ class PipelineStack(scope: Construct, id: String, props: StackProps, lambdaArtif
             lambdaArtifacts
         )
         val preProdStageDeployment = pipeline.addStage(preProdStage)
+//        ,AddStageOpts.builder()
+//                .stackSteps(
+//                    listOf(
+//                        StackSteps.builder()
+//                            .stack(preProdStage.result.dbStack)
+//                            .changeSet(listOf(ManualApprovalStep.Builder.create("DB stack ChangeSet Approval").build()))
+//                            .build(),
+//                        StackSteps.builder()
+//                            .stack(preProdStage.result.apiStack)
+//                            .changeSet(
+//                                listOf(
+//                                    ManualApprovalStep.Builder.create("API stack ChangeSet Approval").build()
+//                                )
+//                            )
+//                            .build()
+//                    )
+//                )
+//                .build()
+//        )
 
         // Integration tests
         preProdStageDeployment.addPost(
             CodeBuildStep.Builder.create("IntegrationTestStep")
-                .envFromCfnOutputs(mapOf("API_URL" to preProdStage.apiUrlOutput))
+                .envFromCfnOutputs(mapOf("API_URL" to preProdStage.result.apiUrlOutput))
                 .input(githubConnection)
                 .commands(
                     listOf(
-                        "cd testCdkPipeline",
+                        "cd \$CODEBUILD_SRC_DIR/test-cdk-pipeline",
                         "./gradlew :infra:integration-tests:test"
                     )
                 )
@@ -110,7 +129,7 @@ class PipelineStack(scope: Construct, id: String, props: StackProps, lambdaArtif
                             "reports" to mapOf(
                                 "testReport" to mapOf(
                                     "files" to "**/*",
-                                    "base-directory" to "testCdkPipeline/infra/integration-tests/build/test-results/test",
+                                    "base-directory" to "\$CODEBUILD_SRC_DIR/test-cdk-pipeline/infra/integration-tests/build/test-results/test",
                                     "file-format" to "JUNITXML"
                                 )
                             )
@@ -120,23 +139,42 @@ class PipelineStack(scope: Construct, id: String, props: StackProps, lambdaArtif
                 .build()
         )
 
-        val prodStage = pipeline.addStage(
-            AppStage(
-                this, "Prod", StageProps.builder()
-                    .env(
-                        Environment.builder()
-                            .account("275972720939")
-                            .region("us-east-1")
-                            .build()
-                    )
-                    .build(),
-                "prod",
-                true,
-                lambdaArtifacts
-            )
+        val prodStage = AppStage(
+            this, "Prod", StageProps.builder()
+                .env(
+                    Environment.builder()
+                        .account("275972720939")
+                        .region("us-east-1")
+                        .build()
+                )
+                .build(),
+            "prod",
+            true,
+            lambdaArtifacts
         )
 
-        prodStage.addPre(
+        val prodStageDeployment = pipeline.addStage(
+            prodStage, AddStageOpts.builder()
+                .stackSteps(
+                    listOf(
+                        StackSteps.builder()
+                            .stack(prodStage.result.dbStack)
+                            .changeSet(listOf(ManualApprovalStep.Builder.create("DB stack ChangeSet Approval").build()))
+                            .build(),
+                        StackSteps.builder()
+                            .stack(prodStage.result.apiStack)
+                            .changeSet(
+                                listOf(
+                                    ManualApprovalStep.Builder.create("API stack ChangeSet Approval").build()
+                                )
+                            )
+                            .build()
+                    )
+                )
+                .build()
+        )
+
+        prodStageDeployment.addPre(
             ManualApprovalStep.Builder.create("PromoteToProd")
                 .comment("Promote to Prod?")
                 .build()

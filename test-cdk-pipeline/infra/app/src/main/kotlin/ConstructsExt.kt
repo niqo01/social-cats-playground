@@ -8,7 +8,7 @@ import software.amazon.awscdk.services.dynamodb.Table
 import software.constructs.Construct
 import java.util.*
 
-fun Construct.setupStacks(envName: String, isProd: Boolean, lambdaArtifacts: Properties): Output {
+fun Construct.setupStacks(envName: String, isProd: Boolean, lambdaArtifacts: Properties): SetupTasksResult {
     val dbStack = DbStack(
         this, "DbStack", object : DbStackProps {
             override val removalPolicy: RemovalPolicy
@@ -50,8 +50,14 @@ fun Construct.setupStacks(envName: String, isProd: Boolean, lambdaArtifacts: Pro
         }
     })
 
-    return Output(apiStack.apiUrlOutput)
+    return SetupTasksResult(dbStack, apiStack, apiStack.apiUrlOutput)
 }
+
+data class SetupTasksResult(
+    val dbStack: DbStack,
+    val apiStack: ApiStack,
+    val apiUrlOutput: CfnOutput
+)
 
 fun Construct.setupPipeline(lambdaArtifacts: Properties) {
     PipelineStack(
@@ -66,7 +72,3 @@ fun Construct.setupPipeline(lambdaArtifacts: Properties) {
         lambdaArtifacts
     )
 }
-
-data class Output(
-    val apiUrlOutput: CfnOutput
-)

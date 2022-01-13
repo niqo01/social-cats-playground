@@ -3,19 +3,23 @@ package com.nicolasmilliard.testcdkpipeline
 import app.cash.tempest2.testing.JvmDynamoDbServer
 import app.cash.tempest2.testing.TestDynamoDb
 import app.cash.tempest2.testing.TestTable
+import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
+import aws.sdk.kotlin.runtime.endpoint.AwsEndpoint
+import aws.sdk.kotlin.runtime.endpoint.AwsEndpointResolver
+import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import com.amazonaws.services.lambda.runtime.tests.EventLoader
-import com.amazonaws.xray.AWSXRay
+import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import software.amazon.cloudwatchlogs.emf.logger.MetricsLogger
 import software.amazon.lambda.powertools.metrics.MetricsUtils
+
+const val PORT = 6001
+const val TABLE_NAME = "test_items"
 
 class GetDataTest {
 
@@ -24,15 +28,25 @@ class GetDataTest {
     val db = testDb()
 
     @Test
-    fun test() {
+    fun test() = runTest {
         val event = EventLoader.loadApiGatewayRestEvent("apigw_rest_event.json")
         val getData = GetData(object : AppComponent {
             override val metricsLogger: MetricsLogger
                 get() = MetricsUtils.metricsLogger()
             override val tableName: String
-                get() = "test_items"
+                get() = TABLE_NAME
 
-            override fun getDynamoDbClient(): DynamoDbClient = db.dynamoDb
+            override fun getDynamoDbClient(): DynamoDbClient {
+                return DynamoDbClient {
+                    credentialsProvider = StaticCredentialsProvider {
+                        accessKeyId = "key"
+                        secretAccessKey = "secret"
+                    }
+                    region = "us-west-2"
+                    endpointResolver = AwsEndpointResolver { service, region -> AwsEndpoint("http://localhost:$PORT") }
+                }
+
+            }
         })
 
         val response = getData.handleRequest(event, FakeContext())
@@ -43,7 +57,8 @@ class GetDataTest {
 }
 
 fun testDb() = TestDynamoDb.Builder(JvmDynamoDbServer.Factory)
-    .addTable(TestTable.create<TestItem>("test_items"))
+    .addTable(TestTable.create<TestItem>(TABLE_NAME))
+    .port(PORT)
     .build()
 
 

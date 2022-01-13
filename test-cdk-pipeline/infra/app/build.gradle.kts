@@ -20,7 +20,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions.jvmTarget = kotlinJvmTarget
 }
 
-val lambdaConf by configurations.creating {
+val lambdaConf: Configuration by configurations.creating {
 }
 
 dependencies {
@@ -37,7 +37,7 @@ dependencies {
     lambdaConf(
         group = "com.nicolasmilliard.testcdkpipeline",
         name = "get-data-lambda",
-        version = "0.0.18",
+        version = "0.0.19",
         classifier = "all"
     )
 
@@ -54,7 +54,7 @@ tasks.test {
 
 tasks.register("generateLambdaProperties") {
     doLast {
-        val f = File("$buildDir/lambdas.properties")
+        File("$buildDir/lambdas.properties")
             .printWriter().use { out ->
                 lambdaConf.dependencies.forEach {
                     val files = lambdaConf.files(it)

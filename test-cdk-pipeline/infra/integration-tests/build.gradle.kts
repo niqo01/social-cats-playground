@@ -18,7 +18,7 @@ tasks.test {
 dependencies {
     implementation(platform(libs.kotlin.bom))
     implementation(libs.kotlin.jdk8)
-    implementation(libs.kotlin.coroutines)
+    implementation(libs.kotlin.coroutines.jvm)
     testImplementation(libs.retrofit)
     testImplementation(libs.retrofit.scalar.converter)
     testImplementation(libs.okhttp.curl)

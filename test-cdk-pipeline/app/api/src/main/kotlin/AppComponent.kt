@@ -1,15 +1,11 @@
 package com.nicolasmilliard.testcdkpipeline
 
-import com.amazonaws.xray.interceptors.TracingInterceptor
-import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider
-import software.amazon.awssdk.core.SdkSystemSetting
-import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration
-import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient
-import software.amazon.awssdk.regions.Region
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient
+import aws.sdk.kotlin.runtime.auth.credentials.EnvironmentCredentialsProvider
+import aws.sdk.kotlin.runtime.endpoint.AwsEndpoint
+import aws.sdk.kotlin.runtime.endpoint.AwsEndpointResolver
+import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import software.amazon.cloudwatchlogs.emf.logger.MetricsLogger
 import software.amazon.lambda.powertools.metrics.MetricsUtils
-import java.net.URI
 
 interface AppComponent {
     val metricsLogger: MetricsLogger
@@ -21,17 +17,10 @@ class ProdAppComponent: AppComponent {
     override val tableName = System.getenv("DDB_TABLE_NAME")
 
     override fun getDynamoDbClient(): DynamoDbClient {
-        val region = Region.of(System.getenv(SdkSystemSetting.AWS_REGION.environmentVariable()))
-        return DynamoDbClient.builder()
-            .httpClient(UrlConnectionHttpClient.builder().build())
-            .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
-            .region(region)
-            .overrideConfiguration(
-                ClientOverrideConfiguration.builder()
-                    .addExecutionInterceptor(TracingInterceptor())
-                    .build()
-            )
-            .endpointOverride(URI("https://dynamodb.$region.amazonaws.com"))
-            .build()
+        return DynamoDbClient{
+            region = System.getenv("AWS_REGION")
+            credentialsProvider = EnvironmentCredentialsProvider()
+            endpointResolver = AwsEndpointResolver { service, region ->  AwsEndpoint("https://$service.$region.amazonaws.com") }
+        }
     }
 }

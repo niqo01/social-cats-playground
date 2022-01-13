@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "com.nicolasmilliard.testcdkpipeline"
-version = "0.0.18"
+version = "0.0.19"
 val artifactName = "get-data-lambda"
 
 val kotlinJvmTarget: String
@@ -48,30 +48,25 @@ dependencies {
 
     implementation(libs.okio)
 
-    implementation(platform(libs.aws.sdk.bom))
-    implementation(libs.aws.sdk.dynamodb.client) {
-        exclude(group = "software.amazon.awssdk", module = "apache-client")
-        exclude(group = "software.amazon.awssdk", module = "netty-nio-client")
-    }
-    implementation(libs.aws.sdk.urlconnectionclient)
+    implementation(libs.aws.sdk.kotlin.dynamodb.client)
+//    {
+//        exclude(group = "software.amazon.awssdk", module = "apache-client")
+//        exclude(group = "software.amazon.awssdk", module = "netty-nio-client")
+//    }
+
 
     implementation(libs.aws.lambda.java.core)
     implementation(libs.aws.lambda.java.events)
-    implementation(libs.aws.lambda.powertools.tracing) {
-        exclude(group = "com.amazonaws", module = "aws-xray-recorder-sdk-aws-sdk-v2-instrumentor")
-    }
-    aspect(libs.aws.lambda.powertools.tracing) {
-        exclude(group = "com.amazonaws", module = "aws-xray-recorder-sdk-aws-sdk-v2-instrumentor")
-    }
+//    implementation(libs.aws.lambda.powertools.tracing) {
+//        exclude(group = "com.amazonaws", module = "aws-xray-recorder-sdk-aws-sdk-v2-instrumentor")
+//    }
+//    aspect(libs.aws.lambda.powertools.tracing) {
+//        exclude(group = "com.amazonaws", module = "aws-xray-recorder-sdk-aws-sdk-v2-instrumentor")
+//    }
     implementation(libs.aws.lambda.powertools.logging)
     aspect(libs.aws.lambda.powertools.logging)
     implementation(libs.aws.lambda.powertools.metrics)
     aspect(libs.aws.lambda.powertools.metrics)
-
-    implementation(platform(libs.aws.xray.bom))
-    implementation(libs.aws.xray.recordercore)
-    implementation(libs.aws.xray.recordersdkcore)
-    implementation(libs.aws.xray.recordersdkv2)
 
     implementation(libs.log4j.api)
     implementation(libs.log4j.core)
@@ -84,12 +79,14 @@ dependencies {
     testImplementation(libs.junit.api)
     testRuntimeOnly(libs.junit.engine)
 
+    testImplementation(libs.kotlin.coroutines.test)
+    testImplementation(libs.aws.sdk.url.connection.client)
     testImplementation(libs.tempest2)
     testImplementation(libs.tempest2.testing.jvm)
     testImplementation(libs.tempest2.testing.junit5)
     testImplementation(libs.aws.lambda.java.tests)
     testImplementation(libs.assertj.core)
-    testImplementation(libs.aws.sdk.dynamodb.enhanced)
+//    testImplementation(libs.aws.sdk.dynamodb.enhanced)
 }
 
 publishing {

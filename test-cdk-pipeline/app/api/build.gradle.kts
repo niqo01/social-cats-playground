@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "com.nicolasmilliard.testcdkpipeline"
-version = "0.0.19"
+version = "0.0.20"
 val artifactName = "get-data-lambda"
 
 val kotlinJvmTarget: String

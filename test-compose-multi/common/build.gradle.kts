@@ -13,8 +13,9 @@ version = "1.0"
 kotlin {
     android()
     jvm("desktop") {
+        val kotlinOptions: Map<String,Any> by extra
         compilations.all {
-            kotlinOptions.jvmTarget = "11"
+            this.kotlinOptions.jvmTarget = kotlinOptions["jvmTarget"] as String
         }
     }
     sourceSets {

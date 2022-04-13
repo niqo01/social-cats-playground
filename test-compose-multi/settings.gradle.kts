@@ -29,5 +29,6 @@ rootProject.name = "test-compose-multi"
 
 include(":android")
 include(":desktop")
+include(":web")
 include(":common")
 

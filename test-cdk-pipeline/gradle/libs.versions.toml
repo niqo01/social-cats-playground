@@ -1,13 +1,13 @@
 [versions]
-kotlin = "1.6.20"
-coroutine = "1.6.1"
-awscdk = "2.19.0"
-awssdk = "2.17.163"
-awssdkkotlin = "0.14.1-beta"
+kotlin = "1.6.21"
+coroutine = "1.6.2"
+awscdk = "2.27.0"
+awssdk = "2.17.204"
+awssdkkotlin = "0.16.1-beta"
 awspowertools = "1.12.0"
 log4j = "2.17.2"
 retrofit = "2.9.0"
-tempest2 = "1.5.2"
+tempest2 = "1.6.2"
 
 [libraries]
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
@@ -15,10 +15,10 @@ kotlin-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 kotlin-coroutines-jvm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "coroutine" }
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version .ref= "coroutine" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.3.2" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.3.3" }
 
 aws-cdk = { module = "software.amazon.awscdk:aws-cdk-lib", version.ref = "awscdk" }
-assertj-core = { module = "org.assertj:assertj-core", version = "3.22.0" }
+assertj-core = { module = "org.assertj:assertj-core", version = "3.23.1" }
 aws-sdk-kotlin-dynamodb-client = { module = "aws.sdk.kotlin:dynamodb", version.ref = "awssdkkotlin"}
 
 aws-sdk-url-connection-client = { module = "software.amazon.awssdk:url-connection-client", version.ref = "awssdk"}
@@ -38,7 +38,7 @@ aws-lambda-powertools-metrics = { module = "software.amazon.lambda:powertools-me
 log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
 log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 log4j-slf4j18-impl = { module = "org.apache.logging.log4j:log4j-slf4j18-impl", version.ref = "log4j" }
-kotlin-logging-jvm = { module = "io.github.microutils:kotlin-logging-jvm", version = "2.1.21" }
+kotlin-logging-jvm = { module = "io.github.microutils:kotlin-logging-jvm", version = "2.1.23" }
 
 junit-bom = { module = "org.junit:junit-bom", version = "5.8.2" }
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api" }
@@ -47,14 +47,14 @@ junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-scalar-converter = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "retrofit" }
 
-okhttp-curl = { module = "com.github.mrmike:ok2curl", version = "0.7.0" }
+okhttp-curl = { module = "com.github.mrmike:ok2curl", version = "0.8.0" }
 
-okio = { module = "com.squareup.okio:okio", version = "3.0.0" }
+okio = { module = "com.squareup.okio:okio", version = "3.1.0" }
 
 [plugins]
 kotlinjvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinserialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 shadow = { id = "com.github.johnrengelman.shadow", version = "7.1.2" }
-aspecjt = { id = "io.freefair.aspectj.post-compile-weaving", version = "6.4.1" }
+aspecjt = { id = "io.freefair.aspectj.post-compile-weaving", version = "6.4.3" }
 bencheck = { id = "com.github.ben-manes.versions", version = "0.42.0" }
 taskinfo = { id = "org.barfuin.gradle.taskinfo", version = "1.3.0" }

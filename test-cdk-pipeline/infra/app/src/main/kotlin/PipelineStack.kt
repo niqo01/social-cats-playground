@@ -25,7 +25,7 @@ class PipelineStack(scope: Construct, id: String, props: StackProps, lambdaArtif
                 .build()
         )
 
-        val cliVersion = "2.27.0"
+        val cliVersion = "2.29.1"
         val pipeline = CodePipeline.Builder.create(this, "Pipeline")
             .cliVersion(cliVersion)
             .synth(

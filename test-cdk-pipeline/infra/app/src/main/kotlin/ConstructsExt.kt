@@ -3,7 +3,8 @@ package com.nicolasmilliard.testcdkpipeline
 import software.amazon.awscdk.CfnOutput
 import software.amazon.awscdk.Environment
 import software.amazon.awscdk.RemovalPolicy
-import software.amazon.awscdk.StackProps
+import software.amazon.awscdk.pipelines.CodePipelineSource
+import software.amazon.awscdk.pipelines.ConnectionSourceOptions
 import software.amazon.awscdk.services.dynamodb.Table
 import software.constructs.Construct
 import java.util.*
@@ -60,15 +61,43 @@ data class SetupTasksResult(
 )
 
 fun Construct.setupPipeline(lambdaArtifacts: Properties) {
+    val githubConnection = CodePipelineSource.connection(
+        "niqo01/social-cats-playground",
+        "release/pipeline",
+        ConnectionSourceOptions.Builder()
+            .connectionArn("arn:aws:codestar-connections:us-east-1:480917579245:connection/11bca31c-2fcc-44c9-89b8-3a9e9c2f8df7")
+            .triggerOnPush(true)
+            .build()
+    )
+    val deploymentEnv = Environment.builder()
+        .account("480917579245")
+        .region("us-east-1")
+        .build()
+
+    val preProdEnv = Environment.builder()
+        .account("480465344025")
+        .region("us-east-1")
+        .build()
+
+    val prodEnv = Environment.builder()
+        .account("275972720939")
+        .region("us-east-1")
+        .build()
+
     PipelineStack(
-        this, "PipelineStack", StackProps.builder()
-            .env(
-                Environment.builder()
-                    .account("480917579245")
-                    .region("us-east-1")
-                    .build()
-            )
-            .build(),
+        this, "PipelineStack", object : PipelineStackProps {
+            override val sourceCode: CodePipelineSource
+                get() = githubConnection
+            override val preProd: Environment
+                get() = preProdEnv
+            override val prod: Environment
+                get() = prodEnv
+
+            override fun getEnv() = deploymentEnv
+
+            override fun getDescription()= "Pipeline App deployment to preprod and prod."
+
+        },
         lambdaArtifacts
     )
 }

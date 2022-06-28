@@ -1,9 +1,7 @@
 package com.nicolasmilliard.testcdkpipeline
 
-import software.amazon.awscdk.Environment
+import software.amazon.awscdk.*
 import software.amazon.awscdk.Stack
-import software.amazon.awscdk.StackProps
-import software.amazon.awscdk.StageProps
 import software.amazon.awscdk.pipelines.*
 import software.amazon.awscdk.services.codebuild.BuildSpec
 import software.amazon.awscdk.services.iam.Effect
@@ -11,35 +9,25 @@ import software.amazon.awscdk.services.iam.PolicyStatement
 import software.constructs.Construct
 import java.util.*
 
-class PipelineStack(scope: Construct, id: String, props: StackProps, lambdaArtifacts: Properties) :
+class PipelineStack(scope: Construct, id: String, props: PipelineStackProps, lambdaArtifacts: Properties) :
     Stack(scope, id, props) {
 
     init {
 
-        val githubConnection = CodePipelineSource.connection(
-            "niqo01/social-cats-playground",
-            "release/pipeline",
-            ConnectionSourceOptions.Builder()
-                .connectionArn("arn:aws:codestar-connections:us-east-1:480917579245:connection/11bca31c-2fcc-44c9-89b8-3a9e9c2f8df7")
-                .triggerOnPush(true)
-                .build()
-        )
-
-        val cliVersion = "2.29.1"
         val pipeline = CodePipeline.Builder.create(this, "Pipeline")
-            .cliVersion(cliVersion)
             .synth(
                 CodeBuildStep.Builder.create("BuildStep")
-                    .input(githubConnection)
+                    .input(props.sourceCode)
                     .installCommands(
                         listOf(
-                            "npm install -g aws-cdk@$cliVersion",
-                            "export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain test-domain --domain-owner 480917579245 --query authorizationToken --output text`"
+                            "export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain test-domain --domain-owner ${props.env!!.account} --query authorizationToken --output text`",
+                            "npm install -g aws-cdk",
                         )
                     )
                     .commands(
                         listOf(
-                            "cd \$CODEBUILD_SRC_DIR/test-cdk-pipeline/infra/app && npx cdk synth"
+                            "cd \$CODEBUILD_SRC_DIR/test-cdk-pipeline/infra/app",
+                            "npx cdk synth"
                         )
                     )
                     .primaryOutputDirectory("\$CODEBUILD_SRC_DIR/test-cdk-pipeline/infra/app/cdk.out")
@@ -80,12 +68,7 @@ class PipelineStack(scope: Construct, id: String, props: StackProps, lambdaArtif
 
         val preProdStage = AppStage(
             this, "Preprod", StageProps.builder()
-                .env(
-                    Environment.builder()
-                        .account("480465344025")
-                        .region("us-east-1")
-                        .build()
-                )
+                .env(props.preProd)
                 .build(),
             "preprod",
             false,
@@ -116,7 +99,7 @@ class PipelineStack(scope: Construct, id: String, props: StackProps, lambdaArtif
         preProdStageDeployment.addPost(
             CodeBuildStep.Builder.create("IntegrationTestStep")
                 .envFromCfnOutputs(mapOf("API_URL" to preProdStage.result.apiUrlOutput))
-                .input(githubConnection)
+                .input(props.sourceCode)
                 .commands(
                     listOf(
                         "cd \$CODEBUILD_SRC_DIR/test-cdk-pipeline",
@@ -141,12 +124,7 @@ class PipelineStack(scope: Construct, id: String, props: StackProps, lambdaArtif
 
         val prodStage = AppStage(
             this, "Prod", StageProps.builder()
-                .env(
-                    Environment.builder()
-                        .account("275972720939")
-                        .region("us-east-1")
-                        .build()
-                )
+                .env(props.prod)
                 .build(),
             "prod",
             true,
@@ -180,4 +158,10 @@ class PipelineStack(scope: Construct, id: String, props: StackProps, lambdaArtif
                 .build()
         )
     }
+}
+
+interface PipelineStackProps : StackProps {
+    val sourceCode: CodePipelineSource
+    val preProd: Environment
+    val prod: Environment
 }

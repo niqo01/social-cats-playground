@@ -1,17 +1,12 @@
 package com.nicolasmilliard.testcdkpipeline
 
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import software.amazon.awscdk.App
 import software.amazon.awscdk.RemovalPolicy
+import software.amazon.awscdk.assertions.Template
 import java.io.IOException
 
 class DbStackTest {
-
-    private val JSON = ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true)
 
     @Test
     @Throws(IOException::class)
@@ -22,9 +17,8 @@ class DbStackTest {
                 get() = RemovalPolicy.DESTROY
         })
 
-        // synthesize the stack to a CloudFormation template and compare against
-        // a checked-in JSON file.
-        val actual = JSON.valueToTree<JsonNode>(app.synth().getStackArtifact(stack.artifactId).template)
-//        assertThat(ObjectMapper().createObjectNode()).isEqualTo(actual)
+        // Uncommenting this one result in CDK ls to show only test stack????
+//        val template = Template.fromStack(stack)
+//        template.resourceCountIs("AWS::DynamoDB::Table", 1)
     }
 }

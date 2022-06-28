@@ -6,19 +6,28 @@ plugins {
     kotlin("jvm")
     alias(libs.plugins.kotlinserialization)
     alias(libs.plugins.shadow)
-    alias(libs.plugins.aspecjt)
+    alias(libs.plugins.aspectj)
     id("maven-publish")
 }
 
 group = "com.nicolasmilliard.testcdkpipeline"
-version = "0.0.20"
+version = "0.0.21"
 val artifactName = "get-data-lambda"
 
 val kotlinJvmTarget: String
     get() = extra["kotlin.jvm.target"].toString()
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = kotlinJvmTarget
+    kotlinOptions.jvmTarget = "11"
+    configure<io.freefair.gradle.plugins.aspectj.AjcAction> {
+        options.compilerArgs.add("-source")
+        options.compilerArgs.add("11")
+    }
 }
 
 tasks.test {

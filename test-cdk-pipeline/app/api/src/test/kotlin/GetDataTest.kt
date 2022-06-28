@@ -8,6 +8,7 @@ import aws.sdk.kotlin.runtime.endpoint.AwsEndpoint
 import aws.sdk.kotlin.runtime.endpoint.AwsEndpointResolver
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import com.amazonaws.services.lambda.runtime.tests.EventLoader
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -21,6 +22,7 @@ import software.amazon.lambda.powertools.metrics.MetricsUtils
 const val PORT = 6001
 const val TABLE_NAME = "test_items"
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class GetDataTest {
 
     @RegisterExtension
@@ -43,7 +45,7 @@ class GetDataTest {
                         secretAccessKey = "secret"
                     }
                     region = "us-west-2"
-                    endpointResolver = AwsEndpointResolver { service, region -> AwsEndpoint("http://localhost:$PORT") }
+                    endpointResolver = AwsEndpointResolver { _, _ -> AwsEndpoint("http://localhost:$PORT") }
                 }
 
             }

@@ -1,15 +1,17 @@
 package com.nicolasmilliard.testcdkpipeline
 
 import com.moczul.ok2curl.CurlInterceptor
+import com.moczul.ok2curl.logger.Logger
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import retrofit2.http.GET
 import retrofit2.create
+import retrofit2.http.GET
 import retrofit2.http.Headers
 import java.time.Duration
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertFalse
 
 internal class ApiTest {
 
@@ -21,10 +23,16 @@ internal class ApiTest {
 
         val retrofit = Retrofit.Builder()
             .baseUrl("https://$url")
-            .client(OkHttpClient.Builder()
-                .callTimeout(Duration.ofSeconds(40))
-                .addInterceptor(CurlInterceptor { message -> println("Ok2Curl: $message") })
-                .build())
+            .client(
+                OkHttpClient.Builder()
+                    .callTimeout(Duration.ofSeconds(40))
+                    .addInterceptor(CurlInterceptor(object : Logger {
+                        override fun log(message: String) {
+                            println("Ok2Curl: $message")
+                        }
+                    }))
+                    .build()
+            )
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
 

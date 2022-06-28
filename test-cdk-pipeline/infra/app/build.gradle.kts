@@ -54,8 +54,10 @@ tasks.test {
 
 tasks.register("generateLambdaProperties") {
     doLast {
-        File("$buildDir/lambdas.properties")
-            .printWriter().use { out ->
+        val file = File("$buildDir/lambdas.properties")
+        file.parentFile.mkdirs()
+        file.createNewFile()
+        file.printWriter().use { out ->
                 lambdaConf.dependencies.forEach {
                     val files = lambdaConf.files(it)
                     out.println("${it.group}_${it.name}=${files.iterator().next().absolutePath}")

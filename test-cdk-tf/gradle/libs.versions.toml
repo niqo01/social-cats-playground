@@ -1,0 +1,15 @@
+[versions]
+kotlin = "1.7.20"
+
+[libraries]
+cdktf = { module = "com.hashicorp:cdktf", version = "0.13.0" }
+constructs = { module = "software.constructs:constructs", version = "10.1.131" }
+
+cdktf-provider-google = { module = "com.hashicorp:cdktf-provider-google", version = "3.0.13" }
+
+junit = { module = "junit:junit", version = "4.13.2" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version = "5.9.1" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+bencheck = { id = "com.github.ben-manes.versions", version = "0.42.0" }

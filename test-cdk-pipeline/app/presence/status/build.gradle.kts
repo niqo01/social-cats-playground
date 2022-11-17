@@ -7,22 +7,35 @@ plugins {
     alias(libs.plugins.kotlinserialization)
     alias(libs.plugins.shadow)
     alias(libs.plugins.aspectj)
+    alias(libs.plugins.graalvm)
+    distribution
 }
 
 group = "com.nicolasmilliard.testcdkpipeline"
-version = "0.0.21"
-val artifactName = "get-data-lambda"
+version = "0.0.1"
+val artifactName = "presence-status-lambda"
+
+kotlin {
+//    jvmToolchain{
+//        languageVersion.set(JavaLanguageVersion.of(11))
+//        vendor.set(JvmVendorSpec.GRAAL_VM)
+//    }
+}
 
 tasks.test {
     useJUnitPlatform()
-    environment(mapOf(
-        "AWS_XRAY_CONTEXT_MISSING" to "LOG_ERROR",
-        "POWERTOOLS_TRACER_CAPTURE_RESPONSE" to "false",
-        "POWERTOOLS_TRACER_CAPTURE_ERROR" to "false",
-    ))
-    systemProperties(mapOf(
-        "software.amazon.awssdk.http.service.impl" to "software.amazon.awssdk.http.urlconnection.UrlConnectionSdkHttpService",
-    ))
+    environment(
+        mapOf(
+            "AWS_XRAY_CONTEXT_MISSING" to "LOG_ERROR",
+            "POWERTOOLS_TRACER_CAPTURE_RESPONSE" to "false",
+            "POWERTOOLS_TRACER_CAPTURE_ERROR" to "false",
+        )
+    )
+    systemProperties(
+        mapOf(
+            "software.amazon.awssdk.http.service.impl" to "software.amazon.awssdk.http.urlconnection.UrlConnectionSdkHttpService",
+        )
+    )
 }
 
 tasks.withType<ShadowJar> {
@@ -33,6 +46,40 @@ tasks.withType<ShadowJar> {
     exclude("META-INF/**/module-info.class")
 }
 
+graalvmNative {
+    binaries {
+        named("main") {
+//            javaLauncher.set(javaToolchains.launcherFor {
+//                languageVersion.set(JavaLanguageVersion.of(11))
+//                vendor.set(JvmVendorSpec.GRAAL_VM)
+//            })
+            requiredVersion.set("22.3.0")
+            mainClass.set("com.amazonaws.services.lambda.runtime.api.client.AWSLambda")
+            buildArgs.apply {
+                add("--verbose")
+                add("--no-fallback")
+                add("--initialize-at-build-time=org.slf4j")
+                add("--enable-url-protocols=http")
+                add("-H:+AllowIncompleteClasspath")
+                add("-H:+ReportExceptionStackTraces")
+            }
+        }
+    }
+}
+
+distributions {
+    main {
+        distributionBaseName.set("distribution")
+        contents {
+            from(layout.buildDirectory.dir("native/nativeCompile"))
+            from(layout.projectDirectory.dir("src/main/config"))
+        }
+    }
+}
+
+tasks["distZip"].dependsOn("nativeCompile")
+
+
 dependencies {
     implementation(platform(libs.kotlin.bom))
     implementation(libs.kotlin.jdk8)
@@ -41,6 +88,7 @@ dependencies {
     implementation(libs.okio)
 
     implementation(libs.aws.sdk.kotlin.dynamodb.client)
+    implementation(libs.aws.lambda.javaRuntimeInterfaceClient)
 //    {
 //        exclude(group = "software.amazon.awssdk", module = "apache-client")
 //        exclude(group = "software.amazon.awssdk", module = "netty-nio-client")
@@ -85,7 +133,7 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             artifactId = artifactName
-            setArtifacts(listOf(tasks.named("shadowJar").get()))
+            artifact(tasks.distZip)
         }
     }
 }

@@ -3,6 +3,7 @@ package com.nicolasmilliard.testcdkpipeline
 import software.amazon.awscdk.CfnOutput
 import software.amazon.awscdk.Environment
 import software.amazon.awscdk.RemovalPolicy
+import software.amazon.awscdk.StackProps
 import software.amazon.awscdk.pipelines.CodePipelineSource
 import software.amazon.awscdk.pipelines.ConnectionSourceOptions
 import software.amazon.awscdk.services.dynamodb.Table
@@ -10,6 +11,12 @@ import software.constructs.Construct
 import java.util.*
 
 fun Construct.setupStacks(envName: String, isProd: Boolean, lambdaArtifacts: Properties): SetupTasksResult {
+    val mainVpc = VpcStack(this, "VpcStack", StackProps.builder()
+        .terminationProtection(isProd)
+        .description("Vpc stack")
+        .build())
+
+
     val dbStack = DbStack(
         this, "DbStack", object : DbStackProps {
             override val removalPolicy: RemovalPolicy

@@ -1,12 +1,5 @@
 plugins {
-    kotlin("jvm")
-}
-
-val kotlinJvmTarget: String
-    get() = extra["kotlin.jvm.target"].toString()
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = kotlinJvmTarget
+    id("com.nicolasmilliard.kotlin.application")
 }
 
 tasks.test {

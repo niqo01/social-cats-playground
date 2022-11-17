@@ -1,23 +1,6 @@
-repositories {
-    maven {
-        url = uri("https://test-domain-480917579245.d.codeartifact.us-east-1.amazonaws.com/maven/test-repository/")
-        credentials {
-            username = "aws"
-            password = System.getenv("CODEARTIFACT_AUTH_TOKEN")
-        }
-    }
-}
-
 plugins {
-    kotlin("jvm")
+    id("com.nicolasmilliard.kotlin.application")
     application
-}
-
-val kotlinJvmTarget: String
-    get() = extra["kotlin.jvm.target"].toString()
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = kotlinJvmTarget
 }
 
 val lambdaConf: Configuration by configurations.creating {
@@ -28,6 +11,7 @@ dependencies {
     implementation(libs.kotlin.jdk8)
 
     implementation(libs.aws.cdk)
+    implementation(libs.aws.cdk.appsync.alpha)
 
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.api)

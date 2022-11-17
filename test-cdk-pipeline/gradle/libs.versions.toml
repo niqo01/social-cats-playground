@@ -1,16 +1,16 @@
 [versions]
 kotlin = "1.7.20"
 coroutine = "1.6.4"
-kotlinxSerializationJson = "1.4.0"
-awscdk = "2.45.0"
-awssdk = "2.17.290"
-awssdkkotlin = "0.17.7-beta"
+kotlinxSerializationJson = "1.4.1"
+awscdk = "2.50.0"
+awssdk = "2.18.20"
+awssdkkotlin = "0.17.12-beta"
 awspowertools = "1.12.3"
-awsLambdaJavaCore = "1.2.1"
+awsLambdaJavaCore = "1.2.2"
 awsLambdaJavaEvents = "3.11.0"
 awsLambdaJavaLog4j = "1.5.1"
 awsLambdaJavaTest= "1.1.1"
-kotlinLoggingJvm = "3.0.2"
+kotlinLoggingJvm = "3.0.4"
 log4j = "2.19.0"
 retrofit = "2.9.0"
 tempest2 = "1.6.2"
@@ -21,8 +21,11 @@ ok2curl = "0.8.0"
 okio = "3.2.0"
 
 shadowPlugin = "7.1.2"
-benVersionsPlugin = "0.42.0"
+benVersionsPlugin = "0.44.0"
 taskinfoPlugin = "1.3.0"
+spotless = "6.7.2"
+checkUpdates = "0.43.0"
+graalVmPlugin = "0.9.17"
 
 [libraries]
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
@@ -32,10 +35,13 @@ kotlin-coroutines-jvm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-cor
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version .ref= "coroutine" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
-aws-cdk = { module = "software.amazon.awscdk:aws-cdk-lib", version.ref = "awscdk" }
 assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertJCore" }
-aws-sdk-kotlin-dynamodb-client = { module = "aws.sdk.kotlin:dynamodb", version.ref = "awssdkkotlin"}
 
+aws-cdk = { module = "software.amazon.awscdk:aws-cdk-lib", version.ref = "awscdk" }
+aws-cdk-appsync-alpha = { module = "software.amazon.awscdk:appsync-alpha", version = "2.50.0-alpha.0" }
+
+aws-sdk-kotlin-dynamodb-client = { module = "aws.sdk.kotlin:dynamodb", version.ref = "awssdkkotlin"}
+jedis= { module = "redis.clients:jedis", version = "4.3.0"}
 aws-sdk-url-connection-client = { module = "software.amazon.awssdk:url-connection-client", version.ref = "awssdk"}
 
 tempest2 = { module = "app.cash.tempest:tempest2", version.ref = "tempest2" }
@@ -50,9 +56,11 @@ aws-lambda-java-tests = { module = "com.amazonaws:aws-lambda-java-tests", versio
 aws-lambda-powertools-logging = { module = "software.amazon.lambda:powertools-logging", version.ref = "awspowertools" }
 aws-lambda-powertools-metrics = { module = "software.amazon.lambda:powertools-metrics", version.ref = "awspowertools" }
 
+aws-lambda-javaRuntimeInterfaceClient = { module = "com.amazonaws:aws-lambda-java-runtime-interface-client", version = "2.1.0" }
+
 log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
 log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
-log4j-slf4j18-impl = { module = "org.apache.logging.log4j:log4j-slf4j18-impl", version.ref = "log4j" }
+log4j-slf4j18-impl = { module = "org.apache.logging.log4j:log4j-slf4j18-impl", version = "2.18.0" }
 kotlin-logging-jvm = { module = "io.github.microutils:kotlin-logging-jvm", version.ref = "kotlinLoggingJvm" }
 
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
@@ -66,6 +74,10 @@ okhttp-curl = { module = "com.github.mrmike:ok2curl", version.ref = "ok2curl" }
 
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+spotless-gradlePlugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
+checkupdates-gradlePlugin = { group = "com.github.ben-manes", name = "gradle-versions-plugin", version.ref = "checkUpdates" }
+
 [plugins]
 kotlinjvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinserialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
@@ -73,3 +85,4 @@ shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadowPlugin" 
 aspectj = { id = "io.freefair.aspectj.post-compile-weaving", version.ref = "aspectj" }
 bencheck = { id = "com.github.ben-manes.versions", version.ref = "benVersionsPlugin" }
 taskinfo = { id = "org.barfuin.gradle.taskinfo", version.ref = "taskinfoPlugin" }
+graalvm = { id = "org.graalvm.buildtools.native", version.ref = "graalVmPlugin" }
